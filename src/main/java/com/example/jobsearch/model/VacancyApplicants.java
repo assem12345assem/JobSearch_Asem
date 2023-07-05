@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
-import java.util.List;
 @Data
 @Builder
 public class VacancyApplicants {
