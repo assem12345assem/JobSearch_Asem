@@ -1,5 +1,6 @@
 package com.example.jobsearch.model;
 
+import com.example.jobsearch.model.assist.Category;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -17,5 +18,5 @@ public class EmployerResume {
     @NonNull
     private String requiredJobExperience;
     @NonNull
-    private String category;
+    private Category category;
 }

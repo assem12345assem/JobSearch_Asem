@@ -1,19 +1,20 @@
 package com.example.jobsearch.model;
 
+import com.example.jobsearch.model.assist.Category;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
 @Data
 @Builder
-public class VacancyApplicants {
+public class Vacancies {
     private int id;
     @NonNull
-    private JobseekerResume vacancyApplicant;
+    private EmployerResume vacancyPublisher;
     @NonNull
-    private EmployerResume vacancy;
+    private Category category;
     @NonNull
-    private LocalDateTime dateTimeApplication;
+    private LocalDateTime dateTimeVacancyPublishment;
 }
