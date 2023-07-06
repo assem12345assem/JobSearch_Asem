@@ -1,6 +1,6 @@
 package com.example.jobsearch.model;
 
-import com.example.jobsearch.model.assist.UserType;
+import com.example.jobsearch.enums.UserType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;

@@ -1,4 +1,4 @@
-package com.example.jobsearch.model.assist;
+package com.example.jobsearch.enums;
 
 public enum Category {
     FULL_TIME,

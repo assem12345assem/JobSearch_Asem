@@ -1,6 +1,6 @@
 package com.example.jobsearch.model;
 
-import com.example.jobsearch.model.assist.Category;
+import com.example.jobsearch.enums.Category;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;

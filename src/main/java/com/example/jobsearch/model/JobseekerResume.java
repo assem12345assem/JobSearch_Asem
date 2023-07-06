@@ -1,6 +1,5 @@
 package com.example.jobsearch.model;
 
-import com.example.jobsearch.model.assist.ContactInfo;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -13,6 +12,10 @@ public class JobseekerResume {
     private String position;
     @NonNull
     private Integer expectedSalary;
+    @NonNull
+    private String workExperience;
+    @NonNull
+    private String education;
     @NonNull
     private ContactInfo contactInfo;
 
