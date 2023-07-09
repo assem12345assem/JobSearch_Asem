@@ -5,18 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
-@Data
-@Builder
+
 public class EmployerResume {
     private int id;
-    @NonNull
+    private int userId;
     private String vacancyName;
-    @NonNull
     private Integer salary;
-    @NonNull
     private String description;
-    @NonNull
     private String requiredJobExperience;
-    @NonNull
     private Category category;
 }

@@ -7,14 +7,10 @@ import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
-@Data
-@Builder
+
 public class Vacancies {
     private int id;
-    @NonNull
     private EmployerResume vacancyPublisher;
-    @NonNull
     private Category category;
-    @NonNull
     private LocalDateTime dateTimeVacancyPublishment;
 }

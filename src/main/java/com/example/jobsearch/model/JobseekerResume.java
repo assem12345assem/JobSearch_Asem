@@ -4,19 +4,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
-@Data
-@Builder
+import java.util.List;
+
+
 public class JobseekerResume {
     private int id;
-    @NonNull
+    private int userId;
     private String position;
-    @NonNull
     private Integer expectedSalary;
-    @NonNull
-    private String workExperience;
-    @NonNull
-    private String education;
-    @NonNull
+    private List<String> workExperience;
+    private List<String> education;
     private ContactInfo contactInfo;
 
 }
