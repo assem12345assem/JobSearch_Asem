@@ -9,8 +9,10 @@ import lombok.NonNull;
 @Builder
 public class User {
     private int id;
+    private String firstName;
+    private String lastName;
     @NonNull
-    private String userName;
+    private String email;
     @NonNull
     private UserType userType;
     @NonNull
