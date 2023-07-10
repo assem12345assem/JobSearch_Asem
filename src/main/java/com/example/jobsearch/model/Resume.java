@@ -11,8 +11,8 @@ public class Resume {
     private int userId;
     private String position;
     private Integer expectedSalary;
-    private List<String> workExperience;
-    private List<String> education;
+    private List<WorkExperience> workExperience;
+    private List<Education> education;
     private ContactInfo contactInfo;
 
 }

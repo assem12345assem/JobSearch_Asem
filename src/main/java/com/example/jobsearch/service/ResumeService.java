@@ -21,7 +21,7 @@ public class ResumeService {
         List<Resume> list = jrDao.getAllResumes();
         for (Resume j:
              list) {
-            completeResumeFields(j, j.getUserId());
+            completeResumeFields(j);
         }
         return list;
     }
@@ -29,13 +29,13 @@ public class ResumeService {
         List<Resume> jr = jrDao.getAllResumesByUserId(userId);
         for (Resume j:
                 jr) {
-            completeResumeFields(j, j.getUserId());
+            completeResumeFields(j);
         }
         return jr;
     }
-    private void completeResumeFields(Resume jr, int userId) {
-        jr.setContactInfo(ciDao.getAllContactInfoByUserId(userId));
-        jr.setEducation(edDao.getAllEducationByUserId(userId));
-        jr.setWorkExperience(weDao.getAllWorkExperienceByUserId(userId));
+    private void completeResumeFields(Resume jr) {
+        jr.setContactInfo(ciDao.getAllContactInfoByUserId(jr.getUserId()));
+        jr.setEducation(edDao.getAllEducationByResumeId(jr.getId()));
+        jr.setWorkExperience(weDao.getAllWorkExperienceByResumeId(jr.getId()));
     }
 }
