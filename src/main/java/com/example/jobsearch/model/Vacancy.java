@@ -1,17 +1,16 @@
 package com.example.jobsearch.model;
 
-import com.example.jobsearch.enums.Category;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.Getter;
+import lombok.Setter;
 
-
-public class EmployerResume {
+@Getter
+@Setter
+public class Vacancy {
     private int id;
     private int userId;
     private String vacancyName;
     private Integer salary;
     private String description;
     private String requiredJobExperience;
-    private Category category;
+    private String category;
 }

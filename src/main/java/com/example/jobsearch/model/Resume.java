@@ -6,7 +6,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class JobseekerResume {
+public class Resume {
     private int id;
     private int userId;
     private String position;

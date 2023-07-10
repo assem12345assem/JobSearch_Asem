@@ -54,15 +54,35 @@ insert into education(userId, educationItem) values
  ( 1, 'Cubilia velit. odio, mollis.'),
  (1, 'Tellus, iaculis. tortor, at.');
 
-drop table if exists jobseekerResumes;
-create table jobseekerResumes(
+drop table if exists resumes;
+create table resumes(
  id  int auto_increment primary key,
  userId  int,
  position varchar(50),
  expectedSalary int
 );
-alter table jobseekerResumes
+alter table resumes
 add foreign key (userId) references users(id);
-insert into jobseekerResumes (userId, position, expectedSalary)
+insert into resumes (userId, position, expectedSalary)
 values (1, 'cook', 1000), (1, 'confectioner', 1500);
+
+drop table if exists vacancies;
+create table vacancies(
+    id int auto_increment primary key,
+    userId  int,
+    vacancyName varchar(50),
+    salary int,
+    description varchar(200),
+    requiredJobExperience varchar (200),
+    category varchar(100)
+);
+alter table vacancies
+    add foreign key (userId) references users(id);
+insert into vacancies(userId, vacancyName, salary, description, requiredJobExperience, category)
+values ( 2, 'manager', 500, 'Qui quis soluta et natusex eius quod qui Quis velit.',
+        'minus voluptas ab adipisci voluptatibus qui numquam quia ea nihil vitae.',
+        'debitis est adipisci consequatur'),
+    (2, 'cook', 1000, 'ut error iure eos culpa laborum qui enim sint nam voluptas',
+     'recusandae et veritatis vero ut labore mollitia',
+     'aut quia labore et sunt quos');
 
