@@ -4,13 +4,14 @@ create table users (
     firstName varchar(50),
     lastName varchar(50),
     email varchar(50),
+    phoneNumber varchar(50),
     userType enum('JOBSEEKER', 'EMPLOYER'),
     password varchar(50)
 );
 
-insert into users (firstName, lastName, email, userType, password) values
-('John', 'Doe', 'john@qwe.qwe', 'JOBSEEKER', '123'),
-('Kyle', 'Sue', 'kyle@qwe.qwe', 'EMPLOYER', '123');
+insert into users (firstName, lastName, email, phoneNumber, userType, password) values
+('John', 'Doe', 'john@qwe.qwe', '23-05-25','JOBSEEKER', '123'),
+('Kyle', 'Sue', 'kyle@qwe.qwe', '25-55-41', 'EMPLOYER', '123');
 
 drop table if exists resumes;
 create table resumes(
@@ -87,15 +88,35 @@ create table vacancies(
     salary int,
     description varchar(200),
     requiredJobExperience varchar (200),
-    category varchar(100)
+    category enum('FULL_TIME', 'PART_TIME'),
+    dateTimeVacancyPublished timestamp
 );
 alter table vacancies
     add foreign key (userId) references users(id);
-insert into vacancies(userId, vacancyName, salary, description, requiredJobExperience, category)
+insert into vacancies(userId, vacancyName, salary, description, requiredJobExperience, category, dateTimeVacancyPublished)
 values ( 2, 'manager', 500, 'Qui quis soluta et natusex eius quod qui Quis velit.',
         'minus voluptas ab adipisci voluptatibus qui numquam quia ea nihil vitae.',
-        'debitis est adipisci consequatur'),
+        'PART_TIME', '2023-07-01 23:59:59'),
     (2, 'cook', 1000, 'ut error iure eos culpa laborum qui enim sint nam voluptas',
      'recusandae et veritatis vero ut labore mollitia',
-     'aut quia labore et sunt quos');
+     'FULL_TIME', '2023-07-02 23:59:59');
+
+
+drop table if exists applicants;
+create table applicants(
+    id int auto_increment primary key ,
+    applicantUserId int,
+    resumeId int,
+    vacancyId int,
+    dateTimeApplication timestamp
+);
+alter table applicants
+add foreign key (applicantUserId) references users(id);
+alter table applicants
+add foreign key (resumeId) references resumes(id);
+alter table applicants
+add foreign key (vacancyId) references vacancies(id);
+insert into applicants(applicantUserId, resumeId, vacancyId, dateTimeApplication) values
+( 1, 1, 2, '2023-07-11 23:59:59'),
+( 1, 2, 1, '2023-07-11 21:59:59');
 

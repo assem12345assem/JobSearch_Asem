@@ -24,8 +24,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public Optional<User> printUser(@PathVariable int id) {
-//        userService.someMethod(id);
-//        return ResponseEntity.ok().build();
         return userService.getUserById(id);
     }
+
 }

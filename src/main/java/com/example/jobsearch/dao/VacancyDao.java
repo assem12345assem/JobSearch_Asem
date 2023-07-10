@@ -14,11 +14,11 @@ public class VacancyDao {
     private final JdbcTemplate jdbcTemplate;
     public List<Vacancy> getAllVacancies() {
         String sql = "select * from VACANCIES";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class));
+        return jdbcTemplate.query(sql, new VacancyMapper());
     }
     public List<Vacancy> getAllEmployerVacanciesByUserId(int userId) {
         String sql = "select * from VACANCIES where userId = ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), userId);
+        return jdbcTemplate.query(sql, new VacancyMapper(), userId);
     }
 }
 
