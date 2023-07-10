@@ -7,7 +7,6 @@ import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
-
 public class Vacancies {
     private int id;
     private EmployerResume vacancyPublisher;

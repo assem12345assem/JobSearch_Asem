@@ -1,11 +1,10 @@
 package com.example.jobsearch.model;
 
 import com.example.jobsearch.enums.UserType;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
-
+@Getter
+@Setter
 public class User {
     private int id;
     private String firstName;
