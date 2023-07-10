@@ -20,15 +20,15 @@ public class UserDao {
     }
     public User getUserById(int id) {
         String sql = "select * from users where id = ?";
-
         return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
     }
     public Optional<User> getOptionalUserById(int id) {
         String sql = "select * from users where id = ?";
-
         User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), id);
         return Optional.ofNullable(user);
     }
+
+
 
 
 }

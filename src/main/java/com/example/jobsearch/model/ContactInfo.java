@@ -1,9 +1,9 @@
 package com.example.jobsearch.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
+@Getter
+@Setter
 public class ContactInfo {
     private int id;
     private int userId;

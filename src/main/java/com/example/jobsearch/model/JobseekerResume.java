@@ -1,12 +1,11 @@
 package com.example.jobsearch.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.List;
 
-
+@Getter
+@Setter
 public class JobseekerResume {
     private int id;
     private int userId;

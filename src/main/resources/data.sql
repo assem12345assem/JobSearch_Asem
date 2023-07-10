@@ -65,3 +65,4 @@ alter table jobseekerResumes
 add foreign key (userId) references users(id);
 insert into jobseekerResumes (userId, position, expectedSalary)
 values (1, 'cook', 1000), (1, 'confectioner', 1500);
+
