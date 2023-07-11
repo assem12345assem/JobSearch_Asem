@@ -1,8 +1,7 @@
 package com.example.jobsearch.service;
 
-import com.example.jobsearch.dao.VacancyApplicantsDao;
-import com.example.jobsearch.model.Vacancy;
-import com.example.jobsearch.model.VacancyApplicants;
+import com.example.jobsearch.dao.ApplicantsDao;
+import com.example.jobsearch.model.Applicants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +10,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ApplicantsService {
-    private final VacancyApplicantsDao applicantsDao;
-    public List<VacancyApplicants> getAllApplicants() {
+    private final ApplicantsDao applicantsDao;
+    public List<Applicants> getAllApplicants() {
         return applicantsDao.getAllApplicants();
     }
-    public List<VacancyApplicants> getAllApplicantsByVacancyId(int vacancyId) {
+    public List<Applicants> getAllApplicantsByVacancyId(int vacancyId) {
         return applicantsDao.getAllApplicantsByVacancyId(vacancyId);
     }
+    public List<Applicants> getAllVacanciesByApplicantId(int applicantUserId) {
+        return applicantsDao.getAllVacanciesByApplicantId(applicantUserId);
+    }
+
 
 }

@@ -18,12 +18,13 @@ create table resumes(
     id  int auto_increment primary key,
     userId  int,
     position varchar(50),
-    expectedSalary int
+    expectedSalary int,
+    category enum('FULL_TIME', 'PART_TIME')
 );
 alter table resumes
     add foreign key (userId) references users(id);
-insert into resumes (userId, position, expectedSalary)
-values (1, 'cook', 1000), (1, 'confectioner', 1500);
+insert into resumes (userId, position, expectedSalary, category)
+values (1, 'cook', 1000, 'FULL_TIME'), (1, 'confectioner', 1500, 'FULL_TIME');
 
 drop table if exists contactInfo;
 create table contactInfo(

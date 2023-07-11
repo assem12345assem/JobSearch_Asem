@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 @Getter
 @Setter
-public class VacancyApplicants {
+public class Applicants {
     private int id;
     private int applicantUserId;
     private int resumeId;

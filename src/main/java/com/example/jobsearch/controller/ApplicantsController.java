@@ -1,7 +1,6 @@
 package com.example.jobsearch.controller;
 
-import com.example.jobsearch.model.Vacancy;
-import com.example.jobsearch.model.VacancyApplicants;
+import com.example.jobsearch.model.Applicants;
 import com.example.jobsearch.service.ApplicantsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +16,11 @@ import java.util.List;
 public class ApplicantsController {
     private final ApplicantsService service;
     @GetMapping
-    public List<VacancyApplicants> getAllApplicants() {
+    public List<Applicants> getAllApplicants() {
         return service.getAllApplicants();
     }
     @GetMapping("/{vacancyId}")
-    public List<VacancyApplicants> getAllApplicantsByVacancyId(@PathVariable int vacancyId) {
+    public List<Applicants> getAllApplicantsByVacancyId(@PathVariable int vacancyId) {
         return service.getAllApplicantsByVacancyId(vacancyId);
     }
 }

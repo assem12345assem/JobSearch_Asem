@@ -29,6 +29,11 @@ public class UserDao {
         String sql = "select * from users where id = ?";
         return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
     }
+    public boolean ifUserExists(String email) {
+        String sql = "select * from users where email = ?";
+        User u = jdbcTemplate.queryForObject(sql, new UserMapper(), email);
+        return u != null;
+    }
     public Optional<User> getOptionalUserById(int id) {
         String sql = "select * from users where id = ?";
         User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), id);

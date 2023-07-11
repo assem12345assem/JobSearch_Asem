@@ -1,8 +1,6 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.enums.Category;
-import com.example.jobsearch.enums.UserType;
-import com.example.jobsearch.model.User;
 import com.example.jobsearch.model.Vacancy;
 import org.springframework.jdbc.core.RowMapper;
 

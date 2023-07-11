@@ -36,5 +36,8 @@ public class UserService {
     public Optional<User> getOptionalUserByPhoneNumber(String phoneNumber) {
         return userDao.getOptionalUserByPhoneNumber(phoneNumber);
     }
+    public boolean ifUserExists(String email) {
+        return userDao.ifUserExists(email);
+    }
 
 }

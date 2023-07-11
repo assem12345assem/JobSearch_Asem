@@ -1,5 +1,6 @@
 package com.example.jobsearch.model;
 
+import com.example.jobsearch.enums.Category;
 import lombok.*;
 
 import java.util.List;
@@ -14,5 +15,6 @@ public class Resume {
     private List<WorkExperience> workExperience;
     private List<Education> education;
     private ContactInfo contactInfo;
+    private Category category;
 
 }
