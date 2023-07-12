@@ -17,14 +17,6 @@ public class UserDao {
         String sql = "select * from users";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
-    public List<User> getAllJobseekers() {
-        String sql = "select * from users where userType = 'JOBSEEKER'";
-        return jdbcTemplate.query(sql, new UserMapper());
-    }
-    public List<User> getAllEmployers() {
-        String sql = "select * from users where userType = 'EMPLOYER'";
-        return jdbcTemplate.query(sql, new UserMapper());
-    }
     public User getUserById(int id) {
         String sql = "select * from users where id = ?";
         return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
@@ -37,16 +29,6 @@ public class UserDao {
     public Optional<User> getOptionalUserById(int id) {
         String sql = "select * from users where id = ?";
         User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), id);
-        return Optional.ofNullable(user);
-    }
-    public Optional<User> getOptionalUserByFirstName(String firstName) {
-        String sql = "select * from users where firstName = ?";
-        User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), firstName);
-        return Optional.ofNullable(user);
-    }
-    public Optional<User> getOptionalUserByLastName(String lastName) {
-        String sql = "select * from users where lastName = ?";
-        User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), lastName);
         return Optional.ofNullable(user);
     }
     public Optional<User> getOptionalUserByEmail(String email) {
