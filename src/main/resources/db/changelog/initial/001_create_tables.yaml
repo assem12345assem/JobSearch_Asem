@@ -293,8 +293,13 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: requiredExperience
-                  type: varchar(255)
+                  name: requiredExperienceMin
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: requiredExperienceMax
+                  type: int
                   constraints:
                     nullable: false
               - column:

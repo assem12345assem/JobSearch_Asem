@@ -16,12 +16,12 @@ import java.util.List;
 public class VacancyController {
     private final VacancyService service;
 
-    @GetMapping
-    public List<Vacancy> getAllVacancies() {
-        return service.getAllVacancies();
-    }
-    @GetMapping("/{userId}")
-    public List<Vacancy> getVacanciesByUserId(@PathVariable int userId) {
-        return service.getVacanciesByUserId(userId);
-    }
+//    @GetMapping
+//    public List<Vacancy> getAllVacancies() {
+//        return service.getAllVacancies();
+//    }
+//    @GetMapping("/{userId}")
+//    public List<Vacancy> getVacanciesByUserId(@PathVariable int userId) {
+//        return service.getVacanciesByUserId(userId);
+//    }
 }

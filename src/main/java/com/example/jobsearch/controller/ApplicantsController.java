@@ -1,6 +1,6 @@
 package com.example.jobsearch.controller;
 
-import com.example.jobsearch.model.Applicants;
+import com.example.jobsearch.model.Applicant;
 import com.example.jobsearch.service.ApplicantsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +14,13 @@ import java.util.List;
 @RequestMapping("/applicants")
 @RequiredArgsConstructor
 public class ApplicantsController {
-    private final ApplicantsService service;
-    @GetMapping
-    public List<Applicants> getAllApplicants() {
-        return service.getAllApplicants();
-    }
-    @GetMapping("/{vacancyId}")
-    public List<Applicants> getAllApplicantsByVacancyId(@PathVariable int vacancyId) {
-        return service.getAllApplicantsByVacancyId(vacancyId);
-    }
+//    private final ApplicantsService service;
+//    @GetMapping
+//    public List<Applicant> getAllApplicants() {
+//        return service.getAllApplicants();
+//    }
+//    @GetMapping("/{vacancyId}")
+//    public List<Applicant> getAllApplicantsByVacancyId(@PathVariable int vacancyId) {
+//        return service.getAllApplicantsByVacancyId(vacancyId);
+//    }
 }

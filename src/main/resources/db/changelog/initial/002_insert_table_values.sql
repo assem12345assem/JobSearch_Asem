@@ -29,16 +29,16 @@ values ('accounting'),
        ('media');
 
 insert into VACANCIES (EMPLOYERID, VACANCYNAME, CATEGORYID, SALARY, DESCRIPTION,
-                       REQUIREDEXPERIENCE, ISACTIVE, ISPUBLISHED, PUBLISHEDDATETIME)
+                       REQUIREDEXPERIENCEMIN, REQUIREDEXPERIENCEMAX, ISACTIVE, ISPUBLISHED, PUBLISHEDDATETIME)
 values ( (select ID from EMPLOYERS where COMPANYNAME like 'Samsung'), 'Samsung CEO',
         (select id from CATEGORIES where CATEGORY like 'management'), 1000,
-        'Sed ut perspiciatis unde omnis iste natus', 10, false, true, '2023-03-31 18:00:00' ),
+        'Sed ut perspiciatis unde omnis iste natus', 10, 15, false, true, '2023-03-31 18:00:00' ),
        ((select ID from EMPLOYERS where COMPANYNAME like 'Apple'), 'Apple CEO',
         (select id from CATEGORIES where CATEGORY like 'management'), 1000,
-        'ut perspiciatis unde omnis iste', 10, false, true, '2023-03-31 18:00:00' ),
+        'ut perspiciatis unde omnis iste', 10, 15, false, true, '2023-03-31 18:00:00' ),
        ((select ID from EMPLOYERS where COMPANYNAME like 'Test%'), 'Test accountant',
         (select id from CATEGORIES where CATEGORY like 'accounting'), 1000,
-        'At vero eos et accusamus et iusto', 1, false, true, '2023-03-31 18:00:00');
+        'At vero eos et accusamus et iusto', 1, 2, false, true, '2023-03-31 18:00:00');
 
 insert into RESUMES (APPLICANTID, RESUMETITLE, CATEGORYID, EXPECTEDSALARY, ISACTIVE, ISPUBLISHED)
 values ((select ID from APPLICANTS where LASTNAME like 'Cook'), 'Apple CEO',

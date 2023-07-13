@@ -15,12 +15,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService service;
-    @GetMapping
-    public List<Resume> getResumes() {
-        return service.getAllResumes();
-    }
-    @GetMapping("/{userId}")
-    public List<Resume> getResumeByUserId(@PathVariable int userId) {
-        return service.getResumesByUserId(userId);
-    }
+//    @GetMapping
+//    public List<Resume> getResumes() {
+//        return service.getAllResumes();
+//    }
+//    @GetMapping("/{userId}")
+//    public List<Resume> getResumeByUserId(@PathVariable int userId) {
+//        return service.getResumesByUserId(userId);
+//    }
 }

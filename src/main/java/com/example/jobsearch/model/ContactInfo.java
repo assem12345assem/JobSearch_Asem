@@ -5,8 +5,8 @@ import lombok.*;
 @Getter
 @Setter
 public class ContactInfo {
-    private int id;
-    private int userId;
+    private long id;
+    private long resumeId;
     private String telegram;
     private String email;
     private String phoneNumber;
