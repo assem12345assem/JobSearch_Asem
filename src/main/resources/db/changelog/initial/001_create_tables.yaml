@@ -344,4 +344,50 @@ databaseChangeLog:
                   type: timestamp(6)
                   constraints:
                     nullable: false
+  - changeSet:
+      id: create-contactinfo-table
+      author: Asem
+      changes:
+        - createTable:
+            tableName: contactinfo
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: resumeId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_ci_resume_id
+                    references: resumes(id)
+              - column:
+                  name: telegram
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: phoneNumber
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: facebook
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: linkedIn
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
 
