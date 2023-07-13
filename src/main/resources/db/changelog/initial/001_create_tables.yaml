@@ -33,3 +33,315 @@ databaseChangeLog:
                   type: varchar(45)
                   constraints:
                     nullable: false
+  - changeSet:
+      id: create-employers-table
+      author: Asem
+      changes:
+        - createTable:
+            tableName: employers
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: userId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_e_user_id
+                    references: users(id)
+              - column:
+                  name: companyName
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create-applicants-table
+      author: Asem
+      changes:
+        - createTable:
+            tableName: applicants
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: userId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_a_user_id
+                    references: users(id)
+              - column:
+                  name: firstName
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastName
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dateOfBirth
+                  type: date
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create-categories-table
+      author: Asem
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: category
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create-resumes-table
+      author: Asem
+      changes:
+        - createTable:
+            tableName: resumes
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: applicantId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_applicant_id
+                    references: applicants(id)
+              - column:
+                  name: resumeTitle
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: categoryId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_r_category_id
+                    references: categories(id)
+              - column:
+                  name: expectedSalary
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isActive
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isPublished
+                  type: boolean
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create-workexperience-table
+      author: Asem
+      changes:
+        - createTable:
+            tableName: workexperience
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: resumeId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_we_resume_id
+                    references: resumes(id)
+              - column:
+                  name: dateStart
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dateEnd
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: companyName
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: position
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: responsibilities
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create-education-table
+      author: Asem
+      changes:
+        - createTable:
+            tableName: education
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: resumeId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_edu_resume_id
+                    references: resumes(id)
+              - column:
+                  name: education
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: schoolName
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: startDate
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: graduationDate
+                  type: date
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create-vacancies-table
+      author: Asem
+      changes:
+        - createTable:
+            tableName: vacancies
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: employerId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_employer_id
+                    references: employers(id)
+              - column:
+                  name: vacancyName
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: categoryId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_v_category_id
+                    references: categories(id)
+              - column:
+                  name: salary
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: requiredExperience
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isActive
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isPublished
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: publishedDateTime
+                  type: timestamp(6)
+
+  - changeSet:
+      id: create-jobapplications-table
+      author: Asem
+      changes:
+        - createTable:
+            tableName: jobapplications
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: vacancyId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_vacancy_id
+                    references: vacancies(id)
+              - column:
+                  name: resumeId
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_j_resumeId
+                    references: resumes(id)
+              - column:
+                  name: dateTime
+                  type: timestamp(6)
+                  constraints:
+                    nullable: false
+
