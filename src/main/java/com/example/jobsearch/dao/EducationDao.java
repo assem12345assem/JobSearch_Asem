@@ -1,7 +1,6 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.Education;
-import com.example.jobsearch.model.WorkExperience;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

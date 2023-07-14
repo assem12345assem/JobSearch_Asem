@@ -1,7 +1,6 @@
 package com.example.jobsearch.dto;
 
-import com.example.jobsearch.model.Applicant;
-import com.example.jobsearch.model.Category;
+
 import lombok.Builder;
 import lombok.Data;
 

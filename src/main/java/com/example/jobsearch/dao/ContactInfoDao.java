@@ -1,13 +1,11 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.ContactInfo;
-import com.example.jobsearch.model.Education;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor

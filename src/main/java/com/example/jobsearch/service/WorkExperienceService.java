@@ -1,12 +1,9 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.WorkExperienceDao;
-import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.dto.WorkExperienceDto;
-import com.example.jobsearch.model.User;
 import com.example.jobsearch.model.WorkExperience;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

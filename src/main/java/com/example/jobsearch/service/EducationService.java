@@ -2,9 +2,7 @@ package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.EducationDao;
 import com.example.jobsearch.dto.EducationDto;
-import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.model.Education;
-import com.example.jobsearch.model.WorkExperience;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

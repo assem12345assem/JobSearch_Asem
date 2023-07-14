@@ -1,8 +1,8 @@
 package com.example.jobsearch.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
 
 @Getter
 @Setter

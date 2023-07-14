@@ -29,11 +29,8 @@ public class UserDao {
         if(u == null) {
             return false;
         }
-        if(u.getPassword().equalsIgnoreCase(password)) {
-            return true;
-        }
+        return u.getPassword().equalsIgnoreCase(password);
         //если введен неправильный password, возвращает false
-        return false;
     }
     public boolean ifUserExists(String email) {
         String sql = "select * from users where id = ?";

@@ -31,10 +31,11 @@ public class WorkExperienceDao {
         jdbcTemplate.update(sql, e.getId());
     }
     public void editWorkExperience(WorkExperience e) {
-        String sql = "update WORKEXPERIENCE\n" +
-                "set RESUMEID = ?, DATESTART = ?, DATEEND = ?, COMPANYNAME = ?, \n" +
-                "    POSITION = ?, RESPONSIBILITIES = ?\n" +
-                "where ID = ?";
+        String sql = """
+                update WORKEXPERIENCE
+                set RESUMEID = ?, DATESTART = ?, DATEEND = ?, COMPANYNAME = ?,\s
+                    POSITION = ?, RESPONSIBILITIES = ?
+                where ID = ?""";
         jdbcTemplate.update(sql, e.getResumeId(), e.getDateStart(), e.getDateEnd(), e.getCompanyName(),
                 e.getPosition(), e.getResponsibilities(), e.getId());
     }
