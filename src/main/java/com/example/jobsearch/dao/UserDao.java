@@ -1,5 +1,6 @@
 package com.example.jobsearch.dao;
 
+import com.example.jobsearch.common.UserMapper;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -17,23 +18,31 @@ public class UserDao {
         String sql = "select * from users";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
-    public User getUserById(int id) {
-        String sql = "select * from users where id = ?";
-        return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
+    public List<User> getUsersByUserType(String userType) {
+        String sql = "select * from users where userType = ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+    }
+    public boolean checkUserPassword(String email, String password) {
+        String sql = "select PASSWORD from USERS where ID = ?";
+        User u = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), email);
+        //если введен неправильный email, возвращает null
+        if(u == null) {
+            return false;
+        }
+        if(u.getPassword().equalsIgnoreCase(password)) {
+            return true;
+        }
+        //если введен неправильный password, возвращает false
+        return false;
     }
     public boolean ifUserExists(String email) {
-        String sql = "select * from users where email = ?";
+        String sql = "select * from users where id = ?";
         User u = jdbcTemplate.queryForObject(sql, new UserMapper(), email);
         return u != null;
     }
-    public Optional<User> getOptionalUserById(int id) {
+    public Optional<User> getOptionalUserById(String id) {
         String sql = "select * from users where id = ?";
         User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), id);
-        return Optional.ofNullable(user);
-    }
-    public Optional<User> getOptionalUserByEmail(String email) {
-        String sql = "select * from users where email = ?";
-        User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), email);
         return Optional.ofNullable(user);
     }
     public Optional<User> getOptionalUserByPhoneNumber(String phoneNumber) {

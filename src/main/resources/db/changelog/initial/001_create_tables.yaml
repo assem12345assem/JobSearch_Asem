@@ -8,15 +8,9 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: email
                   type: varchar(45)
                   constraints:
+                    primaryKey: true
                     nullable: false
               - column:
                   name: phoneNumber
@@ -49,7 +43,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: userId
-                  type: long
+                  type: varchar(255)
                   constraints:
                     nullable: false
                     foreignKeyName: fk_e_user_id
@@ -75,7 +69,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: userId
-                  type: long
+                  type: varchar(255)
                   constraints:
                     nullable: false
                     foreignKeyName: fk_a_user_id

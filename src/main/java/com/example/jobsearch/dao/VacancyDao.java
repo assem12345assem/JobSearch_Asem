@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class VacancyDao {
-//    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 //    public List<Vacancy> getAllVacancies() {
 //        String sql = "select * from VACANCIES";
 //        return jdbcTemplate.query(sql, new VacancyMapper());

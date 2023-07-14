@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class Employer {
     private long id;
-    private long userId;
+    private String userId;
     private String companyName;
 }

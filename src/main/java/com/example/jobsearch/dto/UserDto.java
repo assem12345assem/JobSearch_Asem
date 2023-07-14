@@ -1,12 +1,12 @@
-package com.example.jobsearch.model;
+package com.example.jobsearch.dto;
 
 import com.example.jobsearch.enums.UserType;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-@Setter
-public class User {
+@Data
+@Builder
+public class UserDto {
     private String id;
     private String phoneNumber;
     private UserType userType;

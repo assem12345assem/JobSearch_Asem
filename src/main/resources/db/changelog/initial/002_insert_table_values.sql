@@ -1,4 +1,4 @@
-insert into USERS(email, phonenumber, usertype, password)
+insert into USERS(ID, phonenumber, usertype, password)
 VALUES ('timcook@com.com','968-859-5215','applicant','123'),
        ('leejy@com.com','578-525-5455','applicant','123'),
        ('samsung@com.com','548-556-8455','employer','123'),
@@ -6,13 +6,13 @@ VALUES ('timcook@com.com','968-859-5215','applicant','123'),
        ('test@com.com','454-52-15','employer','123');
 
 insert into EMPLOYERS (USERID, COMPANYNAME)
-values ((select ID from USERS where EMAIL like 'samsung%'), 'Samsung'),
-       ((select ID from USERS where EMAIL like 'apple%'), 'Apple'),
-       ((select ID from USERS where EMAIL like 'test%'),'TestCompany');
+values ((select ID from USERS where ID like 'samsung%'), 'Samsung'),
+       ((select ID from USERS where ID like 'apple%'), 'Apple'),
+       ((select ID from USERS where ID like 'test%'),'TestCompany');
 
 insert into APPLICANTS (USERID, FIRSTNAME, LASTNAME, DATEOFBIRTH)
-VALUES ( (select ID from USERS where EMAIL like 'tim%'), 'Tim','Cook','1960-11-01'),
-       ( (select ID from USERS where EMAIL like 'lee%'), 'Jae-yong','Lee','1968-06-23');
+VALUES ( (select ID from USERS where ID like 'tim%'), 'Tim','Cook','1960-11-01'),
+       ( (select ID from USERS where ID like 'lee%'), 'Jae-yong','Lee','1968-06-23');
 
 insert into CATEGORIES (CATEGORY)
 values ('accounting'),
