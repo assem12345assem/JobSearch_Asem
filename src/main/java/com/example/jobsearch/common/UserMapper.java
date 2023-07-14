@@ -1,6 +1,5 @@
 package com.example.jobsearch.common;
 
-import com.example.jobsearch.enums.UserType;
 import com.example.jobsearch.model.User;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -13,8 +12,10 @@ public class UserMapper implements RowMapper<User> {
         User u = new User();
         u.setId(rs.getString("id"));
         u.setPhoneNumber(rs.getString("phoneNumber"));
-        u.setUserType(UserType.valueOf(rs.getString("userType")));
+        u.setUserType(rs.getString("userType"));
         u.setPassword(rs.getString("password"));
         return u;
     }
+
+
 }

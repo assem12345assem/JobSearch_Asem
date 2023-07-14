@@ -2,6 +2,7 @@ package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.UserDao;
 import com.example.jobsearch.dto.UserDto;
+import com.example.jobsearch.enums.UserType;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class UserService {
 
     public void someMethod(String userId) {
         Optional<User> mayByUser = userDao.getOptionalUserById(userId);
-        mayByUser.ifPresent(e -> System.out.printf("%s, %s, %s%n", e.getId(), e.getPassword()));
+        mayByUser.ifPresent(e -> System.out.printf("%s, %s%n", e.getId(), e.getPassword()));
     }
     public ResponseEntity<?> getUserById(String id) {
         Optional<User> maybeUser = userDao.getOptionalUserById(id);
@@ -39,11 +40,17 @@ public class UserService {
             return UserDto.builder()
                     .id(user.getId())
                     .phoneNumber(user.getPhoneNumber())
-                    .userType(user.getUserType())
+                    .userType(returnEnum(user.getUserType()))
                     .password(user.getPassword())
+                    .photo(user.getPhoto())
                     .build();
     }
-
+    private UserType returnEnum (String value) {
+        if(value.equalsIgnoreCase("applicant")) {
+            return UserType.APPLICANT;
+        }
+        return UserType.EMPLOYER;
+    }
     public ResponseEntity<?> getOptionalUserByPhoneNumber(String phoneNumber) {
         Optional<User> maybeUser = userDao.getOptionalUserByPhoneNumber(phoneNumber);
         if(maybeUser.isEmpty()) {

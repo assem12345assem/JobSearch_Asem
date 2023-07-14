@@ -18,8 +18,10 @@ public class ContactInfoDao {
     }
 
     public void createContactInfo(ContactInfo e) {
-        String sql = "insert into CONTACTINFO (RESUMEID, TELEGRAM, EMAIL, PHONENUMBER, FACEBOOK, LINKEDIN)\n" +
-                "values ( ?, ?, ?, ?, ?, ? )\n";
+        String sql = """
+                insert into CONTACTINFO (RESUMEID, TELEGRAM, EMAIL, PHONENUMBER, FACEBOOK, LINKEDIN)
+                values ( ?, ?, ?, ?, ?, ? )
+                """;
         jdbcTemplate.update(sql, e.getResumeId(), e.getTelegram(), e.getEmail(), e.getPhoneNumber(),
                 e.getFacebookAccount(), e.getLinkedinAccount());
     }

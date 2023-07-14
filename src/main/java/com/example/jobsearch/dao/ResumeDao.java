@@ -25,15 +25,17 @@ public class ResumeDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), categoryId);
     }
     public List<Resume> getAllResumesByCategoryName(String categoryName) {
-        String sql = "select * from RESUMES r, CATEGORIES c\n" +
-                "         where r.CATEGORYID = c.id\n" +
-                "           and c.CATEGORY = ?";
+        String sql = """
+                select * from RESUMES r, CATEGORIES c
+                         where r.CATEGORYID = c.id
+                           and c.CATEGORY = ?""";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), categoryName);
     }
     public void createResume(Resume e) {
-        String sql = "insert into RESUMES (APPLICANTID, RESUMETITLE, CATEGORYID, \n" +
-                "                     EXPECTEDSALARY, ISACTIVE, ISPUBLISHED) \n" +
-                "VALUES ( ?, ?, ?, ?, ?, ? )";
+        String sql = """
+                insert into RESUMES (APPLICANTID, RESUMETITLE, CATEGORYID,\s
+                                     EXPECTEDSALARY, ISACTIVE, ISPUBLISHED)\s
+                VALUES ( ?, ?, ?, ?, ?, ? )""";
         jdbcTemplate.update(sql, e.getApplicantId(), e.getResumeTitle(), e.getCategoryId(),
                 e.getExpectedSalary(), e.isActive(), e.isPublished());
     }
