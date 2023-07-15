@@ -3,7 +3,7 @@ package com.example.jobsearch.enums;
 public enum UserType {
     APPLICANT ("applicant"),
     EMPLOYER ("employer");
-    private String value;
+    private final String value;
 
     UserType(String value) {
         this.value = value;

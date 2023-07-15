@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -16,7 +17,11 @@ public class ResumeDao {
         String sql = "select * from RESUMES";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class));
     }
-    public List<Resume> getAllResumesByUserId(long applicantId) {
+    public Resume getResumeById(long id) {
+        String sql = "select * from RESUMES where id = ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Resume.class), id);
+    }
+    public List<Resume> getAllResumesByApplicantId(long applicantId) {
         String sql = "select * from RESUMES where applicantId = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), applicantId);
     }
@@ -24,6 +29,15 @@ public class ResumeDao {
         String sql = "select * from RESUMES where categoryId = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), categoryId);
     }
+    public List<Resume> getAllResumesByLongList(List<Long> list) {
+        List<Resume> temp = new ArrayList<>();
+        for (Long l:
+             list) {
+            temp.add(getResumeById(l));
+        }
+        return temp;
+    }
+
     public List<Resume> getAllResumesByCategoryName(String categoryName) {
         String sql = """
                 select * from RESUMES r, CATEGORIES c

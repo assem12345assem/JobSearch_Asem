@@ -47,5 +47,14 @@ public class VacancyService {
                 .map(this::makeDtoFromVacancy)
                 .toList();
     }
+    public VacancyDto getVacancyById(Long id) {
+        return makeDtoFromVacancy(vacancyDao.getVacancyById(id));
+    }
+    public List<VacancyDto> getVacancyListByIdList(List<Long> id) {
+        List<Vacancy> list = vacancyDao.getVacancyListByIdList(id);
+        return list.stream()
+                .map(this::makeDtoFromVacancy)
+                .toList();
+    }
 
 }

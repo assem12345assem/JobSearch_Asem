@@ -5,19 +5,21 @@ import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.enums.UserType;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserDao userDao;
 
     public List<UserDto> getAllUsers() {
+        log.warn("Used getAllUsers method");
         List<User> users = userDao.getAllUsers();
         return users.stream()
                 .map(this::makeUserDtoFromUser)
@@ -28,7 +30,7 @@ public class UserService {
         Optional<User> mayByUser = userDao.getOptionalUserById(userId);
         mayByUser.ifPresent(e -> System.out.printf("%s, %s%n", e.getId(), e.getPassword()));
     }
-    public ResponseEntity<?> getUserById(String id) {
+    public ResponseEntity<?> getUserByEmail(String id) {
         Optional<User> maybeUser = userDao.getOptionalUserById(id);
         if(maybeUser.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -60,6 +62,10 @@ public class UserService {
     }
     public boolean ifUserExists(String email) {
         return userDao.ifUserExists(email);
+    }
+
+    public void createUser(User user) {
+        userDao.createUser(user);
     }
 
 }

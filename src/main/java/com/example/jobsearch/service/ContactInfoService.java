@@ -28,14 +28,25 @@ public class ContactInfoService {
                 .linkedinAccount(contactInfo.getLinkedinAccount())
                 .build();
     }
-    public void createContactInfo(ContactInfo e) {
-        contactInfoDao.createContactInfo(e);
+    private ContactInfo createContactInfoFromDto (ContactInfoDto e) {
+        return ContactInfo.builder()
+                .id(e.getId())
+                .resumeId(e.getResumeId())
+                .telegram(e.getTelegram())
+                .email(e.getEmail())
+                .phoneNumber(e.getPhoneNumber())
+                .facebookAccount(e.getFacebookAccount())
+                .linkedinAccount(e.getLinkedinAccount())
+                .build();
     }
-    public void deleteContactInfo(ContactInfo e) {
-        createContactInfo(e);
+    public void createContactInfo(ContactInfoDto e) {
+        contactInfoDao.createContactInfo(createContactInfoFromDto(e));
     }
-    public void editContactInfo(ContactInfo e) {
-        contactInfoDao.editContactInfo(e);
+    public void deleteContactInfo(ContactInfoDto e) {
+        contactInfoDao.deleteContactInfo(createContactInfoFromDto(e));
+    }
+    public void editContactInfo(ContactInfoDto e) {
+        contactInfoDao.editContactInfo(createContactInfoFromDto(e));
     }
 
 }

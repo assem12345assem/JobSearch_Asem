@@ -22,15 +22,22 @@ public class UserDao {
         String sql = "select * from users where userType = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
-    public boolean checkUserPassword(String email, String password) {
+    public boolean ifPasswordCorrect(String email, String password) {
         String sql = "select PASSWORD from USERS where ID = ?";
         User u = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), email);
-        //если введен неправильный email, возвращает null
         if(u == null) {
             return false;
         }
         return u.getPassword().equalsIgnoreCase(password);
-        //если введен неправильный password, возвращает false
+    }
+    public void createUser(User user) {
+        String sql = """
+                insert into USERS (ID, PHONENUMBER, USERTYPE,\s
+                                     PASSWORD, PHOTO)\s
+                VALUES ( ?, ?, ?, ?, ?)""";
+            jdbcTemplate.update(sql, user.getId(), user.getPhoneNumber(),
+                    user.getUserType(), user.getPassword(), user.getPhoto());
+
     }
     public boolean ifUserExists(String email) {
         String sql = "select * from users where id = ?";

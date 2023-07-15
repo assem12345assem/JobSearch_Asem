@@ -33,16 +33,26 @@ public class EducationService {
                 .graduationDate(education.getGraduationDate())
                 .build();
     }
-
-    public void createEducation(Education e) {
-        educationDao.createEducation(e);
+    private Education createEducationFromDto(EducationDto education) {
+        return Education.builder()
+                .id(education.getId())
+                .resumeId(education.getResumeId())
+                .education(education.getEducation())
+                .schoolName(education.getSchoolName())
+                .startDate(education.getStartDate())
+                .graduationDate(education.getGraduationDate())
+                .build();
     }
-    public void deleteEducation (Education e) {
-        educationDao.createEducation(e);
+
+    public void createEducation(EducationDto e) {
+        educationDao.createEducation(createEducationFromDto(e));
+    }
+    public void deleteEducation (EducationDto e) {
+        educationDao.createEducation(createEducationFromDto(e));
     }
 
-    public void editEducation(Education e) {
-        educationDao.editEducation(e);
+    public void editEducation(EducationDto e) {
+        educationDao.editEducation(createEducationFromDto(e));
     }
 
 }

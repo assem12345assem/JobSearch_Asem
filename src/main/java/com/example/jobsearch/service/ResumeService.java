@@ -2,7 +2,10 @@ package com.example.jobsearch.service;
 
 
 import com.example.jobsearch.dao.ResumeDao;
+import com.example.jobsearch.dto.ContactInfoDto;
+import com.example.jobsearch.dto.EducationDto;
 import com.example.jobsearch.dto.ResumeDto;
+import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.model.Resume;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,14 +35,26 @@ public class ResumeService {
                 .workExperienceList(workExperienceService.getAllWorkExperienceByResumeId(resume.getId()))
                 .build();
     }
+    private Resume createResumeFromDto( ResumeDto resume) {
+        return Resume.builder()
+                .id(resume.getId())
+                .applicantId(resume.getApplicant().getId())
+                .resumeTitle(resume.getResumeTitle())
+                .categoryId(resume.getCategory().getId())
+                .expectedSalary(resume.getExpectedSalary())
+                .isActive(resume.isActive())
+                .isPublished(resume.isPublished())
+                .build();
+    }
+
     public List<ResumeDto> getAllResumes() {
         List<Resume> list = resumeDao.getAllResumes();
         return list.stream()
                 .map(this::makeDtoFromResume)
                 .toList();
            }
-    public List<ResumeDto> getAllResumesByUserId(long applicantId) {
-        List<Resume> list = resumeDao.getAllResumesByUserId(applicantId);
+    public List<ResumeDto> getAllResumesByApplicantId(long applicantId) {
+        List<Resume> list = resumeDao.getAllResumesByApplicantId(applicantId);
         return list.stream()
                 .map(this::makeDtoFromResume)
                 .toList();
@@ -56,13 +71,29 @@ public class ResumeService {
         return list.stream()
                 .map(this::makeDtoFromResume)
                 .toList(); }
-    public void createResume(Resume e) {
-        resumeDao.createResume(e);
+    public void createResume(ResumeDto e) {
+        resumeDao.createResume(createResumeFromDto(e));
+
     }
-    public void deleteResume(Resume e) {
-        resumeDao.deleteResume(e);
+    public void deleteResume(ResumeDto e) {
+        resumeDao.deleteResume(createResumeFromDto(e));
+        List<WorkExperienceDto> w = e.getWorkExperienceList();
+        List<EducationDto> ed = e.getEducationList();
+        ContactInfoDto ci = e.getContactInfo();
+        w.forEach(workExperienceService::deleteWorkExperience);
+        ed.forEach(educationService::deleteEducation);
+        contactInfoService.deleteContactInfo(ci);
     }
-    public void editResume(Resume e) {
-        resumeDao.deleteResume(e);
+    public void editResume(ResumeDto e) {
+        resumeDao.editResume(createResumeFromDto(e));
+    }
+    public List<ResumeDto> getAllResumesByLongList(List<Long> list) {
+        List<Resume> listR = resumeDao.getAllResumesByLongList(list);
+        return listR.stream()
+                .map(this::makeDtoFromResume)
+                .toList();
+    }
+    public ResumeDto getResumeById(long id) {
+        return makeDtoFromResume(resumeDao.getResumeById(id));
     }
 }

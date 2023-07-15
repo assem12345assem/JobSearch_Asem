@@ -39,15 +39,23 @@ public class ApplicantService {
     public ApplicantDto getApplicantByLastName (String lastName) {
         return makeDtoFromApplicant(applicantDao.getApplicantByLastName(lastName));
     }
-
-    public void createApplicant(Applicant e) {
-        applicantDao.createApplicant(e);
+private Applicant buildApplicantFromDto(ApplicantDto applicantDto) {
+        return Applicant.builder()
+                .id(applicantDto.getId())
+                .userId(applicantDto.getUserId())
+                .firstName((applicantDto.getFirstName()))
+                .lastName(applicantDto.getLastName())
+                .dateOfBirth(applicantDto.getDateOfBirth())
+                .build();
+}
+    public void createApplicant(ApplicantDto e) {
+        applicantDao.createApplicant(buildApplicantFromDto(e));
     }
-    public void deleteApplicant(Applicant e) {
-        applicantDao.deleteApplicant(e);
+    public void deleteApplicant(ApplicantDto e) {
+        applicantDao.deleteApplicant(buildApplicantFromDto(e));
     }
-    public void editApplicant(Applicant e) {
-        applicantDao.editApplicant(e);
+    public void editApplicant(ApplicantDto e) {
+        applicantDao.editApplicant(buildApplicantFromDto(e));
     }
 
 
