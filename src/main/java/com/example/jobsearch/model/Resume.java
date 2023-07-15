@@ -1,20 +1,18 @@
 package com.example.jobsearch.model;
 
-import com.example.jobsearch.enums.Category;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
-
+@Builder
 @Getter
 @Setter
 public class Resume {
-    private int id;
-    private int userId;
-    private String position;
+    private long id;
+    private long applicantId;
+    private String resumeTitle;
+    private long categoryId;
     private Integer expectedSalary;
-    private List<WorkExperience> workExperience;
-    private List<Education> education;
-    private ContactInfo contactInfo;
-    private Category category;
-
+    private boolean isActive;
+    private boolean isPublished;
 }

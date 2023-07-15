@@ -1,12 +1,11 @@
-package com.example.jobsearch.model;
+package com.example.jobsearch.dto;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+
+@Data
 @Builder
-@Getter
-@Setter
-public class ContactInfo {
+public class ContactInfoDto {
     private long id;
     private long resumeId;
     private String telegram;

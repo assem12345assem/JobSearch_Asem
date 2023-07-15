@@ -1,14 +1,13 @@
-package com.example.jobsearch.model;
+package com.example.jobsearch.dto;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDate;
+
+@Data
 @Builder
-@Getter
-@Setter
-public class Education {
+public class EducationDto {
     private long id;
     private long resumeId;
     private String education;

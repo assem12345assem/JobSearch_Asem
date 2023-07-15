@@ -1,5 +1,6 @@
 package com.example.jobsearch.dao;
 
+import com.example.jobsearch.common.UserMapper;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -17,41 +18,35 @@ public class UserDao {
         String sql = "select * from users";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
-    public List<User> getAllJobseekers() {
-        String sql = "select * from users where userType = 'JOBSEEKER'";
-        return jdbcTemplate.query(sql, new UserMapper());
+    public List<User> getUsersByUserType(String userType) {
+        String sql = "select * from users where userType = ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
-    public List<User> getAllEmployers() {
-        String sql = "select * from users where userType = 'EMPLOYER'";
-        return jdbcTemplate.query(sql, new UserMapper());
+    public boolean ifPasswordCorrect(String email, String password) {
+        String sql = "select PASSWORD from USERS where ID = ?";
+        User u = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), email);
+        if(u == null) {
+            return false;
+        }
+        return u.getPassword().equalsIgnoreCase(password);
     }
-    public User getUserById(int id) {
-        String sql = "select * from users where id = ?";
-        return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
+    public void createUser(User user) {
+        String sql = """
+                insert into USERS (ID, PHONENUMBER, USERTYPE,\s
+                                     PASSWORD, PHOTO)\s
+                VALUES ( ?, ?, ?, ?, ?)""";
+            jdbcTemplate.update(sql, user.getId(), user.getPhoneNumber(),
+                    user.getUserType(), user.getPassword(), user.getPhoto());
+
     }
     public boolean ifUserExists(String email) {
-        String sql = "select * from users where email = ?";
+        String sql = "select * from users where id = ?";
         User u = jdbcTemplate.queryForObject(sql, new UserMapper(), email);
         return u != null;
     }
-    public Optional<User> getOptionalUserById(int id) {
+    public Optional<User> getOptionalUserById(String id) {
         String sql = "select * from users where id = ?";
         User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), id);
-        return Optional.ofNullable(user);
-    }
-    public Optional<User> getOptionalUserByFirstName(String firstName) {
-        String sql = "select * from users where firstName = ?";
-        User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), firstName);
-        return Optional.ofNullable(user);
-    }
-    public Optional<User> getOptionalUserByLastName(String lastName) {
-        String sql = "select * from users where lastName = ?";
-        User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), lastName);
-        return Optional.ofNullable(user);
-    }
-    public Optional<User> getOptionalUserByEmail(String email) {
-        String sql = "select * from users where email = ?";
-        User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), email);
         return Optional.ofNullable(user);
     }
     public Optional<User> getOptionalUserByPhoneNumber(String phoneNumber) {

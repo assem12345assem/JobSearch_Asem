@@ -1,16 +1,14 @@
 package com.example.jobsearch.model;
 
-import com.example.jobsearch.enums.UserType;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 public class User {
-    private int id;
-    private String firstName;
-    private String lastName;
-    private String email;
+    private String id;
     private String phoneNumber;
-    private UserType userType;
+    private String userType;
     private String password;
+    private String photo;
 }
