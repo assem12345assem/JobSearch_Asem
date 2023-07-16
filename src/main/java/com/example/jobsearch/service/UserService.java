@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserDao userDao;
+    private final FileService fileService;
 
     public List<UserDto> getAllUsers() {
         log.warn("Used getAllUsers method");
@@ -83,4 +85,9 @@ public class UserService {
         User user = makeUserFromDto(userDto);
         userDao.editUser(user);
     }
+    public void uploadUserPhoto(String email, MultipartFile file) {
+        String fileName = fileService.saveUploadedFile(file, "images");
+        userDao.savePhoto(email, file.getName());
+    }
+
 }

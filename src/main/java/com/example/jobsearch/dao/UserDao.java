@@ -63,4 +63,9 @@ public class UserDao {
                 where ID = ?""";
         jdbcTemplate.update(sql, e.getPassword(), e.getPhoneNumber(), e.getPhoto(), e.getId());
     }
+
+    public void savePhoto(String email, String photo) {
+        String sql = "update users set photo = ? where id = ?";
+        jdbcTemplate.update(sql, photo, email);
+    }
 }

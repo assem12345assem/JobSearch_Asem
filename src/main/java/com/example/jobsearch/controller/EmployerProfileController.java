@@ -65,6 +65,14 @@ public class EmployerProfileController {
     public List<ResumeDto> getResumeByResumeTitle(@PathVariable String title) {
         return employerProfileService.getResumeByResumeTitle(title);
     }
+    @GetMapping("/get_resume_by_category/{category}")
+    public List<ResumeDto> getResumesByCategoryName(@PathVariable String category) {
+        return employerProfileService.getResumesByCategoryName(category);
+    }
+    @GetMapping("/get_resume_by_category_id/{id}")
+    public List<ResumeDto> getAllResumesByCategoryId(@PathVariable long id) {
+        return employerProfileService.getAllResumesByCategoryId(id);
+    }
     @GetMapping("/resumes_by_vacancy_id/{vacancyId}")
     public List<ResumeDto> getResumesByVacancyId(@PathVariable Long vacancyId) {
         return employerProfileService.getAllResumesByVacancyId(vacancyId);

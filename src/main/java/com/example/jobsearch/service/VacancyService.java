@@ -50,8 +50,8 @@ public class VacancyService {
                 .publishedDateTime(v.getPublishedDateTime())
                 .build();
     }
-    public List<VacancyDto> getVacanciesByUserId (String email) {
-        List<Vacancy> list = vacancyDao.getAllEmployerVacanciesByUserId(email);
+    public List<VacancyDto> getVacanciesByEmployerId(long id) {
+        List<Vacancy> list = vacancyDao.getAllVacanciesByEmployerId(id);
         return list.stream()
                 .map(this::makeDtoFromVacancy)
                 .toList();

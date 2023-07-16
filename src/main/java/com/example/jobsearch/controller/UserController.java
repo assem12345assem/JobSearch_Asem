@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class UserController {
         return userService.ifUserExists(email);
     }
     @PostMapping("/create_user")
-    public HttpStatus createUser(@PathVariable UserDto userDto) {
+    public HttpStatus createUser(@RequestBody UserDto userDto) {
         log.warn("Created new user: {}", userDto.getId());
         if(!userService.ifUserExists(userDto.getId())) {
             userService.createUser(userDto);
@@ -40,7 +41,7 @@ public class UserController {
         return HttpStatus.valueOf("User already exists");
     }
     @PostMapping("/edit_user")
-    public HttpStatus editUser(@PathVariable UserDto userDto) {
+    public HttpStatus editUser(@RequestBody UserDto userDto) {
         log.warn("Edited user: {}", userDto.getId());
         if(userService.ifUserExists(userDto.getId())) {
             userService.editUser(userDto);
@@ -49,6 +50,9 @@ public class UserController {
         return HttpStatus.valueOf("User does not exist.");
 
     }
-    //delete user
-    //search by phone, type, etc.
+    @PostMapping("/upload_photo")
+    public HttpStatus uploadPhoto(@RequestBody String email, MultipartFile file) {
+        userService.uploadUserPhoto(email, file);
+        return HttpStatus.OK;
+    }
 }

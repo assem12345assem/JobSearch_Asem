@@ -57,4 +57,12 @@ public class EmployerProfileService {
     public ApplicantDto getApplicantById(Long applicantId) {
         return applicantService.getApplicantById(applicantId);
     }
+
+    public List<ResumeDto> getResumesByCategoryName(String category) {
+        return resumeService.getAllResumesByCategoryName(category);
+    }
+
+    public List<ResumeDto> getAllResumesByCategoryId(long id) {
+        return resumeService.getAllResumesByCategoryId(id);
+    }
 }

@@ -20,11 +20,11 @@ public class VacancyDao {
         String sql = "select * from VACANCIES";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class));
     }
-    public List<Vacancy> getAllEmployerVacanciesByUserId(String userId) {
+    public List<Vacancy> getAllVacanciesByEmployerId(long id) {
         String sql = "select * from VACANCIES where EMPLOYERID = ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), userId);
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), id);
     }
-    public List<Vacancy> getAllVacanciesByCategory(Long categoryId) {
+    public List<Vacancy> getAllVacanciesByCategory(long categoryId) {
         String sql = "select * from VACANCIES where categoryId = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), categoryId);
     }

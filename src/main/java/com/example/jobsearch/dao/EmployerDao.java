@@ -32,9 +32,10 @@ public class EmployerDao {
     }
 
     public void editEmployer(Employer employer) {
-        String sql = "update EMPLOYERS\n" +
-                "set COMPANYNAME = ?\n" +
-                "where ID = ?";
+        String sql = """
+                update EMPLOYERS
+                set COMPANYNAME = ?
+                where ID = ?""";
         jdbcTemplate.update(sql, employer.getCompanyName());
     }
 
