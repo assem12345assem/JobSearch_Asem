@@ -50,4 +50,11 @@ public class EmployerService {
         Employer employer = createEmployerFromDto(employerDto);
         employerDao.editEmployer(employer);
     }
+
+    public List<EmployerDto> getEmployerByCompanyName(String companyName) {
+        List<Employer> employers = employerDao.getEmployerByCompanyName(companyName);
+        return employers.stream()
+                .map(this::makeDtoFromEmployer)
+                .toList();
+    }
 }

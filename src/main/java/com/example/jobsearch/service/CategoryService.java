@@ -17,4 +17,7 @@ public class CategoryService {
                 .category(category.getCategory())
                 .build();
     }
+    public Long getIdByCategory(String category) {
+        return categoryDao.getIdByCategory(category);
+    }
 }

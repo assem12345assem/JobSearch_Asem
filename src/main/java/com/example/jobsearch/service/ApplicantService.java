@@ -59,4 +59,7 @@ private Applicant buildApplicantFromDto(ApplicantDto applicantDto) {
     }
 
 
+    public boolean ifApplicantExists(String userId) {
+        return applicantDao.ifApplicantExists(userId);
+    }
 }

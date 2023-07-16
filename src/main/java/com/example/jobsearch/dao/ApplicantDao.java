@@ -49,4 +49,9 @@ public class ApplicantDao {
         jdbcTemplate.update(sql, e.getUserId(), e.getFirstName(), e.getLastName(), e.getDateOfBirth(), e.getId());
     }
 
+    public boolean ifApplicantExists(String userId) {
+        String sql = "select * from APPLICANTS where USERID = ?";
+        Applicant applicant = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Applicant.class), userId);
+        return applicant != null;
+    }
 }

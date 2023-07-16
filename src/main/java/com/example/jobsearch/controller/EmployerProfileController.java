@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/employers")
 @RequiredArgsConstructor
 public class EmployerProfileController {
     private final EmployerProfileService employerProfileService;

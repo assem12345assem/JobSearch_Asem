@@ -40,5 +40,7 @@ public class JobApplicationService {
     }
 
 
-
+    public void applyForVacancy(long vacancyId, long resumeId) {
+        jobApplicationDao.applyForVacancy(vacancyId, resumeId);
+    }
 }

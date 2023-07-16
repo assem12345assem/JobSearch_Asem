@@ -62,6 +62,10 @@ public class VacancyService {
                 .map(this::makeDtoFromVacancy)
                 .toList();
     }
+    public List<VacancyDto> getAllVacanciesByCategory(String category) {
+        Long id = categoryService.getIdByCategory(category);
+        return getAllVacanciesByCategory(id);
+    }
     public VacancyDto getVacancyById(Long id) {
         return makeDtoFromVacancy(vacancyDao.getVacancyById(id));
     }

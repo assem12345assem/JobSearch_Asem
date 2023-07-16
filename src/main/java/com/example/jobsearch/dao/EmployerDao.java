@@ -42,4 +42,10 @@ public class EmployerDao {
         String sql = "select * from EMPLOYERS where ID = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Employer.class), id);
     }
+
+    public List<Employer> getEmployerByCompanyName(String companyName) {
+        String sql = "select * from EMPLOYERS where companyName like ?";
+        companyName = "%" + companyName + "%";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employer.class), companyName);
+    }
 }
