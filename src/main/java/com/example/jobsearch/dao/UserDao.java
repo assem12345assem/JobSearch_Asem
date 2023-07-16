@@ -56,6 +56,11 @@ public class UserDao {
     }
 
 
-
-
+    public void editUser(User e) {
+        String sql = """
+                update USERS
+                set PASSWORD = ?, PHONENUMBER = ?, PHOTO = ?
+                where ID = ?""";
+        jdbcTemplate.update(sql, e.getPassword(), e.getPhoneNumber(), e.getPhoto(), e.getId());
+    }
 }

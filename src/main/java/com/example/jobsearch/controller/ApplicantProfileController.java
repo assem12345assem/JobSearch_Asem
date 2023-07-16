@@ -1,4 +1,4 @@
 package com.example.jobsearch.controller;
 
-public class EmployerController {
+public class ApplicantProfileController {
 }

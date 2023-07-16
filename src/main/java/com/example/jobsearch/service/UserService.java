@@ -47,6 +47,15 @@ public class UserService {
                     .photo(user.getPhoto())
                     .build();
     }
+    private User makeUserFromDto(UserDto user) {
+        return User.builder()
+                .id(user.getId())
+                .phoneNumber(user.getPhoneNumber())
+                .userType(user.getUserType().getValue())
+                .password(user.getPassword())
+                .photo(user.getPhoto())
+                .build();
+    }
     private UserType returnEnum (String value) {
         if(value.equalsIgnoreCase("applicant")) {
             return UserType.APPLICANT;
@@ -64,8 +73,14 @@ public class UserService {
         return userDao.ifUserExists(email);
     }
 
-    public void createUser(User user) {
+    public void createUser(UserDto userDto) {
+        User user = makeUserFromDto(userDto);
         userDao.createUser(user);
     }
 
+
+    public void editUser(UserDto userDto) {
+        User user = makeUserFromDto(userDto);
+        userDao.editUser(user);
+    }
 }

@@ -96,4 +96,11 @@ public class ResumeService {
     public ResumeDto getResumeById(long id) {
         return makeDtoFromResume(resumeDao.getResumeById(id));
     }
+
+    public List<ResumeDto> getResumeByResumeTitle(String title) {
+        List<Resume> resumes = resumeDao.getResumeByResumeTitle(title);
+        return resumes.stream()
+                .map(this::makeDtoFromResume)
+                .toList();
+    }
 }

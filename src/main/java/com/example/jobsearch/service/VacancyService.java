@@ -23,9 +23,24 @@ public class VacancyService {
     private VacancyDto makeDtoFromVacancy(Vacancy v) {
         return VacancyDto.builder()
                 .id(v.getId())
-                .employer(employerService.getEmployerByUserId(v.getEmployerId()))
+                .employer(employerService.getEmployerById(v.getEmployerId()))
                 .vacancyName(v.getVacancyName())
                 .category(categoryService.getCategoryById(v.getCategoryId()))
+                .salary(v.getSalary())
+                .description(v.getDescription())
+                .requiredExperienceMin(v.getRequiredExperienceMin())
+                .requiredExperienceMax(v.getRequiredExperienceMax())
+                .isActive(v.isActive())
+                .isPublished(v.isPublished())
+                .publishedDateTime(v.getPublishedDateTime())
+                .build();
+    }
+    private Vacancy makeVacancyFromDto(VacancyDto v) {
+        return Vacancy.builder()
+                .id(v.getId())
+                .employerId(v.getEmployer().getId())
+                .vacancyName(v.getVacancyName())
+                .categoryId(v.getCategory().getId())
                 .salary(v.getSalary())
                 .description(v.getDescription())
                 .requiredExperienceMin(v.getRequiredExperienceMin())
@@ -56,5 +71,18 @@ public class VacancyService {
                 .map(this::makeDtoFromVacancy)
                 .toList();
     }
+    public void createVacancy(VacancyDto vacancyDto) {
+        Vacancy vacancy = makeVacancyFromDto(vacancyDto);
+        vacancyDao.createVacancy(vacancy);
+    }
 
+    public void editVacancy(VacancyDto vacancyDto) {
+        Vacancy vacancy = makeVacancyFromDto(vacancyDto);
+        vacancyDao.editVacancy(vacancy);
+    }
+
+    public void deleteVacancy(VacancyDto vacancyDto) {
+        Vacancy vacancy = makeVacancyFromDto(vacancyDto);
+        vacancyDao.deleteVacancy(vacancy);
+    }
 }

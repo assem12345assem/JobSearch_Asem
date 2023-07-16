@@ -12,6 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployerService {
     private final EmployerDao employerDao;
+    private final VacancyService vacancyService;
     public List<EmployerDto> getAllEmployers() {
         List<Employer> list = employerDao.getAllEmployers();
         return list.stream()
@@ -27,5 +28,26 @@ public class EmployerService {
     }
     public EmployerDto getEmployerByUserId(String email) {
         return makeDtoFromEmployer(employerDao.getEmployerByUserId(email));
+    }
+    public EmployerDto getEmployerById(Long id) {
+        return makeDtoFromEmployer(employerDao.getEmployerById(id));
+    }
+    public boolean ifEmployerExists(String userEmail) {
+        return employerDao.ifEmployerExists(userEmail);
+    }
+    public void createEmployer(EmployerDto employerDto) {
+        Employer employer = createEmployerFromDto(employerDto);
+        employerDao.createEmployer(employer);
+    }
+    private Employer createEmployerFromDto(EmployerDto employerDto) {
+        return Employer.builder()
+                .id(employerDto.getId())
+                .userId(employerDto.getUserId())
+                .companyName(employerDto.getCompanyName())
+                .build();
+    }
+    public void editEmployer(EmployerDto employerDto) {
+        Employer employer = createEmployerFromDto(employerDto);
+        employerDao.editEmployer(employer);
     }
 }

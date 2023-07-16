@@ -1,17 +1,18 @@
 package com.example.jobsearch.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
+@Builder
 @Getter
 @Setter
 public class Vacancy {
     private long id;
-    private String employerId;
+    private long employerId;
     private String vacancyName;
-    private Long categoryId;
+    private long categoryId;
     private Integer salary;
     private String description;
     private int requiredExperienceMin;

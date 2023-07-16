@@ -48,7 +48,7 @@ public class EducationService {
         educationDao.createEducation(createEducationFromDto(e));
     }
     public void deleteEducation (EducationDto e) {
-        educationDao.createEducation(createEducationFromDto(e));
+        educationDao.deleteEducation(createEducationFromDto(e));
     }
 
     public void editEducation(EducationDto e) {

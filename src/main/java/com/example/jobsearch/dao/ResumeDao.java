@@ -68,5 +68,9 @@ public class ResumeDao {
     }
 
 
-
+    public List<Resume> getResumeByResumeTitle(String title) {
+        String sql = "select * from RESUMES where RESUMETITLE like ?";
+        title = "%" + title + "%";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), title);
+    }
 }
