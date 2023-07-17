@@ -21,7 +21,10 @@ public class UserController {
     public List<UserDto> getUsers() {
         return userService.getAllUsers();
     }
-
+@GetMapping("/get_user_by_phone_number/{phoneNumber}")
+public ResponseEntity<?> getUserByPhoneNumber(@PathVariable String phoneNumber) {
+        return userService.getOptionalUserByPhoneNumber(phoneNumber);
+}
     @GetMapping("/{email}")
     public ResponseEntity<?> printUser(@PathVariable String email) {
         return userService.getUserByEmail(email);
@@ -32,14 +35,15 @@ public class UserController {
         return userService.ifUserExists(email);
     }
     @PostMapping("/create_user")
-    public HttpStatus createUser(@RequestBody UserDto userDto) {
-        log.warn("Created new user: {}", userDto.getId());
+    public HttpStatus createUser(UserDto userDto) {
         if(!userService.ifUserExists(userDto.getId())) {
+            log.warn("Created new user: {}", userDto.getId());
             userService.createUser(userDto);
             return HttpStatus.OK;
         }
         return HttpStatus.valueOf("User already exists");
     }
+
     @PostMapping("/edit_user")
     public HttpStatus editUser(@RequestBody UserDto userDto) {
         log.warn("Edited user: {}", userDto.getId());

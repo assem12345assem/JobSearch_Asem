@@ -47,7 +47,7 @@ public class WorkExperienceService {
         workExperienceDao.createWorkExperience(createWorkExpFromDto(e));
     }
     public void deleteWorkExperience (WorkExperienceDto e) {
-        workExperienceDao.createWorkExperience(createWorkExpFromDto(e));
+        workExperienceDao.deleteWorkExperience(createWorkExpFromDto(e));
     }
 
     public void editWorkExperience(WorkExperienceDto e) {

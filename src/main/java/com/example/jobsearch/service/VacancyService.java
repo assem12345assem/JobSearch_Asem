@@ -13,6 +13,8 @@ import java.util.List;
 public class VacancyService {
     private final VacancyDao vacancyDao;
     private final CategoryService categoryService;
+    private final JobApplicationService jobApplicationService;
+
     public List<VacancyDto> getAllVacancies() {
         List<Vacancy> list = vacancyDao.getAllVacancies();
         return list.stream()
@@ -82,5 +84,12 @@ public class VacancyService {
     public void deleteVacancy(VacancyDto vacancyDto) {
         Vacancy vacancy = makeVacancyFromDto(vacancyDto);
         vacancyDao.deleteVacancy(vacancy);
+    }
+    public void applyForVacancy(long vacancyId, long resumeId) {
+        jobApplicationService.applyForVacancy(vacancyId, resumeId);
+    }
+
+    public List<VacancyDto> getAllAppliedVacanciesByApplicantId(Long applicantId) {
+        return jobApplicationService.getAllAppliedVacanciesByApplicantId(applicantId);
     }
 }

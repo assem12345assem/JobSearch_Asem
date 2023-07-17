@@ -1,9 +1,6 @@
 package com.example.jobsearch.controller;
 
-import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.dto.EmployerDto;
-import com.example.jobsearch.dto.ResumeDto;
-import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.service.EmployerProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +15,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployerProfileController {
     private final EmployerProfileService employerProfileService;
-
+    @GetMapping
+    public List<EmployerDto> getAllEmployers() {
+        return employerProfileService.getAllEmployers();}
+    @GetMapping("/{userId}")
+    public EmployerDto getEmployerByUserId(@PathVariable String email) {
+        return employerProfileService.getEmployerByUserId(email);
+    }
     @PostMapping("/create_employer")
     public HttpStatus createEmployer(@RequestBody EmployerDto employerDto) {
         log.warn("Created new employer: {}", employerDto.getCompanyName());
@@ -39,46 +42,14 @@ public class EmployerProfileController {
         return HttpStatus.valueOf("Employer does not exist");
     }
 
-    @PostMapping("/create_vacancy")
-    public HttpStatus createVacancy(@RequestBody VacancyDto vacancyDto) {
-        employerProfileService.createVacancy(vacancyDto);
-        return HttpStatus.OK;
+
+    @GetMapping("/get_employer_by_id/{id}")
+    public EmployerDto getEmployerById(@PathVariable Long id) {
+        return employerProfileService.getEmployerById(id);
+    }
+    @GetMapping("/get_employer_by_company_name/{companyName}")
+    public List<EmployerDto> getEmployerByCompanyName(@PathVariable String companyName) {
+        return employerProfileService.getEmployerByCompanyName(companyName);
     }
 
-    @PostMapping("/edit_vacancy")
-    public HttpStatus editVacancy(@RequestBody VacancyDto vacancyDto) {
-        employerProfileService.editVacancy(vacancyDto);
-        return HttpStatus.OK;
-    }
-
-    @DeleteMapping("/delete_vacancy")
-    public HttpStatus deleteVacancy(@RequestBody VacancyDto vacancyDto) {
-        employerProfileService.deleteVacancy(vacancyDto);
-        return HttpStatus.OK;
-    }
-
-    @GetMapping("/view_all_resumes")
-    public List<ResumeDto> viewAllResumes() {
-        return employerProfileService.getAllResumes();
-    }
-    @GetMapping("/get_resume_by_title/{title}")
-    public List<ResumeDto> getResumeByResumeTitle(@PathVariable String title) {
-        return employerProfileService.getResumeByResumeTitle(title);
-    }
-    @GetMapping("/get_resume_by_category/{category}")
-    public List<ResumeDto> getResumesByCategoryName(@PathVariable String category) {
-        return employerProfileService.getResumesByCategoryName(category);
-    }
-    @GetMapping("/get_resume_by_category_id/{id}")
-    public List<ResumeDto> getAllResumesByCategoryId(@PathVariable long id) {
-        return employerProfileService.getAllResumesByCategoryId(id);
-    }
-    @GetMapping("/resumes_by_vacancy_id/{vacancyId}")
-    public List<ResumeDto> getResumesByVacancyId(@PathVariable Long vacancyId) {
-        return employerProfileService.getAllResumesByVacancyId(vacancyId);
-    }
-    @GetMapping("/get_applicant_by_id/{applicantId}")
-    public ApplicantDto getApplicantById(@PathVariable Long applicantId) {
-        return employerProfileService.getApplicantById(applicantId);
-    }
 }

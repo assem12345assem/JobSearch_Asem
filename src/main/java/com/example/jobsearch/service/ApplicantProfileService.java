@@ -1,41 +1,27 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dto.ApplicantDto;
-import com.example.jobsearch.dto.EmployerDto;
-import com.example.jobsearch.dto.ResumeDto;
-import com.example.jobsearch.dto.VacancyDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ApplicantProfileService {
-    private final VacancyService vacancyService;
-    private final ResumeService resumeService;
-    private final JobApplicationService jobApplicationService;
     private final ApplicantService applicantService;
-    private final EmployerService employerService;
 
-    public String displayAge(ApplicantDto applicantDto) {
+
+    public String displayAge(Long applicantId) {
+        ApplicantDto applicantDto = getApplicantById(applicantId);
         LocalDate l = LocalDate.now();
         Period intervalPeriod = Period.between(applicantDto.getDateOfBirth(), l);
         return intervalPeriod.getYears() + " years old";
     }
-    public List<ResumeDto> getMyResumes(ApplicantDto applicantDto) {
-        return resumeService.getAllResumesByApplicantId(applicantDto.getId());
-    }
-    public List<VacancyDto> getAllMyAppliedVacancies(ApplicantDto applicantDto) {
-        List<ResumeDto> allMyResumes = getMyResumes(applicantDto);
-        List<Long> ids = new ArrayList<>();
-        allMyResumes.forEach(e -> ids.add(e.getId()));
-        List<Long> allMyVacancyApplications = jobApplicationService.getAllVacanciesByResumeList(ids);
-        return vacancyService.getVacancyListByIdList(allMyVacancyApplications);
-    }
+
+
 
 
     public boolean ifApplicantExists(String userId) {
@@ -50,35 +36,24 @@ public class ApplicantProfileService {
         applicantService.editApplicant(applicantDto);
     }
 
-    public void createResume(ResumeDto resumeDto) {
-        resumeService.createResume(resumeDto);
+    public ApplicantDto getApplicantById(Long applicantId) {
+        return applicantService.getApplicantById(applicantId);
     }
 
-    public void editResume(ResumeDto resumeDto) {
-        resumeService.editResume(resumeDto);
+
+    public ApplicantDto getApplicantByUserId(String userId) {
+        return applicantService.getApplicantByUserId(userId);
     }
 
-    public void deleteResume(ResumeDto resumeDto) {
-        resumeService.deleteResume(resumeDto);
+    public ApplicantDto getApplicantByFirstName(String firstName) {
+        return applicantService.getApplicantByFirstName(firstName);
     }
 
-    public List<VacancyDto> getAllVacancies() {
-        return vacancyService.getAllVacancies();
+    public ApplicantDto getApplicantByLastName(String lastName) {
+        return applicantService.getApplicantByLastName(lastName);
     }
 
-    public List<VacancyDto> getAllVacanciesByCategory(String category) {
-        return vacancyService.getAllVacanciesByCategory(category);
-    }
-
-    public void applyForVacancy(long vacancyId, long resumeId) {
-        jobApplicationService.applyForVacancy(vacancyId, resumeId);
-    }
-
-    public EmployerDto getEmployerById(Long id) {
-        return employerService.getEmployerById(id);
-    }
-
-    public List<EmployerDto> getEmployerByCompanyName(String companyName) {
-        return employerService.getEmployerByCompanyName(companyName);
+    public List<ApplicantDto> getAllApplicants() {
+        return applicantService.getAllApplicants();
     }
 }

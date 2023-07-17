@@ -1,11 +1,15 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.JobApplicationDao;
+import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.dto.JobApplicationDto;
+import com.example.jobsearch.dto.ResumeDto;
+import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.model.JobApplication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,6 +18,7 @@ public class JobApplicationService {
     private final JobApplicationDao jobApplicationDao;
     private final VacancyService vacancyService;
     private final ResumeService resumeService;
+    private final ApplicantService applicantService;
     public List<JobApplicationDto> getAllJobApplications() {
         List<JobApplication> jobApplications = jobApplicationDao.getAllJobApplications();
 
@@ -29,10 +34,8 @@ public class JobApplicationService {
                 .build();
     }
 
-    public List<Long> getAllVacanciesByResumeId(long resumeId) {
-        return jobApplicationDao.getAllVacanciesByResumeId(resumeId);
-    }
-    public List<Long> getAllVacanciesByResumeList(List<Long> resumeId) {
+
+    private List<Long> getAllVacanciesByResumeList(List<Long> resumeId) {
         return jobApplicationDao.getAllVacanciesByResumeList(resumeId);
     }
     public List<Long> getAllResumeIdsByVacancyId(long vacancyId) {
@@ -43,10 +46,15 @@ public class JobApplicationService {
     public void applyForVacancy(long vacancyId, long resumeId) {
         jobApplicationDao.applyForVacancy(vacancyId, resumeId);
     }
-//    public List<VacancyDto> getVacanciesByEmployerId(long id) {
-//        List<Vacancy> list = vacancyDao.getAllVacanciesByEmployerId(id);
-//        return list.stream()
-//                .map(this::makeDtoFromVacancy)
-//                .toList();
-//    }
+    public List<ResumeDto> getMyResumes(ApplicantDto applicantDto) {
+        return resumeService.getAllResumesByApplicantId(applicantDto.getId());
+    }
+    public List<VacancyDto> getAllAppliedVacanciesByApplicantId(long applicantId) {
+        ApplicantDto applicantDto = applicantService.getApplicantById(applicantId);
+        List<ResumeDto> allMyResumes = getMyResumes(applicantDto);
+        List<Long> ids = new ArrayList<>();
+        allMyResumes.forEach(e -> ids.add(e.getId()));
+        List<Long> allMyVacancyApplications = getAllVacanciesByResumeList(ids);
+        return vacancyService.getVacancyListByIdList(allMyVacancyApplications);
+    }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EducationService {
     private final EducationDao educationDao;
-    public EducationDto getWorkExperienceById(long id) {
+    public EducationDto getEducationById(long id) {
         Education education = educationDao.getEducationById(id);
         return makeDtoFromEducation(education);
     }

@@ -12,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployerService {
     private final EmployerDao employerDao;
-    private final VacancyService vacancyService;
     public List<EmployerDto> getAllEmployers() {
         List<Employer> list = employerDao.getAllEmployers();
         return list.stream()

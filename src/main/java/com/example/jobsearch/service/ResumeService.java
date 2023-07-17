@@ -21,6 +21,8 @@ public class ResumeService {
     private final ContactInfoService contactInfoService;
     private final ApplicantService applicantService;
     private final CategoryService categoryService;
+    private final JobApplicationService jobApplicationService;
+
     private ResumeDto makeDtoFromResume(Resume resume) {
         return ResumeDto.builder()
                 .id(resume.getId())
@@ -53,6 +55,8 @@ public class ResumeService {
                 .map(this::makeDtoFromResume)
                 .toList();
            }
+
+
     public List<ResumeDto> getAllResumesByApplicantId(long applicantId) {
         List<Resume> list = resumeDao.getAllResumesByApplicantId(applicantId);
         return list.stream()
@@ -102,5 +106,43 @@ public class ResumeService {
         return resumes.stream()
                 .map(this::makeDtoFromResume)
                 .toList();
+    }
+    public void addEducation(EducationDto educationDto) {
+        educationService.createEducation(educationDto);
+    }
+    public void editEducation(EducationDto educationDto) {
+        educationService.editEducation(educationDto);
+    }
+    public void deleteEducation(EducationDto educationDto) {
+        educationService.deleteEducation(educationDto);
+    }
+    public void addWorkExperience(WorkExperienceDto workExperienceDto) {
+        workExperienceService.createWorkExperience(workExperienceDto);
+    }
+    public void editWorkExperience(WorkExperienceDto workExperienceDto) {
+        workExperienceService.editWorkExperience(workExperienceDto);
+    }
+    public void deleteWorkExperience(WorkExperienceDto workExperienceDto) {
+        workExperienceService.deleteWorkExperience(workExperienceDto);
+    }
+    public void addContactInfo (ContactInfoDto contactInfoDto) {
+        contactInfoService.createContactInfo(contactInfoDto);
+    }
+    public void editContactInfo (ContactInfoDto contactInfoDto) {
+        contactInfoService.editContactInfo(contactInfoDto);
+    }
+    public void deleteContactInfo(ContactInfoDto contactInfoDto) {
+        contactInfoService.deleteContactInfo(contactInfoDto);
+    }
+    public List<ResumeDto> getAllResumesByVacancyId(long vacancyId) {
+        List<Long> temp = jobApplicationService.getAllResumeIdsByVacancyId(vacancyId);
+        return getAllResumesByLongList(temp);
+    }
+    public WorkExperienceDto getWorkExperienceById(long id) {
+        return workExperienceService.getWorkExperienceById(id);
+    }
+
+    public EducationDto getEducationById(Long educationId) {
+        return educationService.getEducationById(educationId);
     }
 }

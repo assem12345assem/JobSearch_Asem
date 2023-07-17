@@ -27,11 +27,6 @@ public class UserService {
                 .map(this::makeUserDtoFromUser)
                 .toList();
     }
-
-    public void someMethod(String userId) {
-        Optional<User> mayByUser = userDao.getOptionalUserById(userId);
-        mayByUser.ifPresent(e -> System.out.printf("%s, %s%n", e.getId(), e.getPassword()));
-    }
     public ResponseEntity<?> getUserByEmail(String id) {
         Optional<User> maybeUser = userDao.getOptionalUserById(id);
         if(maybeUser.isEmpty()) {
