@@ -50,13 +50,14 @@ public class UserService {
                     .build();
     }
     private User makeUserFromDto(UserDto user) {
-        return User.builder()
-                .id(user.getId())
-                .phoneNumber(user.getPhoneNumber())
-                .userType(user.getUserType().getValue())
-                .password(user.getPassword())
-                .photo(user.getPhoto())
-                .build();
+         User u = new User();
+         u.setId(user.getId());
+         u.setPhoneNumber(user.getPhoneNumber());
+         u.setUserType(user.getUserType().getValue());
+         u.setPassword(user.getPassword());
+         u.setPhoto(user.getPhoto());
+
+        return u;
     }
     private UserType returnEnum (String value) {
         if(value.equalsIgnoreCase("applicant")) {
@@ -87,7 +88,7 @@ public class UserService {
     }
     public void uploadUserPhoto(String email, MultipartFile file) {
         String fileName = fileService.saveUploadedFile(file, "images");
-        userDao.savePhoto(email, file.getName());
+        userDao.savePhoto(email, fileName);
     }
 
 }

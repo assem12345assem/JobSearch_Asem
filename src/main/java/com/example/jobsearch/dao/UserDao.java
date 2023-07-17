@@ -1,6 +1,5 @@
 package com.example.jobsearch.dao;
 
-import com.example.jobsearch.common.UserMapper;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -41,7 +40,7 @@ public class UserDao {
     }
     public boolean ifUserExists(String email) {
         String sql = "select * from users where id = ?";
-        User u = jdbcTemplate.queryForObject(sql, new UserMapper(), email);
+        User u = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), email);
         return u != null;
     }
     public Optional<User> getOptionalUserById(String id) {

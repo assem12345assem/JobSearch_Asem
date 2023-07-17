@@ -51,7 +51,7 @@ public class UserController {
 
     }
     @PostMapping("/upload_photo")
-    public HttpStatus uploadPhoto(@RequestBody String email, MultipartFile file) {
+    public HttpStatus uploadPhoto(String email, MultipartFile file) {
         userService.uploadUserPhoto(email, file);
         return HttpStatus.OK;
     }

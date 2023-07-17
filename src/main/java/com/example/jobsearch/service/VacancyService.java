@@ -12,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VacancyService {
     private final VacancyDao vacancyDao;
-    private final EmployerService employerService;
     private final CategoryService categoryService;
     public List<VacancyDto> getAllVacancies() {
         List<Vacancy> list = vacancyDao.getAllVacancies();
@@ -23,7 +22,7 @@ public class VacancyService {
     private VacancyDto makeDtoFromVacancy(Vacancy v) {
         return VacancyDto.builder()
                 .id(v.getId())
-                .employer(employerService.getEmployerById(v.getEmployerId()))
+                .employerId(v.getEmployerId())
                 .vacancyName(v.getVacancyName())
                 .category(categoryService.getCategoryById(v.getCategoryId()))
                 .salary(v.getSalary())
@@ -38,7 +37,7 @@ public class VacancyService {
     private Vacancy makeVacancyFromDto(VacancyDto v) {
         return Vacancy.builder()
                 .id(v.getId())
-                .employerId(v.getEmployer().getId())
+                .employerId(v.getId())
                 .vacancyName(v.getVacancyName())
                 .categoryId(v.getCategory().getId())
                 .salary(v.getSalary())
@@ -50,12 +49,7 @@ public class VacancyService {
                 .publishedDateTime(v.getPublishedDateTime())
                 .build();
     }
-    public List<VacancyDto> getVacanciesByEmployerId(long id) {
-        List<Vacancy> list = vacancyDao.getAllVacanciesByEmployerId(id);
-        return list.stream()
-                .map(this::makeDtoFromVacancy)
-                .toList();
-    }
+
     public List<VacancyDto> getAllVacanciesByCategory(Long categoryId) {
         List<Vacancy> list = vacancyDao.getAllVacanciesByCategory(categoryId);
         return list.stream()

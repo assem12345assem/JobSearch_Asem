@@ -43,4 +43,10 @@ public class JobApplicationService {
     public void applyForVacancy(long vacancyId, long resumeId) {
         jobApplicationDao.applyForVacancy(vacancyId, resumeId);
     }
+//    public List<VacancyDto> getVacanciesByEmployerId(long id) {
+//        List<Vacancy> list = vacancyDao.getAllVacanciesByEmployerId(id);
+//        return list.stream()
+//                .map(this::makeDtoFromVacancy)
+//                .toList();
+//    }
 }

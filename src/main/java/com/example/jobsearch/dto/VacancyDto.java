@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class VacancyDto {
     private long id;
-    private EmployerDto employer;
+    private long employerId;
     private String vacancyName;
     private CategoryDto category;
     private Integer salary;
