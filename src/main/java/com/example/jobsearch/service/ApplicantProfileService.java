@@ -13,16 +13,12 @@ import java.util.List;
 public class ApplicantProfileService {
     private final ApplicantService applicantService;
 
-
     public String displayAge(Long applicantId) {
         ApplicantDto applicantDto = getApplicantById(applicantId);
         LocalDate l = LocalDate.now();
         Period intervalPeriod = Period.between(applicantDto.getDateOfBirth(), l);
         return intervalPeriod.getYears() + " years old";
     }
-
-
-
 
     public boolean ifApplicantExists(String userId) {
         return applicantService.ifApplicantExists(userId);

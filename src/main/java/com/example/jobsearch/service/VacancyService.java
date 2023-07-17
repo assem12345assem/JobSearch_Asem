@@ -2,12 +2,17 @@ package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.VacancyDao;
 import com.example.jobsearch.dto.VacancyDto;
+import com.example.jobsearch.enums.VacancySortStrategy;
 import com.example.jobsearch.model.Vacancy;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VacancyService {
@@ -91,5 +96,20 @@ public class VacancyService {
 
     public List<VacancyDto> getAllAppliedVacanciesByApplicantId(Long applicantId) {
         return jobApplicationService.getAllAppliedVacanciesByApplicantId(applicantId);
+    }
+    public ResponseEntity<?> sortedListVacancies(String sortedCriteria) {
+        List<Vacancy> list = vacancyDao.getAllVacancies();
+        try {
+            var sortedVacancies = VacancySortStrategy.fromString(sortedCriteria).sortingVacancies(list);
+            return new ResponseEntity<>(
+                    sortedVacancies.stream()
+                            .map(this::makeDtoFromVacancy)
+                            .toList(),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
