@@ -1,11 +1,9 @@
 package com.example.jobsearch.model;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-@Builder
 @Getter
 @Setter
 public class Vacancy {

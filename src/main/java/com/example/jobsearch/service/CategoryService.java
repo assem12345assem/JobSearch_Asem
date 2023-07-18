@@ -10,12 +10,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryDao categoryDao;
+
     public CategoryDto getCategoryById(long id) {
         Category category = categoryDao.getCategoryById(id);
-        return CategoryDto.builder()
-                .id(category.getId())
-                .category(category.getCategory())
-                .build();
+        CategoryDto c = new CategoryDto();
+        c.setId(category.getId());
+        c.setCategory(category.getCategory());
+        return c;
     }
     public Long getIdByCategory(String category) {
         return categoryDao.getIdByCategory(category);

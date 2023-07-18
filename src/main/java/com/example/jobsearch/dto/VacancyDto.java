@@ -1,12 +1,10 @@
 package com.example.jobsearch.dto;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 public class VacancyDto {
     private long id;
     private long employerId;

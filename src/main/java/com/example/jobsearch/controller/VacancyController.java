@@ -3,14 +3,12 @@ package com.example.jobsearch.controller;
 import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/vacancy")
 @RequiredArgsConstructor
@@ -27,13 +25,6 @@ public class VacancyController {
         return vacancyService.getAllVacanciesByCategory(category);
     }
 
-    @PostMapping("/apply_for_vacancy")
-    public HttpStatus applyForVacancy(@RequestParam("vacancyId") long vacancyId,
-                                      @RequestParam("resumeId") long resumeId) {
-        vacancyService.applyForVacancy(vacancyId, resumeId);
-        return HttpStatus.OK;
-    }
-
     @PostMapping("/create_vacancy")
     public HttpStatus createVacancy(VacancyDto vacancyDto) {
         vacancyService.createVacancy(vacancyDto);
@@ -44,11 +35,6 @@ public class VacancyController {
     public HttpStatus editVacancy(VacancyDto vacancyDto) {
         vacancyService.editVacancy(vacancyDto);
         return HttpStatus.OK;
-    }
-
-    @GetMapping("/get_vacancies_by_applicant_id/{applicantId}")
-    public List<VacancyDto> getAllAppliedVacanciesByApplicantId(@PathVariable Long applicantId) {
-        return vacancyService.getAllAppliedVacanciesByApplicantId(applicantId);
     }
 
     @DeleteMapping("/delete_vacancy")

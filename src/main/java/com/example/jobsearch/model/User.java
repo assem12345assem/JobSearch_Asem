@@ -3,7 +3,6 @@ package com.example.jobsearch.model;
 import lombok.Getter;
 import lombok.Setter;
 
-//@Builder
 @Getter
 @Setter
 public class User {

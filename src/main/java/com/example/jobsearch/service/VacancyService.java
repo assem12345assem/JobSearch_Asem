@@ -18,7 +18,6 @@ import java.util.List;
 public class VacancyService {
     private final VacancyDao vacancyDao;
     private final CategoryService categoryService;
-    private final JobApplicationService jobApplicationService;
 
     public List<VacancyDto> getAllVacancies() {
         List<Vacancy> list = vacancyDao.getAllVacancies();
@@ -26,35 +25,38 @@ public class VacancyService {
                 .map(this::makeDtoFromVacancy)
                 .toList();
     }
+
     private VacancyDto makeDtoFromVacancy(Vacancy v) {
-        return VacancyDto.builder()
-                .id(v.getId())
-                .employerId(v.getEmployerId())
-                .vacancyName(v.getVacancyName())
-                .category(categoryService.getCategoryById(v.getCategoryId()))
-                .salary(v.getSalary())
-                .description(v.getDescription())
-                .requiredExperienceMin(v.getRequiredExperienceMin())
-                .requiredExperienceMax(v.getRequiredExperienceMax())
-                .isActive(v.isActive())
-                .isPublished(v.isPublished())
-                .publishedDateTime(v.getPublishedDateTime())
-                .build();
+        VacancyDto vv = new VacancyDto();
+        vv.setId(v.getId());
+        vv.setEmployerId(v.getId());
+        vv.setVacancyName(v.getVacancyName());
+        vv.setCategory(categoryService.getCategoryById(v.getCategoryId()));
+        vv.setSalary(v.getSalary());
+        vv.setDescription(v.getDescription());
+        vv.setRequiredExperienceMin(v.getRequiredExperienceMin());
+        vv.setRequiredExperienceMax(v.getRequiredExperienceMax());
+        vv.setActive(v.isActive());
+        vv.setPublished(v.isPublished());
+        vv.setPublishedDateTime(v.getPublishedDateTime());
+        return vv;
     }
+
     private Vacancy makeVacancyFromDto(VacancyDto v) {
-        return Vacancy.builder()
-                .id(v.getId())
-                .employerId(v.getId())
-                .vacancyName(v.getVacancyName())
-                .categoryId(v.getCategory().getId())
-                .salary(v.getSalary())
-                .description(v.getDescription())
-                .requiredExperienceMin(v.getRequiredExperienceMin())
-                .requiredExperienceMax(v.getRequiredExperienceMax())
-                .isActive(v.isActive())
-                .isPublished(v.isPublished())
-                .publishedDateTime(v.getPublishedDateTime())
-                .build();
+        Vacancy vv = new Vacancy();
+        vv.setId(v.getId());
+        vv.setEmployerId(v.getId());
+        vv.setVacancyName(v.getVacancyName());
+        vv.setCategoryId(v.getCategory().getId());
+        vv.setSalary(v.getSalary());
+        vv.setDescription(v.getDescription());
+        vv.setRequiredExperienceMin(v.getRequiredExperienceMin());
+        vv.setRequiredExperienceMax(v.getRequiredExperienceMax());
+        vv.setActive(v.isActive());
+        vv.setPublished(v.isPublished());
+        vv.setPublishedDateTime(v.getPublishedDateTime());
+        return vv;
+
     }
 
     public List<VacancyDto> getAllVacanciesByCategory(Long categoryId) {
@@ -63,20 +65,25 @@ public class VacancyService {
                 .map(this::makeDtoFromVacancy)
                 .toList();
     }
+
     public List<VacancyDto> getAllVacanciesByCategory(String category) {
         Long id = categoryService.getIdByCategory(category);
         return getAllVacanciesByCategory(id);
     }
+
     public VacancyDto getVacancyById(Long id) {
         return makeDtoFromVacancy(vacancyDao.getVacancyById(id));
     }
+
     public List<VacancyDto> getVacancyListByIdList(List<Long> id) {
         List<Vacancy> list = vacancyDao.getVacancyListByIdList(id);
         return list.stream()
                 .map(this::makeDtoFromVacancy)
                 .toList();
     }
+
     public void createVacancy(VacancyDto vacancyDto) {
+        log.warn("Vacancy was created: {}", vacancyDto.getId());
         Vacancy vacancy = makeVacancyFromDto(vacancyDto);
         vacancyDao.createVacancy(vacancy);
     }
@@ -87,16 +94,11 @@ public class VacancyService {
     }
 
     public void deleteVacancy(VacancyDto vacancyDto) {
+        log.warn("Vacancy was deleted: {}", vacancyDto.getId());
         Vacancy vacancy = makeVacancyFromDto(vacancyDto);
         vacancyDao.deleteVacancy(vacancy);
     }
-    public void applyForVacancy(long vacancyId, long resumeId) {
-        jobApplicationService.applyForVacancy(vacancyId, resumeId);
-    }
 
-    public List<VacancyDto> getAllAppliedVacanciesByApplicantId(Long applicantId) {
-        return jobApplicationService.getAllAppliedVacanciesByApplicantId(applicantId);
-    }
     public ResponseEntity<?> sortedListVacancies(String sortedCriteria) {
         List<Vacancy> list = vacancyDao.getAllVacancies();
         try {

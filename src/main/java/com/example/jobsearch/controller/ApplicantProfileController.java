@@ -3,13 +3,11 @@ package com.example.jobsearch.controller;
 import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.service.ApplicantProfileService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/applicants")
 @RequiredArgsConstructor
@@ -21,7 +19,6 @@ public class ApplicantProfileController {
     }
     @PostMapping("/create_applicant")
     public HttpStatus createApplicant(@RequestBody ApplicantDto applicantDto) {
-        log.warn("Created new applicant: {} {}", applicantDto.getFirstName(), applicantDto.getLastName());
         if (!applicantProfileService.ifApplicantExists(applicantDto.getUserId())) {
             applicantProfileService.createApplicant(applicantDto);
             return HttpStatus.OK;
@@ -30,7 +27,6 @@ public class ApplicantProfileController {
     }
     @PostMapping("/edit_applicant")
     public HttpStatus editApplicant(@RequestBody ApplicantDto applicantDto) {
-        log.warn("Edited applicant: {} {}", applicantDto.getFirstName(), applicantDto.getLastName());
         if (applicantProfileService.ifApplicantExists(applicantDto.getUserId())) {
             applicantProfileService.editApplicant(applicantDto);
             return HttpStatus.OK;

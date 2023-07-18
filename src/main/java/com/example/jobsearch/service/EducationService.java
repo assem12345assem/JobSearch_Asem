@@ -4,10 +4,11 @@ import com.example.jobsearch.dao.EducationDao;
 import com.example.jobsearch.dto.EducationDto;
 import com.example.jobsearch.model.Education;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EducationService {
@@ -24,33 +25,34 @@ public class EducationService {
     }
 
     private EducationDto makeDtoFromEducation(Education education) {
-        return EducationDto.builder()
-                .id(education.getId())
-                .resumeId(education.getResumeId())
-                .education(education.getEducation())
-                .schoolName(education.getSchoolName())
-                .startDate(education.getStartDate())
-                .graduationDate(education.getGraduationDate())
-                .build();
+        EducationDto e = new EducationDto();
+        e.setId(education.getId());
+        e.setResumeId(education.getResumeId());
+        e.setEducation(education.getEducation());
+        e.setSchoolName(education.getSchoolName());
+        e.setStartDate(education.getStartDate());
+        e.setGraduationDate(education.getGraduationDate());
+        return e;
     }
+
     private Education createEducationFromDto(EducationDto education) {
-        return Education.builder()
-                .id(education.getId())
-                .resumeId(education.getResumeId())
-                .education(education.getEducation())
-                .schoolName(education.getSchoolName())
-                .startDate(education.getStartDate())
-                .graduationDate(education.getGraduationDate())
-                .build();
+        Education e = new Education();
+        e.setId(education.getId());
+        e.setResumeId(education.getResumeId());
+        e.setEducation(education.getEducation());
+        e.setSchoolName(education.getSchoolName());
+        e.setStartDate(education.getStartDate());
+        e.setGraduationDate(education.getGraduationDate());
+        return e;
     }
 
     public void createEducation(EducationDto e) {
+        log.warn("Added new education to resume: {}", e.getResumeId());
         educationDao.createEducation(createEducationFromDto(e));
     }
-    public void deleteEducation (EducationDto e) {
+    public void deleteEducation(EducationDto e) {
         educationDao.deleteEducation(createEducationFromDto(e));
     }
-
     public void editEducation(EducationDto e) {
         educationDao.editEducation(createEducationFromDto(e));
     }

@@ -16,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VacancyDao {
     private final JdbcTemplate jdbcTemplate;
+
+
     public List<Vacancy> getAllVacancies() {
         String sql = "select * from VACANCIES";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class));

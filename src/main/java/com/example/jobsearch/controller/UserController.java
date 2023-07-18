@@ -3,7 +3,6 @@ package com.example.jobsearch.controller;
 import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -37,7 +35,6 @@ public ResponseEntity<?> getUserByPhoneNumber(@PathVariable String phoneNumber) 
     @PostMapping("/create_user")
     public HttpStatus createUser(UserDto userDto) {
         if(!userService.ifUserExists(userDto.getId())) {
-            log.warn("Created new user: {}", userDto.getId());
             userService.createUser(userDto);
             return HttpStatus.OK;
         }
@@ -46,7 +43,6 @@ public ResponseEntity<?> getUserByPhoneNumber(@PathVariable String phoneNumber) 
 
     @PostMapping("/edit_user")
     public HttpStatus editUser(@RequestBody UserDto userDto) {
-        log.warn("Edited user: {}", userDto.getId());
         if(userService.ifUserExists(userDto.getId())) {
             userService.editUser(userDto);
             return HttpStatus.OK;

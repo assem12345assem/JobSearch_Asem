@@ -1,17 +1,21 @@
 package com.example.jobsearch.service;
 
+import com.example.jobsearch.dao.ApplicantDao;
 import com.example.jobsearch.dto.ApplicantDto;
+import com.example.jobsearch.model.Applicant;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApplicantProfileService {
-    private final ApplicantService applicantService;
+    private final ApplicantDao applicantDao;
 
     public String displayAge(Long applicantId) {
         ApplicantDto applicantDto = getApplicantById(applicantId);
@@ -21,35 +25,66 @@ public class ApplicantProfileService {
     }
 
     public boolean ifApplicantExists(String userId) {
-        return applicantService.ifApplicantExists(userId);
+        return applicantDao.ifApplicantExists(userId);
     }
 
     public void createApplicant(ApplicantDto applicantDto) {
-        applicantService.createApplicant(applicantDto);
+        log.warn("Created new applicant: {}", applicantDto.getLastName());
+        applicantDao.createApplicant(buildApplicantFromDto(applicantDto));
+
     }
 
     public void editApplicant(ApplicantDto applicantDto) {
-        applicantService.editApplicant(applicantDto);
+        log.warn("Edited applicant: {}", applicantDto.getLastName());
+        applicantDao.editApplicant(buildApplicantFromDto(applicantDto));
+    }
+
+    public void deleteApplicant(ApplicantDto e) {
+        applicantDao.deleteApplicant(buildApplicantFromDto(e));
     }
 
     public ApplicantDto getApplicantById(Long applicantId) {
-        return applicantService.getApplicantById(applicantId);
+        return makeDtoFromApplicant(applicantDao.getApplicantById(applicantId));
     }
 
-
     public ApplicantDto getApplicantByUserId(String userId) {
-        return applicantService.getApplicantByUserId(userId);
+        return makeDtoFromApplicant(applicantDao.getApplicantByUserId(userId));
     }
 
     public ApplicantDto getApplicantByFirstName(String firstName) {
-        return applicantService.getApplicantByFirstName(firstName);
+        return makeDtoFromApplicant(applicantDao.getApplicantByFirstName(firstName));
     }
 
     public ApplicantDto getApplicantByLastName(String lastName) {
-        return applicantService.getApplicantByLastName(lastName);
+        return makeDtoFromApplicant(applicantDao.getApplicantByLastName(lastName));
     }
 
     public List<ApplicantDto> getAllApplicants() {
-        return applicantService.getAllApplicants();
+        List<Applicant> list = applicantDao.getAllApplicants();
+        return list.stream()
+                .map(this::makeDtoFromApplicant)
+                .toList();
+    }
+
+    private Applicant buildApplicantFromDto(ApplicantDto applicantDto) {
+        Applicant a = new Applicant();
+
+        a.setId(applicantDto.getId());
+        a.setUserId(applicantDto.getUserId());
+        a.setFirstName((applicantDto.getFirstName()));
+        a.setLastName(applicantDto.getLastName());
+        a.setDateOfBirth(applicantDto.getDateOfBirth());
+        return a;
+    }
+
+    private ApplicantDto makeDtoFromApplicant(Applicant applicant) {
+        ApplicantDto a = new ApplicantDto();
+
+        a.setId(applicant.getId());
+        a.setUserId(applicant.getUserId());
+        a.setFirstName((applicant.getFirstName()));
+        a.setLastName(applicant.getLastName());
+        a.setDateOfBirth(applicant.getDateOfBirth());
+        return a;
     }
 }
