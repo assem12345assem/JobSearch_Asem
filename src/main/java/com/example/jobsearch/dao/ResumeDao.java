@@ -14,8 +14,12 @@ import java.util.List;
 public class ResumeDao {
     private final JdbcTemplate jdbcTemplate;
     public List<Resume> getAllResumes() {
+        System.out.println("DDDDDDDDDDAAAAAAAAAAAOOOOOOOOOOOOOOOO");
         String sql = "select * from RESUMES";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class));
+//        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class));
+        List<Resume> list = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class));
+        System.out.println(list.size());
+        return list;
     }
     public Resume getResumeById(long id) {
         String sql = "select * from RESUMES where id = ?";
@@ -68,5 +72,9 @@ public class ResumeDao {
     }
 
 
-
+    public List<Resume> getResumeByResumeTitle(String title) {
+        String sql = "select * from RESUMES where RESUMETITLE like ?";
+        title = "%" + title + "%";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), title);
+    }
 }

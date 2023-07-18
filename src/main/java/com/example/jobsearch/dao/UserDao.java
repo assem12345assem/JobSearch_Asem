@@ -1,6 +1,5 @@
 package com.example.jobsearch.dao;
 
-import com.example.jobsearch.common.UserMapper;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -36,13 +35,20 @@ public class UserDao {
                                      PASSWORD, PHOTO)\s
                 VALUES ( ?, ?, ?, ?, ?)""";
             jdbcTemplate.update(sql, user.getId(), user.getPhoneNumber(),
-                    user.getUserType(), user.getPassword(), user.getPhoto());
+                    user.getUserType(), user.getPassword(), setNull(user.getPhoto()));
 
+    }
+    private String setNull(String string) {
+        if(string.length() == 0) {
+            return null;
+        }
+        return string;
     }
     public boolean ifUserExists(String email) {
         String sql = "select * from users where id = ?";
-        User u = jdbcTemplate.queryForObject(sql, new UserMapper(), email);
-        return u != null;
+
+        List<User> user = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), email);
+        return !user.isEmpty();
     }
     public Optional<User> getOptionalUserById(String id) {
         String sql = "select * from users where id = ?";
@@ -56,6 +62,16 @@ public class UserDao {
     }
 
 
+    public void editUser(User e) {
+        String sql = """
+                update USERS
+                set PASSWORD = ?, PHONENUMBER = ?
+                where ID = ?""";
+        jdbcTemplate.update(sql, e.getPassword(), e.getPhoneNumber(), e.getId());
+    }
 
-
+    public void savePhoto(String email, String photo) {
+        String sql = "update users set photo = ? where id = ?";
+        jdbcTemplate.update(sql, photo, email);
+    }
 }

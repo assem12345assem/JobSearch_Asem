@@ -1,13 +1,11 @@
 package com.example.jobsearch.dto;
 
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-@Builder
 public class ResumeDto {
     private long id;
     private ApplicantDto applicant;

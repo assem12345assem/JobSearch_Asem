@@ -21,4 +21,32 @@ public class EmployerDao {
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Employer.class), email);
 
     }
+    public void createEmployer(Employer employer) {
+        String sql = "insert into EMPLOYERS (USERID, COMPANYNAME) VALUES ( ?, ? )";
+        jdbcTemplate.update(sql, employer.getUserId(), employer.getCompanyName());
+    }
+    public boolean ifEmployerExists(String userEmail) {
+        String sql = "select id from EMPLOYERS where USERID = ?";
+        Long l = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Long.class), userEmail);
+        return l != null;
+    }
+
+    public void editEmployer(Employer employer) {
+        String sql = """
+                update EMPLOYERS
+                set COMPANYNAME = ?
+                where ID = ?""";
+        jdbcTemplate.update(sql, employer.getCompanyName());
+    }
+
+    public Employer getEmployerById(Long id) {
+        String sql = "select * from EMPLOYERS where ID = ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Employer.class), id);
+    }
+
+    public List<Employer> getEmployerByCompanyName(String companyName) {
+        String sql = "select * from EMPLOYERS where companyName like ?";
+        companyName = "%" + companyName + "%";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employer.class), companyName);
+    }
 }

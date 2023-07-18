@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,5 +39,9 @@ public class JobApplicationDao {
     }
 
 
-
+    public void applyForVacancy(long vacancyId, long resumeId) {
+        String sql = "insert into JOBAPPLICATIONS (VACANCYID, RESUMEID, DATETIME)\n" +
+                "VALUES ( ?,?,? )";
+        jdbcTemplate.update(sql, vacancyId, resumeId, Timestamp.valueOf(LocalDateTime.now()));
+    }
 }

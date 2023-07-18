@@ -1,15 +1,13 @@
 package com.example.jobsearch.dto;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 public class VacancyDto {
     private long id;
-    private EmployerDto employer;
+    private long employerId;
     private String vacancyName;
     private CategoryDto category;
     private Integer salary;

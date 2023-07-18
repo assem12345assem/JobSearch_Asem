@@ -14,4 +14,11 @@ public class CategoryDao {
         String sql = "select * from categories where id = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Category.class), id);
     }
+
+    public Long getIdByCategory(String category) {
+        String sql = "select id from categories where category like ?";
+        category = "%" + category + "%";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Long.class), category);
+
+    }
 }
