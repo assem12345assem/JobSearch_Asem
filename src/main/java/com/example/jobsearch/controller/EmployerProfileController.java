@@ -17,8 +17,8 @@ public class EmployerProfileController {
     public List<EmployerDto> getAllEmployers() {
         return employerProfileService.getAllEmployers();}
     @GetMapping("/{userId}")
-    public EmployerDto getEmployerByUserId(@PathVariable String email) {
-        return employerProfileService.getEmployerByUserId(email);
+    public EmployerDto getEmployerByUserId(@PathVariable String userId) {
+        return employerProfileService.getEmployerByUserId(userId);
     }
     @PostMapping("/create_employer")
     public HttpStatus createEmployer(@RequestBody EmployerDto employerDto) {

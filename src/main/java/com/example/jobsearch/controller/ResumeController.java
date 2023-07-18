@@ -126,12 +126,12 @@ public class ResumeController {
 
 
     @GetMapping("/work_experience/{id}")
-    public WorkExperienceDto getWorkExperienceById(@PathVariable Long workExperienceId) {
-        return resumeService.getWorkExperienceById(workExperienceId);
+    public WorkExperienceDto getWorkExperienceById(@PathVariable long id) {
+        return resumeService.getWorkExperienceById(id);
     }
 
     @GetMapping("/education/{id}")
-    public EducationDto getEducationById(@PathVariable Long educationId) {
-        return resumeService.getEducationById(educationId);
+    public EducationDto getEducationById(@PathVariable long id) {
+        return resumeService.getEducationById(id);
     }
 }
