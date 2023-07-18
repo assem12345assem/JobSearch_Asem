@@ -71,19 +71,19 @@ public class ResumeController {
         return HttpStatus.OK;
     }
 
-    @PostMapping("/delete_education")
+    @DeleteMapping("/delete_education")
     public HttpStatus deleteEducation(EducationDto educationDto) {
         resumeService.deleteEducation(educationDto);
         return HttpStatus.OK;
     }
 
-    @PostMapping("/delete_work_experience")
+    @DeleteMapping("/delete_work_experience")
     public HttpStatus deleteWorkExperience(WorkExperienceDto workExperienceDto) {
         resumeService.deleteWorkExperience(workExperienceDto);
         return HttpStatus.OK;
     }
 
-    @PostMapping("/delete_contact_info")
+    @DeleteMapping("/delete_contact_info")
     public HttpStatus deleteContactInfo(ContactInfoDto contactInfoDto) {
         resumeService.deleteContactInfo(contactInfoDto);
         return HttpStatus.OK;
