@@ -1,21 +1,25 @@
 package com.example.jobsearch.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Vacancy {
-    private long id;
-    private long employerId;
-    private String vacancyName;
-    private long categoryId;
-    private Integer salary;
-    private String description;
-    private int requiredExperienceMin;
-    private int requiredExperienceMax;
-    private boolean isActive;
-    private boolean isPublished;
-    private LocalDateTime publishedDateTime;
+    Long id;
+    Long employerId;
+    String vacancyName;
+    Long categoryId;
+    Integer salary;
+    String description;
+    Integer requiredExperienceMin;
+    Integer requiredExperienceMax;
+    boolean isActive;
+    boolean isPublished;
+    LocalDateTime publishedDateTime;
+
 }
