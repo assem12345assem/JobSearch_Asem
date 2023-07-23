@@ -1,19 +1,22 @@
 package com.example.jobsearch.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
 
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class WorkExperience {
-    private long id;
-    private long resumeId;
-    private LocalDate dateStart;
-    private LocalDate dateEnd;
-    private String companyName;
-    private String position;
-    private String responsibilities;
+    Long id;
+    Long resumeId;
+    LocalDate dateStart;
+    LocalDate dateEnd;
+    String companyName;
+    String position;
+    String responsibilities;
 }

@@ -1,15 +1,19 @@
 package com.example.jobsearch.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
-    private String id;
-    private String phoneNumber;
-    private String userType;
-    private String password;
-    private String photo;
-
+    String id;
+    String phoneNumber;
+    String userType;
+    String password;
+    String photo;
+    boolean enabled;
+    Long roleId;
 }
