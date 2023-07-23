@@ -24,27 +24,27 @@ public class ResumeService {
     private final CategoryService categoryService;
 
     private ResumeDto makeDtoFromResume(Resume resume) {
-        ResumeDto r = new ResumeDto();
-        r.setId(resume.getId());
-        r.setApplicant(applicantService.getApplicantById(resume.getApplicantId()));
-        r.setResumeTitle(resume.getResumeTitle());
-        r.setCategory(categoryService.getCategoryById(resume.getCategoryId()));
-        r.setExpectedSalary(resume.getExpectedSalary());
-        r.setActive(resume.isActive());
-        r.setPublished(resume.isPublished());
-        return r;
+        return ResumeDto.builder()
+                .id(resume.getId())
+                .applicantDto(applicantService.getApplicantById(resume.getApplicantId()))
+                .resumeTitle(resume.getResumeTitle())
+                .categoryDto(categoryService.getCategoryById(resume.getCategoryId()))
+                .expectedSalary(resume.getExpectedSalary())
+                .isActive(resume.isActive())
+                .isPublished(resume.isPublished())
+                .build();
     }
 
     private Resume createResumeFromDto(ResumeDto resume) {
-        Resume r = new Resume();
-        r.setId(resume.getId());
-        r.setApplicantId(resume.getApplicant().getId());
-        r.setResumeTitle(resume.getResumeTitle());
-        r.setCategoryId(resume.getCategory().getId());
-        r.setExpectedSalary(resume.getExpectedSalary());
-        r.setActive(resume.isActive());
-        r.setPublished(resume.isPublished());
-        return r;
+        return Resume.builder()
+                .id(resume.getId())
+                .applicantId(resume.getApplicantDto().getId())
+                .resumeTitle(resume.getResumeTitle())
+                .categoryId(resume.getCategoryDto().getId())
+                .expectedSalary(resume.getExpectedSalary())
+                .isActive(resume.isActive())
+                .isPublished(resume.isPublished())
+                .build();
     }
 
     public List<ResumeDto> getAllResumes() {
@@ -78,19 +78,13 @@ public class ResumeService {
 
     public void createResume(ResumeDto e) {
         log.warn("New resume created: {}", e.getId());
-        resumeDao.createResume(createResumeFromDto(e));
+        resumeDao.save(createResumeFromDto(e));
 
     }
 
     public void deleteResume(ResumeDto e) {
         log.warn("Resume deleted: {}", e.getId());
-        resumeDao.deleteResume(createResumeFromDto(e));
-        List<WorkExperienceDto> w = e.getWorkExperienceList();
-        List<EducationDto> ed = e.getEducationList();
-        ContactInfoDto ci = e.getContactInfo();
-        w.forEach(workExperienceService::deleteWorkExperience);
-        ed.forEach(educationService::deleteEducation);
-        contactInfoService.deleteContactInfo(ci);
+        resumeDao.delete(e.getId());
     }
 
     public void editResume(ResumeDto e) {

@@ -1,13 +1,18 @@
 package com.example.jobsearch.dto;
 
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JobApplicationDto {
-    private long id;
-    private VacancyDto vacancyDto;
-    private ResumeDto resumeDto;
-    private LocalDateTime dateTime;
+    Long id;
+    VacancyDto vacancyDto;
+    ResumeDto resumeDto;
+    LocalDateTime dateTime;
 }

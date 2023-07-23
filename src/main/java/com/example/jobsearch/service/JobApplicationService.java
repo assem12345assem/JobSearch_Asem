@@ -51,9 +51,15 @@ public class JobApplicationService {
         return resumeService.getAllResumesByLongList(ids);
     }
 
-    public void applyForVacancy(long vacancyId, long resumeId) {
-        log.warn("Vacancy application: {}", vacancyId);
-        jobApplicationDao.applyForVacancy(vacancyId, resumeId);
+//    public void applyForVacancy(long vacancyId, long resumeId) {
+//        log.warn("Vacancy application: {}", vacancyId);
+//        Vacancy v = getVacancyByIdAndResumeId(vacancyId, resumeId);
+//        jobApplicationDao.save(v);
+//    }
+
+    private VacancyDto getVacancyByIdAndResumeId(long vacancyId, long resumeId) {
+        JobApplication j = jobApplicationDao.getVacancyByIdAndResumeId(vacancyId, resumeId);
+    return vacancyService.getVacancyById(j.getVacancyId());
     }
 
     public List<ResumeDto> getMyResumes(ApplicantDto applicantDto) {

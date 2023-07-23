@@ -1,0 +1,172 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop fk_e_user_id
+      author: Asem
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: employers
+            constraintName: fk_e_user_id
+  - changeSet:
+      id: add new fk_e_user_id
+      author: Asem
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: employers
+            baseColumnNames: userid
+            constraintName: fk_e_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+  - changeSet:
+      id: drop fk_a_user_id
+      author: Asem
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: applicants
+            constraintName: fk_a_user_id
+  - changeSet:
+      id: add new fk_a_user_id
+      author: Asem
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: applicants
+            baseColumnNames: userid
+            constraintName: fk_a_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+  - changeSet:
+      id: drop fk_applicant_id
+      author: Asem
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: resumes
+            constraintName: fk_applicant_id
+  - changeSet:
+      id: add new fk_applicant_id
+      author: Asem
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: resumes
+            baseColumnNames: applicantid
+            constraintName: fk_applicant_id
+            referencedTableName: applicants
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+  - changeSet:
+      id: drop fk_we_resume_id
+      author: Asem
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: workexperience
+            constraintName: fk_we_resume_id
+  - changeSet:
+      id: add new fk_we_resume_id
+      author: Asem
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: workexperience
+            baseColumnNames: resumeId
+            constraintName: fk_we_resume_id
+            referencedTableName: resumes
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+  - changeSet:
+      id: drop fk_edu_resume_id
+      author: Asem
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: education
+            constraintName: fk_edu_resume_id
+  - changeSet:
+      id: add new fk_edu_resume_id
+      author: Asem
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: education
+            baseColumnNames: resumeId
+            constraintName: fk_edu_resume_id
+            referencedTableName: resumes
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+  - changeSet:
+      id: drop fk_ci_resume_id
+      author: Asem
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: contactinfo
+            constraintName: fk_ci_resume_id
+  - changeSet:
+      id: add new fk_ci_resume_id
+      author: Asem
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: contactinfo
+            baseColumnNames: resumeId
+            constraintName: fk_ci_resume_id
+            referencedTableName: resumes
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+  - changeSet:
+      id: drop fk_employer_id
+      author: Asem
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: vacancies
+            constraintName: fk_employer_id
+  - changeSet:
+      id: add new fk_employer_id
+      author: Asem
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: vacancies
+            baseColumnNames: employerId
+            constraintName: fk_employer_id
+            referencedTableName: employers
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+  - changeSet:
+      id: drop fk_vacancy_id
+      author: Asem
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: jobapplications
+            constraintName: fk_vacancy_id
+  - changeSet:
+      id: add new fk_vacancy_id
+      author: Asem
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: jobapplications
+            baseColumnNames: vacancyId
+            constraintName: fk_vacancy_id
+            referencedTableName: vacancies
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade
+  - changeSet:
+      id: drop fk_j_resumeId
+      author: Asem
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: jobapplications
+            constraintName: fk_j_resumeId
+  - changeSet:
+      id: add new fk_j_resumeId
+      author: Asem
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: jobapplications
+            baseColumnNames: resumeId
+            constraintName: fk_j_resumeId
+            referencedTableName: resumes
+            referencedColumnNames: id
+            onDelete: cascade
+            onUpdate: cascade

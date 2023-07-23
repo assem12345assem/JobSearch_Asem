@@ -1,20 +1,20 @@
 package com.example.jobsearch.dto;
 
 
-import lombok.Data;
-
-import java.util.List;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResumeDto {
-    private long id;
-    private ApplicantDto applicant;
-    private String resumeTitle;
-    private CategoryDto category;
-    private Integer expectedSalary;
-    private boolean isActive;
-    private boolean isPublished;
-    private List<WorkExperienceDto> workExperienceList;
-    private List<EducationDto> educationList;
-    private ContactInfoDto contactInfo;
+    Long id;
+    ApplicantDto applicantDto;
+    String resumeTitle;
+    CategoryDto categoryDto;
+    Integer expectedSalary;
+    boolean isActive;
+    boolean isPublished;
 }

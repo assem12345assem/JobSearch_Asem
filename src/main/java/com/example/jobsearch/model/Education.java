@@ -16,5 +16,4 @@ public class Education {
     String schoolName;
     LocalDate startDate;
     LocalDate graduationDate;
-
 }

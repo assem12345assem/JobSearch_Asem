@@ -45,7 +45,7 @@ public class EmployerProfileService {
     public void createEmployer(EmployerDto employerDto) {
         log.warn("Created new employer: {}", employerDto.getCompanyName());
         Employer employer = createEmployerFromDto(employerDto);
-        employerDao.createEmployer(employer);
+        employerDao.save(employer);
     }
 
     private Employer createEmployerFromDto(EmployerDto employerDto) {

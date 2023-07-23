@@ -1,17 +1,40 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.Employer;
-import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 
 @Component
-@RequiredArgsConstructor
-public class EmployerDao {
-    private final JdbcTemplate jdbcTemplate;
+public class EmployerDao extends BaseDao{
+    public EmployerDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        super(jdbcTemplate, namedParameterJdbcTemplate);
+    }
+
+    @Override
+    public Long save(Object obj) {
+        Employer e = (Employer) obj;
+        String sql = "insert into EMPLOYERS (USERID, COMPANYNAME) VALUES ( ?, ? )";
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, e.getUserId());
+            ps.setString(2, e.getCompanyName());
+            return ps;
+        }, keyHolder);
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    @Override
+    public void delete(Long id) {
+        String sql = "delete from employers where id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     public List<Employer> getAllEmployers() {
         String sql = "select * from employers";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employer.class));
@@ -20,10 +43,6 @@ public class EmployerDao {
         String sql = "select * from employers where userId = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Employer.class), email);
 
-    }
-    public void createEmployer(Employer employer) {
-        String sql = "insert into EMPLOYERS (USERID, COMPANYNAME) VALUES ( ?, ? )";
-        jdbcTemplate.update(sql, employer.getUserId(), employer.getCompanyName());
     }
     public boolean ifEmployerExists(String userEmail) {
         String sql = "select id from EMPLOYERS where USERID = ?";

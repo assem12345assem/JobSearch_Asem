@@ -30,7 +30,7 @@ public class ApplicantProfileService {
 
     public void createApplicant(ApplicantDto applicantDto) {
         log.warn("Created new applicant: {}", applicantDto.getLastName());
-        applicantDao.createApplicant(buildApplicantFromDto(applicantDto));
+        applicantDao.save(buildApplicantFromDto(applicantDto));
 
     }
 
@@ -40,7 +40,7 @@ public class ApplicantProfileService {
     }
 
     public void deleteApplicant(ApplicantDto e) {
-        applicantDao.deleteApplicant(buildApplicantFromDto(e));
+        applicantDao.delete(e.getId());
     }
 
     public ApplicantDto getApplicantById(Long applicantId) {

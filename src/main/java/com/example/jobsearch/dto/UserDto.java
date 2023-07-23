@@ -1,13 +1,19 @@
 package com.example.jobsearch.dto;
 
-import com.example.jobsearch.enums.UserType;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
-    private String id;
-    private String phoneNumber;
-    private UserType userType;
-    private String password;
-    private String photo;
+    String id;
+    String phoneNumber;
+    String userType;
+    String password;
+    String photo;
+    boolean enabled;
+    Long roleId;
 }

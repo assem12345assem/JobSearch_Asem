@@ -1,17 +1,46 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.Applicant;
-import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 @Component
-@RequiredArgsConstructor
-public class ApplicantDao {
-    private final JdbcTemplate jdbcTemplate;
+
+public class ApplicantDao  extends BaseDao{
+    public ApplicantDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        super(jdbcTemplate, namedParameterJdbcTemplate);
+    }
+
+    @Override
+    public Long save(Object obj) {
+        Applicant e = (Applicant) obj;
+        String sql = "insert into applicants (userid, firstname, lastname, dateofbirth) \n" +
+                "values (?, ?, ?, ?)";
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, e.getUserId());
+            ps.setString(2, e.getFirstName());
+            ps.setString(3, e.getLastName());
+            ps.setTimestamp(4,  Timestamp.valueOf(e.getDateOfBirth().atStartOfDay()));
+            return ps;
+        }, keyHolder);
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+
+    }
+
+    @Override
+    public void delete(Long id) {
+        String sql = "delete from applicants where id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     public List<Applicant> getAllApplicants() {
         String sql = "select * from applicants";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Applicant.class));
@@ -31,15 +60,6 @@ public class ApplicantDao {
     public Applicant getApplicantByLastName(String lastName) {
         String sql = "select * from applicants where lastName = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Applicant.class), lastName);
-    }
-    public void createApplicant(Applicant e) {
-        String sql = "insert into APPLICANTS (USERID, FIRSTNAME, LASTNAME, DATEOFBIRTH) \n" +
-                "values (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, e.getUserId(), e.getFirstName(), e.getLastName(), e.getDateOfBirth());
-    }
-    public void deleteApplicant(Applicant e) {
-        String sql = "delete from APPLICANTS where id = ?";
-        jdbcTemplate.update(sql, e.getId());
     }
     public void editApplicant(Applicant e) {
         String sql = """

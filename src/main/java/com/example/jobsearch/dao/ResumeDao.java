@@ -1,20 +1,49 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.Resume;
-import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
-@RequiredArgsConstructor
-public class ResumeDao {
-    private final JdbcTemplate jdbcTemplate;
+public class ResumeDao extends BaseDao{
+    public ResumeDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        super(jdbcTemplate, namedParameterJdbcTemplate);
+    }
+
+    @Override
+    public Long save(Object obj) {
+        Resume e = (Resume) obj;
+        String sql = """
+                insert into RESUMES (APPLICANTID, RESUMETITLE, CATEGORYID,\s
+                                     EXPECTEDSALARY, ISACTIVE, ISPUBLISHED)\s
+                VALUES ( ?, ?, ?, ?, ?, ? )""";
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
+            ps.setLong(1, e.getApplicantId());
+            ps.setString(2, e.getResumeTitle());
+            ps.setLong(3, e.getCategoryId());
+            ps.setInt(4, e.getExpectedSalary());
+            ps.setBoolean(5, e.isActive());
+            ps.setBoolean(6, e.isPublished());
+            return ps;
+        }, keyHolder);
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    @Override
+    public void delete(Long id) {
+        String sql = "delete from RESUMES where id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     public List<Resume> getAllResumes() {
-        System.out.println("DDDDDDDDDDAAAAAAAAAAAOOOOOOOOOOOOOOOO");
         String sql = "select * from RESUMES";
 //        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class));
         List<Resume> list = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class));
@@ -48,18 +77,6 @@ public class ResumeDao {
                          where r.CATEGORYID = c.id
                            and c.CATEGORY = ?""";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), categoryName);
-    }
-    public void createResume(Resume e) {
-        String sql = """
-                insert into RESUMES (APPLICANTID, RESUMETITLE, CATEGORYID,\s
-                                     EXPECTEDSALARY, ISACTIVE, ISPUBLISHED)\s
-                VALUES ( ?, ?, ?, ?, ?, ? )""";
-        jdbcTemplate.update(sql, e.getApplicantId(), e.getResumeTitle(), e.getCategoryId(),
-                e.getExpectedSalary(), e.isActive(), e.isPublished());
-    }
-    public void deleteResume(Resume e) {
-        String sql = "delete from RESUMES where id = ?";
-        jdbcTemplate.update(sql, e.getId());
     }
     public void editResume(Resume e) {
         String sql = """

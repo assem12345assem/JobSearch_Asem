@@ -24,34 +24,34 @@ public class EducationService {
                 .toList();
     }
 
-    private EducationDto makeDtoFromEducation(Education education) {
-        EducationDto e = new EducationDto();
-        e.setId(education.getId());
-        e.setResumeId(education.getResumeId());
-        e.setEducation(education.getEducation());
-        e.setSchoolName(education.getSchoolName());
-        e.setStartDate(education.getStartDate());
-        e.setGraduationDate(education.getGraduationDate());
-        return e;
+    private EducationDto makeDtoFromEducation(Education e) {
+        return EducationDto.builder()
+                .id(e.getId())
+                .resumeId(e.getResumeId())
+                .education(e.getEducation())
+                .schoolName(e.getSchoolName())
+                .startDate(e.getStartDate())
+                .graduationDate(e.getGraduationDate())
+                .build();
     }
 
-    private Education createEducationFromDto(EducationDto education) {
-        Education e = new Education();
-        e.setId(education.getId());
-        e.setResumeId(education.getResumeId());
-        e.setEducation(education.getEducation());
-        e.setSchoolName(education.getSchoolName());
-        e.setStartDate(education.getStartDate());
-        e.setGraduationDate(education.getGraduationDate());
-        return e;
+    private Education createEducationFromDto(EducationDto e) {
+        return Education.builder()
+                .id(e.getId())
+                .resumeId(e.getResumeId())
+                .education(e.getEducation())
+                .schoolName(e.getSchoolName())
+                .startDate(e.getStartDate())
+                .graduationDate(e.getGraduationDate())
+                .build();
     }
 
     public void createEducation(EducationDto e) {
         log.warn("Added new education to resume: {}", e.getResumeId());
-        educationDao.createEducation(createEducationFromDto(e));
+        educationDao.save(createEducationFromDto(e));
     }
     public void deleteEducation(EducationDto e) {
-        educationDao.deleteEducation(createEducationFromDto(e));
+        educationDao.delete(e.getId());
     }
     public void editEducation(EducationDto e) {
         educationDao.editEducation(createEducationFromDto(e));

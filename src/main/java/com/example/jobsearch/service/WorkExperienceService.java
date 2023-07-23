@@ -53,11 +53,11 @@ public class WorkExperienceService {
 
     public void createWorkExperience(WorkExperienceDto e) {
         log.warn("Work experience was added: {}", e.getResumeId());
-        workExperienceDao.createWorkExperience(createWorkExpFromDto(e));
+        workExperienceDao.save(createWorkExpFromDto(e));
     }
 
     public void deleteWorkExperience(WorkExperienceDto e) {
-        workExperienceDao.deleteWorkExperience(createWorkExpFromDto(e));
+        workExperienceDao.delete(e.getId());
     }
 
     public void editWorkExperience(WorkExperienceDto e) {

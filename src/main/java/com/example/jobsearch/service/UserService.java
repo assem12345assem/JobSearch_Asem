@@ -41,7 +41,7 @@ public class UserService {
         UserDto u = new UserDto();
         u.setId(user.getId());
         u.setPhoneNumber(user.getPhoneNumber());
-        u.setUserType(returnEnum(user.getUserType()));
+        u.setUserType(user.getUserType());
         u.setPassword(user.getPassword());
         u.setPhoto(user.getPhoto());
 
@@ -49,14 +49,13 @@ public class UserService {
     }
 
     private User makeUserFromDto(UserDto user) {
-        User u = new User();
-        u.setId(user.getId());
-        u.setPhoneNumber(user.getPhoneNumber());
-        u.setUserType(user.getUserType().getValue());
-        u.setPassword(user.getPassword());
-        u.setPhoto(user.getPhoto());
-
-        return u;
+        return User.builder()
+                .id(user.getId())
+                .phoneNumber(user.getPhoneNumber())
+                .userType(user.getUserType())
+                .password(user.getPassword())
+                .photo(user.getPhoto())
+                .build();
     }
 
     private UserType returnEnum(String value) {

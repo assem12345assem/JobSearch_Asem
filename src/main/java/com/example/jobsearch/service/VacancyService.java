@@ -27,35 +27,35 @@ public class VacancyService {
     }
 
     private VacancyDto makeDtoFromVacancy(Vacancy v) {
-        VacancyDto vv = new VacancyDto();
-        vv.setId(v.getId());
-        vv.setEmployerId(v.getId());
-        vv.setVacancyName(v.getVacancyName());
-        vv.setCategory(categoryService.getCategoryById(v.getCategoryId()));
-        vv.setSalary(v.getSalary());
-        vv.setDescription(v.getDescription());
-        vv.setRequiredExperienceMin(v.getRequiredExperienceMin());
-        vv.setRequiredExperienceMax(v.getRequiredExperienceMax());
-        vv.setActive(v.isActive());
-        vv.setPublished(v.isPublished());
-        vv.setPublishedDateTime(v.getPublishedDateTime());
-        return vv;
+        return VacancyDto.builder()
+                .id(v.getId())
+                .employerId(v.getEmployerId())
+                .vacancyName(v.getVacancyName())
+                .categoryDto(categoryService.getCategoryById(v.getCategoryId()))
+                .salary(v.getSalary())
+                .description(v.getDescription())
+                .requiredExperienceMin(v.getRequiredExperienceMin())
+                .requiredExperienceMax(v.getRequiredExperienceMax())
+                .isActive(v.isActive())
+                .isPublished(v.isPublished())
+                .publishedDateTime(v.getPublishedDateTime())
+                .build();
     }
 
     private Vacancy makeVacancyFromDto(VacancyDto v) {
-        Vacancy vv = new Vacancy();
-        vv.setId(v.getId());
-        vv.setEmployerId(v.getId());
-        vv.setVacancyName(v.getVacancyName());
-        vv.setCategoryId(v.getCategory().getId());
-        vv.setSalary(v.getSalary());
-        vv.setDescription(v.getDescription());
-        vv.setRequiredExperienceMin(v.getRequiredExperienceMin());
-        vv.setRequiredExperienceMax(v.getRequiredExperienceMax());
-        vv.setActive(v.isActive());
-        vv.setPublished(v.isPublished());
-        vv.setPublishedDateTime(v.getPublishedDateTime());
-        return vv;
+        return Vacancy.builder()
+                .id(v.getId())
+                .employerId(v.getEmployerId())
+                .vacancyName(v.getVacancyName())
+                .categoryId(v.getCategoryDto().getId())
+                .salary(v.getSalary())
+                .description(v.getDescription())
+                .requiredExperienceMin(v.getRequiredExperienceMin())
+                .requiredExperienceMax(v.getRequiredExperienceMax())
+                .isActive(v.isActive())
+                .isPublished(v.isPublished())
+                .publishedDateTime(v.getPublishedDateTime())
+                .build();
 
     }
 
@@ -85,7 +85,7 @@ public class VacancyService {
     public void createVacancy(VacancyDto vacancyDto) {
         log.warn("Vacancy was created: {}", vacancyDto.getId());
         Vacancy vacancy = makeVacancyFromDto(vacancyDto);
-        vacancyDao.createVacancy(vacancy);
+        vacancyDao.save(vacancy);
     }
 
     public void editVacancy(VacancyDto vacancyDto) {
@@ -95,8 +95,7 @@ public class VacancyService {
 
     public void deleteVacancy(VacancyDto vacancyDto) {
         log.warn("Vacancy was deleted: {}", vacancyDto.getId());
-        Vacancy vacancy = makeVacancyFromDto(vacancyDto);
-        vacancyDao.deleteVacancy(vacancy);
+        vacancyDao.delete(vacancyDto.getId());
     }
 
     public ResponseEntity<?> sortedListVacancies(String sortedCriteria) {
@@ -114,4 +113,6 @@ public class VacancyService {
             return ResponseEntity.badRequest().build();
         }
     }
+
+
 }
