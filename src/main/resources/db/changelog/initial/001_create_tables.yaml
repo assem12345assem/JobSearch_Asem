@@ -13,12 +13,17 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: phoneNumber
+                  name: phone_number
                   type: varchar(45)
                   constraints:
                     nullable: false
               - column:
-                  name: userType
+                  name: user_name
+                  type: varchar(45)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_type
                   type: varchar(45)
                   constraints:
                     nullable: false

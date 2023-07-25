@@ -4,29 +4,28 @@ import com.example.jobsearch.dto.ResumeDto;
 import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.service.JobApplicationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/apply")
+@RequestMapping("/jobs")
 @RequiredArgsConstructor
 public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
-//    @PostMapping("/apply_for_vacancy")
-//    public HttpStatus applyForVacancy(@RequestParam("vacancyId") long vacancyId,
-//                                      @RequestParam("resumeId") long resumeId) {
-//        jobApplicationService.applyForVacancy(vacancyId, resumeId);
-//        return HttpStatus.OK;
-//    }
-    @GetMapping("/get_vacancies_by_applicant_id/{applicantId}")
+    @PostMapping("/apply")
+    public HttpStatus apply(long vacancyId,
+                                      long resumeId, Authentication auth) {
+        jobApplicationService.apply(vacancyId, resumeId, auth);
+        return HttpStatus.OK;
+    }
+    @GetMapping("/vacancies/{applicantId}")
     public List<VacancyDto> getAllAppliedVacanciesByApplicantId(@PathVariable Long applicantId) {
         return jobApplicationService.getAllAppliedVacanciesByApplicantId(applicantId);
     }
-    @GetMapping("/resumes_by_vacancy_id/{vacancyId}")
+    @GetMapping("/resumes/{vacancyId}")
     public List<ResumeDto> getResumesByVacancyId(@PathVariable Long vacancyId) {
         return jobApplicationService.getResumesByVacancyId(vacancyId);
     }

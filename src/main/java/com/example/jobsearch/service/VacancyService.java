@@ -3,11 +3,13 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.dao.VacancyDao;
 import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.enums.VacancySortStrategy;
+import com.example.jobsearch.model.User;
 import com.example.jobsearch.model.Vacancy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 public class VacancyService {
     private final VacancyDao vacancyDao;
     private final CategoryService categoryService;
+    private final EmployerProfileService employerService;
 
     public List<VacancyDto> getAllVacancies() {
         List<Vacancy> list = vacancyDao.getAllVacancies();
@@ -82,20 +85,29 @@ public class VacancyService {
                 .toList();
     }
 
-    public void createVacancy(VacancyDto vacancyDto) {
-        log.warn("Vacancy was created: {}", vacancyDto.getId());
-        Vacancy vacancy = makeVacancyFromDto(vacancyDto);
-        vacancyDao.save(vacancy);
+    public void createVacancy(VacancyDto vacancyDto, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+            log.info("Vacancy was created: {}", vacancyDto.getId());
+            Vacancy vacancy = makeVacancyFromDto(vacancyDto);
+            vacancyDao.save(vacancy);
+        }
     }
 
-    public void editVacancy(VacancyDto vacancyDto) {
-        Vacancy vacancy = makeVacancyFromDto(vacancyDto);
-        vacancyDao.editVacancy(vacancy);
+    public void editVacancy(VacancyDto vacancyDto, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+            Vacancy vacancy = makeVacancyFromDto(vacancyDto);
+            vacancyDao.editVacancy(vacancy);
+        }
     }
 
-    public void deleteVacancy(VacancyDto vacancyDto) {
-        log.warn("Vacancy was deleted: {}", vacancyDto.getId());
-        vacancyDao.delete(vacancyDto.getId());
+    public void deleteVacancy(VacancyDto vacancyDto, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+            log.info("Vacancy was deleted: {}", vacancyDto.getId());
+            vacancyDao.delete(vacancyDto.getId());
+        }
     }
 
     public ResponseEntity<?> sortedListVacancies(String sortedCriteria) {

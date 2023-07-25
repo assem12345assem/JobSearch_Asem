@@ -44,6 +44,10 @@ public class EmployerDao extends BaseDao{
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Employer.class), email);
 
     }
+    public String getUserIdByEmployerId(Long employerId) {
+        String sql = "Select userid from employers where id = ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(String.class), employerId);
+    }
     public boolean ifEmployerExists(String userEmail) {
         String sql = "select id from EMPLOYERS where USERID = ?";
         Long l = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Long.class), userEmail);

@@ -7,8 +7,10 @@ import com.example.jobsearch.dto.EducationDto;
 import com.example.jobsearch.dto.ResumeDto;
 import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.model.Resume;
+import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,10 +78,12 @@ public class ResumeService {
                 .toList();
     }
 
-    public void createResume(ResumeDto e) {
-        log.warn("New resume created: {}", e.getId());
-        resumeDao.save(createResumeFromDto(e));
-
+    public void createResume(ResumeDto e, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        if(user.getId().equalsIgnoreCase(e.getApplicantDto().getUserId())) {
+            log.warn("New resume created: {}", e.getId());
+            resumeDao.save(createResumeFromDto(e));
+        }
     }
 
     public void deleteResume(ResumeDto e) {

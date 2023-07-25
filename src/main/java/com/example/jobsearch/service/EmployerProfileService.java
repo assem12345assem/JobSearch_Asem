@@ -3,8 +3,10 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.dao.EmployerDao;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.model.Employer;
+import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,9 +58,15 @@ public class EmployerProfileService {
         return e;
     }
 
-    public void editEmployer(EmployerDto employerDto) {
-        Employer employer = createEmployerFromDto(employerDto);
-        employerDao.editEmployer(employer);
+    public void editEmployer(EmployerDto employerDto, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        if(user.getId().equalsIgnoreCase(employerDto.getUserId())) {
+            Employer employer = createEmployerFromDto(employerDto);
+            employerDao.editEmployer(employer);
+        }
+    }
+    public String getUserIdByEmployerId(Long employerId) {
+        return employerDao.getUserIdByEmployerId(employerId);
     }
 
     public List<EmployerDto> getEmployerByCompanyName(String companyName) {

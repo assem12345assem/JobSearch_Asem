@@ -3,8 +3,10 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.dao.ApplicantDao;
 import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.model.Applicant;
+import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,9 +36,12 @@ public class ApplicantProfileService {
 
     }
 
-    public void editApplicant(ApplicantDto applicantDto) {
-        log.warn("Edited applicant: {}", applicantDto.getLastName());
-        applicantDao.editApplicant(buildApplicantFromDto(applicantDto));
+    public void editApplicant(ApplicantDto applicantDto, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        if(user.getId().equalsIgnoreCase(applicantDto.getUserId())) {
+            applicantDao.editApplicant(buildApplicantFromDto(applicantDto));
+            log.info("Edited applicant: {}", applicantDto.getLastName());
+        }
     }
 
     public void deleteApplicant(ApplicantDto e) {

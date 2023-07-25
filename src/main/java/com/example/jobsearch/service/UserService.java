@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,19 +79,26 @@ public class UserService {
     }
 
     public void createUser(UserDto userDto) {
-        User user = makeUserFromDto(userDto);
-        userDao.createUser(user);
+
+            User user = makeUserFromDto(userDto);
+            userDao.createUser(user);
     }
 
 
-    public void editUser(UserDto userDto) {
-        User user = makeUserFromDto(userDto);
-        userDao.editUser(user);
+    public void editUser(UserDto userDto, Authentication auth) {
+        User u = (User) auth.getPrincipal();
+        if(u.getId().equalsIgnoreCase(userDto.getId())) {
+            User user = makeUserFromDto(userDto);
+            userDao.editUser(user);
+        }
     }
 
-    public void uploadUserPhoto(String email, MultipartFile file) {
-        String fileName = fileService.saveUploadedFile(file, "images");
-        userDao.savePhoto(email, fileName);
+    public void uploadUserPhoto(String email, MultipartFile file, Authentication auth) {
+        User u = (User) auth.getPrincipal();
+        if(u.getId().equalsIgnoreCase(email)) {
+            String fileName = fileService.saveUploadedFile(file, "images");
+            userDao.savePhoto(email, fileName);
+        }
     }
 
 }
