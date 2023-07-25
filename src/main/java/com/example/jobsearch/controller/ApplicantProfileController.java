@@ -3,7 +3,7 @@ package com.example.jobsearch.controller;
 import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.service.ApplicantProfileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,26 +19,16 @@ public class ApplicantProfileController {
         return applicantProfileService.getAllApplicants();
     }
     @PostMapping("/create_applicant")
-    public HttpStatus createApplicant(@RequestBody ApplicantDto applicantDto) {
-        if (!applicantProfileService.ifApplicantExists(applicantDto.getUserId())) {
-            applicantProfileService.createApplicant(applicantDto);
-            return HttpStatus.OK;
-        }
-        return HttpStatus.valueOf("Applicant already exists");
+    public ResponseEntity<?> createApplicant(@RequestBody ApplicantDto applicantDto) {
+        return applicantProfileService.createApplicant(applicantDto);
     }
     @PostMapping("/edit_applicant")
-    public HttpStatus editApplicant(@RequestBody ApplicantDto applicantDto, Authentication auth) {
-        if (applicantProfileService.ifApplicantExists(applicantDto.getUserId())) {
-            applicantProfileService.editApplicant(applicantDto, auth);
-            return HttpStatus.OK;
-        }
-        return HttpStatus.valueOf("Applicant does not exist");
+    public ResponseEntity<?> editApplicant(@RequestBody ApplicantDto applicantDto, Authentication auth) {
+       return applicantProfileService.editApplicant(applicantDto, auth);
     }
-
-
     @GetMapping("/{applicantId}")
-    public ApplicantDto getApplicantById(@PathVariable Long applicantId) {
-        return applicantProfileService.getApplicantById(applicantId);
+    public ResponseEntity<?> findApplicantById(@PathVariable Long applicantId) {
+        return applicantProfileService.findApplicantById(applicantId);
     }
     @GetMapping("/show_age/{applicantId}")
     public String showAge(@PathVariable Long applicantId) {

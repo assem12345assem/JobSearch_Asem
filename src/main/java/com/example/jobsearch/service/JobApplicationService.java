@@ -24,6 +24,7 @@ public class JobApplicationService {
     private final VacancyService vacancyService;
     private final ResumeService resumeService;
     private final ApplicantProfileService service;
+    private final UserService userService;
 
     public List<JobApplicationDto> getAllJobApplications() {
         List<JobApplication> jobApplications = jobApplicationDao.getAllJobApplications();
@@ -73,7 +74,8 @@ public class JobApplicationService {
     }
 
     public void apply(long vacancyId, long resumeId, Authentication auth) {
-        User user = (User) auth.getPrincipal();
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
         ResumeDto r = resumeService.getResumeById(resumeId);
         if(r.getApplicantDto().getUserId().equalsIgnoreCase(user.getId())) {
             jobApplicationDao.save(JobApplication.builder()

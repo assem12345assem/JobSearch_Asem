@@ -24,6 +24,7 @@ public class ResumeService {
     private final ContactInfoService contactInfoService;
     private final ApplicantProfileService applicantService;
     private final CategoryService categoryService;
+    private final UserService userService;
 
     private ResumeDto makeDtoFromResume(Resume resume) {
         return ResumeDto.builder()
@@ -79,7 +80,8 @@ public class ResumeService {
     }
 
     public void createResume(ResumeDto e, Authentication auth) {
-        User user = (User) auth.getPrincipal();
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
         if(user.getId().equalsIgnoreCase(e.getApplicantDto().getUserId())) {
             log.warn("New resume created: {}", e.getId());
             resumeDao.save(createResumeFromDto(e));

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -21,6 +22,7 @@ public class VacancyService {
     private final VacancyDao vacancyDao;
     private final CategoryService categoryService;
     private final EmployerProfileService employerService;
+    private final UserService userService;
 
     public List<VacancyDto> getAllVacancies() {
         List<Vacancy> list = vacancyDao.getAllVacancies();
@@ -80,17 +82,29 @@ public class VacancyService {
                 .toList();
     }
 
-    public void createVacancy(VacancyDto vacancyDto, Authentication auth) {
-        User user = (User) auth.getPrincipal();
-        if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
-            log.info("Vacancy was created: {}", vacancyDto.getId());
-            Vacancy vacancy = makeVacancyFromDto(vacancyDto);
-            vacancyDao.save(vacancy);
+    public void createVacancy(Long employerId, String vacancyName, String category, int salary, String description,
+                              int minReqExp, int maxReqExp, Authentication auth) {
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
+        if(employerService.getUserIdByEmployerId(employerId).equalsIgnoreCase(user.getId())) {
+            vacancyDao.save(Vacancy.builder()
+                            .employerId(employerId)
+                            .vacancyName(vacancyName)
+                            .category(category)
+                            .description(description)
+                            .salary(salary)
+                            .requiredExperienceMin(minReqExp)
+                            .requiredExperienceMax(maxReqExp)
+                            .isActive(false)
+                            .isPublished(false)
+                            .publishedDateTime(LocalDateTime.now())
+                    .build());
         }
     }
 
     public void editVacancy(VacancyDto vacancyDto, Authentication auth) {
-        User user = (User) auth.getPrincipal();
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
         if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
             Vacancy vacancy = makeVacancyFromDto(vacancyDto);
             vacancyDao.editVacancy(vacancy);
@@ -98,7 +112,8 @@ public class VacancyService {
     }
 
     public void deleteVacancy(VacancyDto vacancyDto, Authentication auth) {
-        User user = (User) auth.getPrincipal();
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
         if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
             log.info("Vacancy was deleted: {}", vacancyDto.getId());
             vacancyDao.delete(vacancyDto.getId());

@@ -31,7 +31,7 @@ public class VacancyDao extends BaseDao{
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, e.getEmployerId());
             ps.setString(2, e.getVacancyName());
-            ps.setString(3, e.getCategory().toString());
+            ps.setString(3, e.getCategory());
             ps.setInt(4, e.getSalary());
             ps.setString(5, e.getDescription());
             ps.setInt(6, e.getRequiredExperienceMin());

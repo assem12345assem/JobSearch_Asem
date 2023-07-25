@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployerProfileService {
     private final EmployerDao employerDao;
+    private final UserService userService;
 
     public List<EmployerDto> getAllEmployers() {
         List<Employer> list = employerDao.getAllEmployers();
@@ -59,7 +60,8 @@ public class EmployerProfileService {
     }
 
     public void editEmployer(EmployerDto employerDto, Authentication auth) {
-        User user = (User) auth.getPrincipal();
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
         if(user.getId().equalsIgnoreCase(employerDto.getUserId())) {
             Employer employer = createEmployerFromDto(employerDto);
             employerDao.editEmployer(employer);

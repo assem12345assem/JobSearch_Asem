@@ -2,7 +2,6 @@ package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.UserDao;
 import com.example.jobsearch.dto.UserDto;
-import com.example.jobsearch.enums.UserType;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,14 @@ public class UserService {
     private final UserDao userDao;
     private final FileService fileService;
 
+    public User getUserById(String email) {
+        return userDao.getUserById(email);
+    }
+public User getUserFromAuth(String auth) {
+    int x = auth.indexOf("=");
+    int y = auth.indexOf(",");
+    return getUserById(auth.substring(x+1, y));
+}
     public List<UserDto> getAllUsers() {
         log.warn("Used getAllUsers method");
         List<User> users = userDao.getAllUsers();
@@ -59,13 +66,6 @@ public class UserService {
                 .build();
     }
 
-    private UserType returnEnum(String value) {
-        if (value.equalsIgnoreCase("applicant")) {
-            return UserType.APPLICANT;
-        }
-        return UserType.EMPLOYER;
-    }
-
     public ResponseEntity<?> getOptionalUserByPhoneNumber(String phoneNumber) {
         Optional<User> maybeUser = userDao.getOptionalUserByPhoneNumber(phoneNumber);
         if (maybeUser.isEmpty()) {
@@ -80,22 +80,23 @@ public class UserService {
 
     public void createUser(UserDto userDto) {
 
-            User user = makeUserFromDto(userDto);
-            userDao.createUser(user);
+        User user = makeUserFromDto(userDto);
+        userDao.createUser(user);
     }
 
 
     public void editUser(UserDto userDto, Authentication auth) {
-        User u = (User) auth.getPrincipal();
-        if(u.getId().equalsIgnoreCase(userDto.getId())) {
-            User user = makeUserFromDto(userDto);
-            userDao.editUser(user);
+        var user = auth.getPrincipal();
+        User u = getUserFromAuth(user.toString());
+        if (u.getId().equalsIgnoreCase(userDto.getId())) {
+            userDao.editUser(u);
         }
     }
 
     public void uploadUserPhoto(String email, MultipartFile file, Authentication auth) {
-        User u = (User) auth.getPrincipal();
-        if(u.getId().equalsIgnoreCase(email)) {
+        var user = auth.getPrincipal();
+        User u = getUserFromAuth(user.toString());
+        if (u.getId().equalsIgnoreCase(email)) {
             String fileName = fileService.saveUploadedFile(file, "images");
             userDao.savePhoto(email, fileName);
         }

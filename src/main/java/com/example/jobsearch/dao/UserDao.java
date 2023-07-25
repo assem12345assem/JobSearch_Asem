@@ -18,7 +18,7 @@ public class UserDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
     public List<User> getUsersByUserType(String userType) {
-        String sql = "select * from users where userType = ?";
+        String sql = "select * from users where USER_TYPE = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
     public boolean ifPasswordCorrect(String email, String password) {
@@ -31,9 +31,9 @@ public class UserDao {
     }
     public void createUser(User user) {
         String sql = """
-                insert into USERS (ID, PHONENUMBER, USERTYPE,\s
-                                     PASSWORD, PHOTO)\s
-                VALUES ( ?, ?, ?, ?, ?)""";
+                insert into USERS (ID, PHONE_NUMBER, USER_NAME,
+                USER_TYPE, PASSWORD, ENABLED)\s
+                VALUES (?, ?, ?, ?, ?, ?)""";
             jdbcTemplate.update(sql, user.getId(), user.getPhoneNumber(),
                     user.getUserType(), user.getPassword(), setNull(user.getPhoto()));
 
@@ -56,7 +56,7 @@ public class UserDao {
         return Optional.ofNullable(user);
     }
     public Optional<User> getOptionalUserByPhoneNumber(String phoneNumber) {
-        String sql = "select * from users where phoneNumber = ?";
+        String sql = "select * from users where PHONE_NUMBER = ?";
         User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), phoneNumber);
         return Optional.ofNullable(user);
     }
@@ -65,7 +65,7 @@ public class UserDao {
     public void editUser(User e) {
         String sql = """
                 update USERS
-                set PASSWORD = ?, PHONENUMBER = ?
+                set PASSWORD = ?, PHONE_NUMBER = ?
                 where ID = ?""";
         jdbcTemplate.update(sql, e.getPassword(), e.getPhoneNumber(), e.getId());
     }
@@ -73,5 +73,10 @@ public class UserDao {
     public void savePhoto(String email, String photo) {
         String sql = "update users set photo = ? where id = ?";
         jdbcTemplate.update(sql, photo, email);
+    }
+
+    public User getUserById(String email) {
+        String sql = "select * from users where id = ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), email);
     }
 }

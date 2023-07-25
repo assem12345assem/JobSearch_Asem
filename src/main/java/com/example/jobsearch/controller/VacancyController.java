@@ -27,8 +27,9 @@ public class VacancyController {
     }
 
     @PostMapping("/employer/create_vacancy")
-    public HttpStatus createVacancy(VacancyDto vacancyDto, Authentication auth) {
-        vacancyService.createVacancy(vacancyDto, auth);
+    public HttpStatus createVacancy(Long employerId, String vacancyName, String category, int salary, String description,
+            int minReqExp, int maxReqExp, Authentication auth) {
+        vacancyService.createVacancy(employerId, vacancyName, category, salary, description, minReqExp, maxReqExp, auth);
         return HttpStatus.OK;
     }
 
