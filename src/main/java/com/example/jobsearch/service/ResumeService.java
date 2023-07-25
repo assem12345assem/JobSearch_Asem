@@ -30,7 +30,7 @@ public class ResumeService {
                 .id(resume.getId())
                 .applicantDto(applicantService.getApplicantById(resume.getApplicantId()))
                 .resumeTitle(resume.getResumeTitle())
-                .categoryDto(categoryService.getCategoryById(resume.getCategoryId()))
+                .categoryDto(categoryService.getCategoryByName(resume.getCategory()))
                 .expectedSalary(resume.getExpectedSalary())
                 .isActive(resume.isActive())
                 .isPublished(resume.isPublished())
@@ -42,7 +42,7 @@ public class ResumeService {
                 .id(resume.getId())
                 .applicantId(resume.getApplicantDto().getId())
                 .resumeTitle(resume.getResumeTitle())
-                .categoryId(resume.getCategoryDto().getId())
+                .category(resume.getCategoryDto().getCategory())
                 .expectedSalary(resume.getExpectedSalary())
                 .isActive(resume.isActive())
                 .isPublished(resume.isPublished())
@@ -64,8 +64,8 @@ public class ResumeService {
                 .toList();
     }
 
-    public List<ResumeDto> getAllResumesByCategoryId(long categoryId) {
-        List<Resume> list = resumeDao.getAllResumesByCategoryId(categoryId);
+    public List<ResumeDto> getAllResumesByCategory(String categoryId) {
+        List<Resume> list = resumeDao.getAllResumesByCategory(categoryId);
         return list.stream()
                 .map(this::makeDtoFromResume)
                 .toList();

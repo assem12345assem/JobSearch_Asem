@@ -116,13 +116,8 @@ public class ResumeController {
     }
 
     @GetMapping("/view/by_category/{category}")
-    public List<ResumeDto> getAllResumesByCategoryName(@PathVariable String category) {
-        return resumeService.getAllResumesByCategoryName(category);
-    }
-
-    @GetMapping("/view/by_category_id/{id}")
-    public List<ResumeDto> getAllResumesByCategoryId(@PathVariable long id) {
-        return resumeService.getAllResumesByCategoryId(id);
+    public List<ResumeDto> getAllResumesByCategory(@PathVariable String category) {
+        return resumeService.getAllResumesByCategory(category);
     }
 
 

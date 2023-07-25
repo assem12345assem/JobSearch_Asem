@@ -16,7 +16,7 @@ public enum VacancySortStrategy {
     BY_CATEGORY ("by_category") {
         @Override
         public List<Vacancy> sortingVacancies(List<Vacancy> vacancies) {
-            vacancies.sort(Comparator.comparing(Vacancy::getCategoryId));
+            vacancies.sort(Comparator.comparing(Vacancy::getCategory));
             return vacancies;
         }
     },

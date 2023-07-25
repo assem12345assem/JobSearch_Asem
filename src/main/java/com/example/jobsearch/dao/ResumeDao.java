@@ -21,14 +21,14 @@ public class ResumeDao extends BaseDao{
     public Long save(Object obj) {
         Resume e = (Resume) obj;
         String sql = """
-                insert into RESUMES (APPLICANTID, RESUMETITLE, CATEGORYID,\s
+                insert into RESUMES (APPLICANTID, RESUMETITLE, CATEGORY,\s
                                      EXPECTEDSALARY, ISACTIVE, ISPUBLISHED)\s
                 VALUES ( ?, ?, ?, ?, ?, ? )""";
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, e.getApplicantId());
             ps.setString(2, e.getResumeTitle());
-            ps.setLong(3, e.getCategoryId());
+            ps.setString(3, e.getCategory());
             ps.setInt(4, e.getExpectedSalary());
             ps.setBoolean(5, e.isActive());
             ps.setBoolean(6, e.isPublished());
@@ -58,8 +58,8 @@ public class ResumeDao extends BaseDao{
         String sql = "select * from RESUMES where applicantId = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), applicantId);
     }
-    public List<Resume> getAllResumesByCategoryId(long categoryId) {
-        String sql = "select * from RESUMES where categoryId = ?";
+    public List<Resume> getAllResumesByCategory(String categoryId) {
+        String sql = "select * from RESUMES where category = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), categoryId);
     }
     public List<Resume> getAllResumesByLongList(List<Long> list) {
@@ -74,17 +74,17 @@ public class ResumeDao extends BaseDao{
     public List<Resume> getAllResumesByCategoryName(String categoryName) {
         String sql = """
                 select * from RESUMES r, CATEGORIES c
-                         where r.CATEGORYID = c.id
+                         where r.CATEGORY = c.CATEGORY
                            and c.CATEGORY = ?""";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), categoryName);
     }
     public void editResume(Resume e) {
         String sql = """
                 update RESUMES
-                set APPLICANTID = ?, RESUMETITLE = ?, CATEGORYID = ?, EXPECTEDSALARY = ?,\s
+                set APPLICANTID = ?, RESUMETITLE = ?, CATEGORY = ?, EXPECTEDSALARY = ?,\s
                     ISACTIVE = ?, ISPUBLISHED = ?
                 where ID = ?""";
-        jdbcTemplate.update(sql, e.getApplicantId(), e.getResumeTitle(), e.getCategoryId(),
+        jdbcTemplate.update(sql, e.getApplicantId(), e.getResumeTitle(), e.getCategory(),
                 e.getExpectedSalary(), e.isActive(), e.isPublished(), e.getId());
     }
 

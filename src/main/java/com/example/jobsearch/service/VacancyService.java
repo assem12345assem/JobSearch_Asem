@@ -34,7 +34,7 @@ public class VacancyService {
                 .id(v.getId())
                 .employerId(v.getEmployerId())
                 .vacancyName(v.getVacancyName())
-                .categoryDto(categoryService.getCategoryById(v.getCategoryId()))
+                .categoryDto(categoryService.getCategoryByName(v.getCategory()))
                 .salary(v.getSalary())
                 .description(v.getDescription())
                 .requiredExperienceMin(v.getRequiredExperienceMin())
@@ -50,7 +50,7 @@ public class VacancyService {
                 .id(v.getId())
                 .employerId(v.getEmployerId())
                 .vacancyName(v.getVacancyName())
-                .categoryId(v.getCategoryDto().getId())
+                .category(v.getCategoryDto().getCategory())
                 .salary(v.getSalary())
                 .description(v.getDescription())
                 .requiredExperienceMin(v.getRequiredExperienceMin())
@@ -62,16 +62,11 @@ public class VacancyService {
 
     }
 
-    public List<VacancyDto> getAllVacanciesByCategory(Long categoryId) {
-        List<Vacancy> list = vacancyDao.getAllVacanciesByCategory(categoryId);
+    public List<VacancyDto> getAllVacanciesByCategory(String category) {
+        List<Vacancy> list = vacancyDao.getAllVacanciesByCategory(category);
         return list.stream()
                 .map(this::makeDtoFromVacancy)
                 .toList();
-    }
-
-    public List<VacancyDto> getAllVacanciesByCategory(String category) {
-        Long id = categoryService.getIdByCategory(category);
-        return getAllVacanciesByCategory(id);
     }
 
     public VacancyDto getVacancyById(Long id) {

@@ -23,7 +23,7 @@ public class VacancyDao extends BaseDao{
     public Long save(Object obj) {
         Vacancy e = (Vacancy) obj;
         String sql = """
-                insert into VACANCIES (EMPLOYERID, VACANCYNAME, CATEGORYID, SALARY, DESCRIPTION,\s
+                insert into VACANCIES (EMPLOYERID, VACANCYNAME, CATEGORY, SALARY, DESCRIPTION,\s
                                REQUIREDEXPERIENCEMIN, REQUIREDEXPERIENCEMAX, ISACTIVE, ISPUBLISHED,\s
                                PUBLISHEDDATETIME)
                         values ( ?,?,?,?,?,?,?,?,?,? )""";
@@ -31,7 +31,7 @@ public class VacancyDao extends BaseDao{
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, e.getEmployerId());
             ps.setString(2, e.getVacancyName());
-            ps.setLong(3, e.getCategoryId());
+            ps.setString(3, e.getCategory().toString());
             ps.setInt(4, e.getSalary());
             ps.setString(5, e.getDescription());
             ps.setInt(6, e.getRequiredExperienceMin());
@@ -59,9 +59,9 @@ public class VacancyDao extends BaseDao{
         String sql = "select * from VACANCIES where EMPLOYERID = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), id);
     }
-    public List<Vacancy> getAllVacanciesByCategory(long categoryId) {
-        String sql = "select * from VACANCIES where categoryId = ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), categoryId);
+    public List<Vacancy> getAllVacanciesByCategory(String category) {
+        String sql = "select * from VACANCIES where category = ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), category);
     }
     public Vacancy getVacancyById(Long id) {
         String sql = "select * from VACANCIES where id = ?";
@@ -78,14 +78,14 @@ public class VacancyDao extends BaseDao{
     public void editVacancy(Vacancy vacancy) {
         String sql = """
                 update VACANCIES
-                set VACANCYNAME = ?, CATEGORYID = ?, SALARY = ?, DESCRIPTION = ?, REQUIREDEXPERIENCEMIN = ?,
+                set VACANCYNAME = ?, CATEGORY = ?, SALARY = ?, DESCRIPTION = ?, REQUIREDEXPERIENCEMIN = ?,
                     REQUIREDEXPERIENCEMAX = ?, ISACTIVE = ?, ISPUBLISHED = ?, PUBLISHEDDATETIME = ?
                 where ID = ?
                 """;
         jdbcTemplate.update(conn -> {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, vacancy.getVacancyName());
-            ps.setLong(2, vacancy.getCategoryId());
+            ps.setString(2, vacancy.getCategory());
             ps.setInt(3, vacancy.getSalary());
             ps.setString(4, vacancy.getDescription());
             ps.setInt(5, vacancy.getRequiredExperienceMin());

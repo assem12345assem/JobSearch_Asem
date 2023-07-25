@@ -14,12 +14,12 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: phone_number
-                  type: varchar(45)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: user_name
-                  type: varchar(45)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -29,7 +29,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: password
-                  type: varchar(45)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -83,12 +83,9 @@ databaseChangeLog:
                   name: authority
                   type: varchar(50)
               - column:
-                  name: role_id
-                  type: long
-                  constraints:
-                    foreignKeyName: fk_role_id
-                    nullable: false
-                    references: roles(id)
+                  name: role
+                  type: varchar(50)
+
   - changeSet:
       id: create-employers-table
       author: Asem

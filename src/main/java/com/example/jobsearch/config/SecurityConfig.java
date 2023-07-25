@@ -21,9 +21,9 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String FETCH_USERS_QUERY = "select email, password, enabled \n" +
-            "from user_table \n" +
-            "where email = ?;";
+    private static final String FETCH_USERS_QUERY = "select id, password, enabled \n" +
+            "from users \n" +
+            "where id = ?;";
 
     private static final String FETCH_ROLES_QUERY = "select user_email, role \n" +
             "from roles \n" +
