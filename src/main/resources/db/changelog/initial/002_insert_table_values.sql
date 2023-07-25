@@ -1,10 +1,15 @@
-insert into USERS(ID, phonenumber, usertype, password)
-VALUES ('timcook@com.com','968-859-5215','applicant','123'),
-       ('leejy@com.com','578-525-5455','applicant','123'),
-       ('samsung@com.com','548-556-8455','employer','123'),
-       ('apple@com.com','758-554-5662','employer','123'),
-       ('test@com.com','454-52-15','employer','123');
-
+insert into USERS (ID, PHONE_NUMBER, USER_NAME, USER_TYPE, PASSWORD, ENABLED)
+values ('timcook@com.com','968-859-5215','Tim Cook', 'applicant',
+        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true),
+       ('leejy@com.com','578-525-5455', 'Lee JY', 'applicant',
+        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true),
+       ('samsung@com.com','548-556-8455','Samsung', 'employer',
+        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true),
+       ('apple@com.com','758-554-5662', 'Apple', 'employer',
+        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true),
+       ('test@com.com','454-52-15','Test','employer',
+        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true);
+// password is 'qwe'
 insert into EMPLOYERS (USERID, COMPANYNAME)
 values ((select ID from USERS where ID like 'samsung%'), 'Samsung'),
        ((select ID from USERS where ID like 'apple%'), 'Apple'),
@@ -28,23 +33,23 @@ values ('accounting'),
        ('design'),
        ('media');
 
-insert into VACANCIES (EMPLOYERID, VACANCYNAME, CATEGORYID, SALARY, DESCRIPTION,
+insert into VACANCIES (EMPLOYERID, VACANCYNAME, CATEGORY, SALARY, DESCRIPTION,
                        REQUIREDEXPERIENCEMIN, REQUIREDEXPERIENCEMAX, ISACTIVE, ISPUBLISHED, PUBLISHEDDATETIME)
 values ( (select ID from EMPLOYERS where COMPANYNAME like 'Samsung'), 'Samsung CEO',
-        (select id from CATEGORIES where CATEGORY like 'management'), 1000,
-        'Sed ut perspiciatis unde omnis iste natus', 10, 15, false, true, '2023-03-31 18:00:00' ),
+         'management', 1000,
+         'Sed ut perspiciatis unde omnis iste natus', 10, 15, false, true, '2023-03-31 18:00:00' ),
        ((select ID from EMPLOYERS where COMPANYNAME like 'Apple'), 'Apple CEO',
-        (select id from CATEGORIES where CATEGORY like 'management'), 1000,
+        'management', 1000,
         'ut perspiciatis unde omnis iste', 10, 15, false, true, '2023-03-31 18:00:00' ),
        ((select ID from EMPLOYERS where COMPANYNAME like 'Test%'), 'Test accountant',
-        (select id from CATEGORIES where CATEGORY like 'accounting'), 1000,
+        'accounting', 1000,
         'At vero eos et accusamus et iusto', 1, 2, false, true, '2023-03-31 18:00:00');
 
-insert into RESUMES (APPLICANTID, RESUMETITLE, CATEGORYID, EXPECTEDSALARY, ISACTIVE, ISPUBLISHED)
+insert into RESUMES (APPLICANTID, RESUMETITLE, CATEGORY, EXPECTEDSALARY, ISACTIVE, ISPUBLISHED)
 values ((select ID from APPLICANTS where LASTNAME like 'Cook'), 'Apple CEO',
-        (select id from CATEGORIES where CATEGORY like 'management'), 1000, false, false),
+        'management', 1000, false, false),
        ((select ID from APPLICANTS where LASTNAME like 'Lee'), 'Samsung CEO',
-        (select id from CATEGORIES where CATEGORY like 'management'), 1000, false, false);
+        'management', 1000, false, false);
 
 insert into EDUCATION (RESUMEID, EDUCATION, SCHOOLNAME, STARTDATE, GRADUATIONDATE)
 values ((select id from RESUMES where RESUMETITLE like 'Apple%'),
@@ -81,3 +86,22 @@ VALUES ((select id from VACANCIES where VACANCYNAME like 'Apple%'),
        ((select id from VACANCIES where VACANCYNAME like 'Samsung%'),
         (select id from RESUMES where RESUMETITLE like 'Samsung%'),
         '2023-07-02 10:00:00');
+
+insert into roles(role, user_email)
+values ('EMPLOYER', 'test@com.com'),
+       ('EMPLOYER', 'apple@com.com'),
+       ('EMPLOYER', 'samsung@com.com'),
+       ('APPLICANT','timcook@com.com'),
+       ('APPLICANT', 'leejy@com.com');
+
+insert into authorities (authority, role)
+values('ADD_VACANCY', 'EMPLOYER'),
+      ('EDIT_VACANCY', 'EMPLOYER'),
+      ('DELETE_VACANCY', 'EMPLOYER'),
+      ('ADD_RESUME', 'APPLICANT'),
+      ('EDIT_RESUME', 'APPLICANT'),
+      ('DELETE_RESUME', 'APPLICANT'),
+      ('JOB_APPLY', 'APPLICANT');
+
+
+

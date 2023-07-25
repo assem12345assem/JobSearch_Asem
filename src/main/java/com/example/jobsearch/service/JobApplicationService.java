@@ -6,10 +6,13 @@ import com.example.jobsearch.dto.JobApplicationDto;
 import com.example.jobsearch.dto.ResumeDto;
 import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.model.JobApplication;
+import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +24,7 @@ public class JobApplicationService {
     private final VacancyService vacancyService;
     private final ResumeService resumeService;
     private final ApplicantProfileService service;
+    private final UserService userService;
 
     public List<JobApplicationDto> getAllJobApplications() {
         List<JobApplication> jobApplications = jobApplicationDao.getAllJobApplications();
@@ -51,9 +55,9 @@ public class JobApplicationService {
         return resumeService.getAllResumesByLongList(ids);
     }
 
-    public void applyForVacancy(long vacancyId, long resumeId) {
-        log.warn("Vacancy application: {}", vacancyId);
-        jobApplicationDao.applyForVacancy(vacancyId, resumeId);
+    private VacancyDto getVacancyByIdAndResumeId(long vacancyId, long resumeId) {
+        JobApplication j = jobApplicationDao.getVacancyByIdAndResumeId(vacancyId, resumeId);
+    return vacancyService.getVacancyById(j.getVacancyId());
     }
 
     public List<ResumeDto> getMyResumes(ApplicantDto applicantDto) {
@@ -67,5 +71,20 @@ public class JobApplicationService {
         allMyResumes.forEach(e -> ids.add(e.getId()));
         List<Long> allMyVacancyApplications = getAllVacanciesByResumeList(ids);
         return vacancyService.getVacancyListByIdList(allMyVacancyApplications);
+    }
+
+    public void apply(long vacancyId, long resumeId, Authentication auth) {
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
+        ResumeDto r = resumeService.getResumeById(resumeId);
+        if(r.getApplicantDto().getUserId().equalsIgnoreCase(user.getId())) {
+            jobApplicationDao.save(JobApplication.builder()
+                            .vacancyId(vacancyId)
+                            .resumeId(resumeId)
+                            .dateTime(LocalDateTime.now())
+                    .build());
+
+        }
+
     }
 }

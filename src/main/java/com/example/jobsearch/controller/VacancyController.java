@@ -5,6 +5,7 @@ import com.example.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,21 +26,22 @@ public class VacancyController {
         return vacancyService.getAllVacanciesByCategory(category);
     }
 
-    @PostMapping("/create_vacancy")
-    public HttpStatus createVacancy(VacancyDto vacancyDto) {
-        vacancyService.createVacancy(vacancyDto);
+    @PostMapping("/employer/create_vacancy")
+    public HttpStatus createVacancy(Long employerId, String vacancyName, String category, int salary, String description,
+            int minReqExp, int maxReqExp, Authentication auth) {
+        vacancyService.createVacancy(employerId, vacancyName, category, salary, description, minReqExp, maxReqExp, auth);
         return HttpStatus.OK;
     }
 
-    @PostMapping("/edit_vacancy")
-    public HttpStatus editVacancy(VacancyDto vacancyDto) {
-        vacancyService.editVacancy(vacancyDto);
+    @PostMapping("/employer/edit_vacancy")
+    public HttpStatus editVacancy(VacancyDto vacancyDto, Authentication auth) {
+        vacancyService.editVacancy(vacancyDto, auth);
         return HttpStatus.OK;
     }
 
-    @DeleteMapping("/delete_vacancy")
-    public HttpStatus deleteVacancy(@RequestBody VacancyDto vacancyDto) {
-        vacancyService.deleteVacancy(vacancyDto);
+    @DeleteMapping("/employer/delete_vacancy")
+    public HttpStatus deleteVacancy(@RequestBody VacancyDto vacancyDto, Authentication auth) {
+        vacancyService.deleteVacancy(vacancyDto, auth);
         return HttpStatus.OK;
     }
 

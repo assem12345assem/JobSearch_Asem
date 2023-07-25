@@ -7,8 +7,10 @@ import com.example.jobsearch.dto.EducationDto;
 import com.example.jobsearch.dto.ResumeDto;
 import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.model.Resume;
+import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,29 +24,30 @@ public class ResumeService {
     private final ContactInfoService contactInfoService;
     private final ApplicantProfileService applicantService;
     private final CategoryService categoryService;
+    private final UserService userService;
 
     private ResumeDto makeDtoFromResume(Resume resume) {
-        ResumeDto r = new ResumeDto();
-        r.setId(resume.getId());
-        r.setApplicant(applicantService.getApplicantById(resume.getApplicantId()));
-        r.setResumeTitle(resume.getResumeTitle());
-        r.setCategory(categoryService.getCategoryById(resume.getCategoryId()));
-        r.setExpectedSalary(resume.getExpectedSalary());
-        r.setActive(resume.isActive());
-        r.setPublished(resume.isPublished());
-        return r;
+        return ResumeDto.builder()
+                .id(resume.getId())
+                .applicantDto(applicantService.getApplicantById(resume.getApplicantId()))
+                .resumeTitle(resume.getResumeTitle())
+                .categoryDto(categoryService.getCategoryByName(resume.getCategory()))
+                .expectedSalary(resume.getExpectedSalary())
+                .isActive(resume.isActive())
+                .isPublished(resume.isPublished())
+                .build();
     }
 
     private Resume createResumeFromDto(ResumeDto resume) {
-        Resume r = new Resume();
-        r.setId(resume.getId());
-        r.setApplicantId(resume.getApplicant().getId());
-        r.setResumeTitle(resume.getResumeTitle());
-        r.setCategoryId(resume.getCategory().getId());
-        r.setExpectedSalary(resume.getExpectedSalary());
-        r.setActive(resume.isActive());
-        r.setPublished(resume.isPublished());
-        return r;
+        return Resume.builder()
+                .id(resume.getId())
+                .applicantId(resume.getApplicantDto().getId())
+                .resumeTitle(resume.getResumeTitle())
+                .category(resume.getCategoryDto().getCategory())
+                .expectedSalary(resume.getExpectedSalary())
+                .isActive(resume.isActive())
+                .isPublished(resume.isPublished())
+                .build();
     }
 
     public List<ResumeDto> getAllResumes() {
@@ -62,8 +65,8 @@ public class ResumeService {
                 .toList();
     }
 
-    public List<ResumeDto> getAllResumesByCategoryId(long categoryId) {
-        List<Resume> list = resumeDao.getAllResumesByCategoryId(categoryId);
+    public List<ResumeDto> getAllResumesByCategory(String categoryId) {
+        List<Resume> list = resumeDao.getAllResumesByCategory(categoryId);
         return list.stream()
                 .map(this::makeDtoFromResume)
                 .toList();
@@ -76,21 +79,18 @@ public class ResumeService {
                 .toList();
     }
 
-    public void createResume(ResumeDto e) {
-        log.warn("New resume created: {}", e.getId());
-        resumeDao.createResume(createResumeFromDto(e));
-
+    public void createResume(ResumeDto e, Authentication auth) {
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
+        if(user.getId().equalsIgnoreCase(e.getApplicantDto().getUserId())) {
+            log.warn("New resume created: {}", e.getId());
+            resumeDao.save(createResumeFromDto(e));
+        }
     }
 
     public void deleteResume(ResumeDto e) {
         log.warn("Resume deleted: {}", e.getId());
-        resumeDao.deleteResume(createResumeFromDto(e));
-        List<WorkExperienceDto> w = e.getWorkExperienceList();
-        List<EducationDto> ed = e.getEducationList();
-        ContactInfoDto ci = e.getContactInfo();
-        w.forEach(workExperienceService::deleteWorkExperience);
-        ed.forEach(educationService::deleteEducation);
-        contactInfoService.deleteContactInfo(ci);
+        resumeDao.delete(e.getId());
     }
 
     public void editResume(ResumeDto e) {

@@ -10,15 +10,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CategoryDao {
     private final JdbcTemplate jdbcTemplate;
-    public Category getCategoryById(long id) {
-        String sql = "select * from categories where id = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Category.class), id);
+    public Category getCategoryByName(String name) {
+        String sql = "select * from categories where category = ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Category.class), name);
     }
 
-    public Long getIdByCategory(String category) {
-        String sql = "select id from categories where category like ?";
-        category = "%" + category + "%";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Long.class), category);
 
-    }
 }

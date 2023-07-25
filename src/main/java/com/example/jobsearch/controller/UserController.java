@@ -5,6 +5,7 @@ import com.example.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,17 +43,17 @@ public ResponseEntity<?> getUserByPhoneNumber(@PathVariable String phoneNumber) 
     }
 
     @PostMapping("/edit_user")
-    public HttpStatus editUser(@RequestBody UserDto userDto) {
+    public HttpStatus editUser(@RequestBody UserDto userDto, Authentication auth) {
         if(userService.ifUserExists(userDto.getId())) {
-            userService.editUser(userDto);
+            userService.editUser(userDto, auth);
             return HttpStatus.OK;
         }
         return HttpStatus.valueOf("User does not exist.");
 
     }
     @PostMapping("/upload_photo")
-    public HttpStatus uploadPhoto(String email, MultipartFile file) {
-        userService.uploadUserPhoto(email, file);
+    public HttpStatus uploadPhoto(String email, MultipartFile file, Authentication auth) {
+        userService.uploadUserPhoto(email, file, auth);
         return HttpStatus.OK;
     }
 }

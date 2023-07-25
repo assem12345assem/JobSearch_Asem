@@ -12,7 +12,7 @@ public class Resume {
     Long id;
     Long applicantId;
     String resumeTitle;
-    Long categoryId;
+    String category;
     Integer expectedSalary;
     boolean isActive;
     boolean isPublished;

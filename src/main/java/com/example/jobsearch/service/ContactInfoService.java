@@ -19,36 +19,36 @@ public class ContactInfoService {
     }
 
     private ContactInfoDto makeDtoFromContactInfo(ContactInfo e) {
-        ContactInfoDto c = new ContactInfoDto();
-        c.setId(e.getId());
-        c.setResumeId(e.getResumeId());
-        c.setTelegram(e.getTelegram());
-        c.setEmail(e.getEmail());
-        c.setPhoneNumber(e.getPhoneNumber());
-        c.setFacebookAccount(e.getFacebookAccount());
-        c.setLinkedinAccount(e.getLinkedinAccount());
-        return c;
+        return ContactInfoDto.builder()
+                .id(e.getId())
+                .resumeId(e.getResumeId())
+                .telegram(e.getTelegram())
+                .email(e.getEmail())
+                .phoneNumber(e.getPhoneNumber())
+                .facebookAccount(e.getFacebookAccount())
+                .linkedinAccount(e.getLinkedinAccount())
+                .build();
     }
 
     private ContactInfo createContactInfoFromDto(ContactInfoDto e) {
-        ContactInfo c = new ContactInfo();
-        c.setId(e.getId());
-        c.setResumeId(e.getResumeId());
-        c.setTelegram(e.getTelegram());
-        c.setEmail(e.getEmail());
-        c.setPhoneNumber(e.getPhoneNumber());
-        c.setFacebookAccount(e.getFacebookAccount());
-        c.setLinkedinAccount(e.getLinkedinAccount());
-        return c;
+        return ContactInfo.builder()
+                .id(e.getId())
+                .resumeId(e.getResumeId())
+                .telegram(e.getTelegram())
+                .email(e.getEmail())
+                .phoneNumber(e.getPhoneNumber())
+                .facebookAccount(e.getFacebookAccount())
+                .linkedinAccount(e.getLinkedinAccount())
+                .build();
     }
 
     public void createContactInfo(ContactInfoDto e) {
         log.warn("Created contact info for resume: {}", e.getResumeId());
-        contactInfoDao.createContactInfo(createContactInfoFromDto(e));
+        contactInfoDao.save(createContactInfoFromDto(e));
     }
 
     public void deleteContactInfo(ContactInfoDto e) {
-        contactInfoDao.deleteContactInfo(createContactInfoFromDto(e));
+        contactInfoDao.delete(e.getId());
     }
 
     public void editContactInfo(ContactInfoDto e) {

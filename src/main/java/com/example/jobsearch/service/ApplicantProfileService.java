@@ -3,8 +3,12 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.dao.ApplicantDao;
 import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.model.Applicant;
+import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApplicantProfileService {
     private final ApplicantDao applicantDao;
+    private final UserService userService;
 
     public String displayAge(Long applicantId) {
         ApplicantDto applicantDto = getApplicantById(applicantId);
@@ -28,25 +33,52 @@ public class ApplicantProfileService {
         return applicantDao.ifApplicantExists(userId);
     }
 
-    public void createApplicant(ApplicantDto applicantDto) {
-        log.warn("Created new applicant: {}", applicantDto.getLastName());
-        applicantDao.createApplicant(buildApplicantFromDto(applicantDto));
-
+    public ResponseEntity<?> createApplicant(ApplicantDto applicantDto) {
+        if (!ifApplicantExists(applicantDto.getUserId())) {
+            applicantDao.save(buildApplicantFromDto(applicantDto));
+            return new ResponseEntity<>("Applicant created", HttpStatus.OK);
+        } else {
+            log.info("Tried to create an applicant that exists: {}", applicantDto.getLastName());
+            return new ResponseEntity<>("Applicant already exists", HttpStatus.OK);
+        }
     }
 
-    public void editApplicant(ApplicantDto applicantDto) {
-        log.warn("Edited applicant: {}", applicantDto.getLastName());
-        applicantDao.editApplicant(buildApplicantFromDto(applicantDto));
+    public ResponseEntity<?> editApplicant(ApplicantDto applicantDto, Authentication auth) {
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
+        if (user.getId().equalsIgnoreCase(applicantDto.getUserId())) {
+            if (ifApplicantExists(applicantDto.getUserId())) {
+                applicantDao.editApplicant(buildApplicantFromDto(applicantDto));
+                return new ResponseEntity<>("Applicant is edited", HttpStatus.OK);
+            } else {
+                log.warn("Tried to edit someone else's profile: {}", user.getId());
+                return new ResponseEntity<>("Tried to edit other user's profile", HttpStatus.BAD_REQUEST);
+            }
+
+        } else {
+            log.warn("Tried to edit applicant that does not exist: {}", applicantDto.getLastName());
+            return new ResponseEntity<>("Applicant does not exist", HttpStatus.OK);
+        }
+
     }
 
     public void deleteApplicant(ApplicantDto e) {
-        applicantDao.deleteApplicant(buildApplicantFromDto(e));
+        applicantDao.delete(e.getId());
     }
 
-    public ApplicantDto getApplicantById(Long applicantId) {
-        return makeDtoFromApplicant(applicantDao.getApplicantById(applicantId));
+    public ResponseEntity<?> findApplicantById(Long applicantId) {
+        var maybeApplicant = applicantDao.findApplicantById(applicantId);
+        if (maybeApplicant.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return new ResponseEntity<>(
+                makeDtoFromApplicant(maybeApplicant.get()),
+                HttpStatus.OK
+        );
     }
-
+    public ApplicantDto getApplicantById(long id) {
+        return makeDtoFromApplicant(applicantDao.getApplicantById(id));
+    }
     public ApplicantDto getApplicantByUserId(String userId) {
         return makeDtoFromApplicant(applicantDao.getApplicantByUserId(userId));
     }

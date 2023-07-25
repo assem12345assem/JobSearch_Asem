@@ -13,7 +13,7 @@ public class Vacancy {
     Long id;
     Long employerId;
     String vacancyName;
-    Long categoryId;
+    String category;
     Integer salary;
     String description;
     Integer requiredExperienceMin;
