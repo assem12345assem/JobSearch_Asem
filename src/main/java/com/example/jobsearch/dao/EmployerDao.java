@@ -1,6 +1,7 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.Employer;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class EmployerDao extends BaseDao{
@@ -39,9 +41,10 @@ public class EmployerDao extends BaseDao{
         String sql = "select * from employers";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employer.class));
     }
-    public Employer getEmployerByUserId(String email) {
+    public Optional<Employer> getEmployerByUserId(String email) {
         String sql = "select * from employers where userId = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Employer.class), email);
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql,
+                new BeanPropertyRowMapper<>(Employer.class), email)));
 
     }
     public String getUserIdByEmployerId(Long employerId) {
@@ -62,9 +65,10 @@ public class EmployerDao extends BaseDao{
         jdbcTemplate.update(sql, employer.getCompanyName());
     }
 
-    public Employer getEmployerById(Long id) {
+    public Optional<Employer> getEmployerById(Long id) {
         String sql = "select * from EMPLOYERS where ID = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Employer.class), id);
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql,
+                new BeanPropertyRowMapper<>(Employer.class), id)));
     }
 
     public List<Employer> getEmployerByCompanyName(String companyName) {

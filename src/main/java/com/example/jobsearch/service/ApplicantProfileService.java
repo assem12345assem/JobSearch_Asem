@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -51,7 +52,7 @@ public class ApplicantProfileService {
                 applicantDao.editApplicant(buildApplicantFromDto(applicantDto));
                 return new ResponseEntity<>("Applicant is edited", HttpStatus.OK);
             } else {
-                log.warn("Tried to edit someone else's profile: {}", user.getId());
+                log.warn("Tried to edit other user's profile: {} {}", applicantDto.getUserId(), user.getId());
                 return new ResponseEntity<>("Tried to edit other user's profile", HttpStatus.BAD_REQUEST);
             }
 
@@ -68,27 +69,24 @@ public class ApplicantProfileService {
 
     public ResponseEntity<?> findApplicantById(Long applicantId) {
         var maybeApplicant = applicantDao.findApplicantById(applicantId);
-        if (maybeApplicant.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return new ResponseEntity<>(
-                makeDtoFromApplicant(maybeApplicant.get()),
-                HttpStatus.OK
-        );
+        return handleApplicantQueries(maybeApplicant);
     }
     public ApplicantDto getApplicantById(long id) {
         return makeDtoFromApplicant(applicantDao.getApplicantById(id));
     }
-    public ApplicantDto getApplicantByUserId(String userId) {
-        return makeDtoFromApplicant(applicantDao.getApplicantByUserId(userId));
+    public ResponseEntity<?> getApplicantByUserId(String userId) {
+        var maybeApplicant = applicantDao.getApplicantByUserId(userId);
+        return handleApplicantQueries(maybeApplicant);
     }
 
-    public ApplicantDto getApplicantByFirstName(String firstName) {
-        return makeDtoFromApplicant(applicantDao.getApplicantByFirstName(firstName));
+    public ResponseEntity<?> getApplicantByFirstName(String firstName) {
+        var maybeApplicant = applicantDao.getApplicantByFirstName(firstName);
+        return handleApplicantQueries(maybeApplicant);
     }
 
-    public ApplicantDto getApplicantByLastName(String lastName) {
-        return makeDtoFromApplicant(applicantDao.getApplicantByLastName(lastName));
+    public ResponseEntity<?> getApplicantByLastName(String lastName) {
+        var maybeApplicant = applicantDao.getApplicantByLastName(lastName);
+        return handleApplicantQueries(maybeApplicant);
     }
 
     public List<ApplicantDto> getAllApplicants() {
@@ -118,5 +116,11 @@ public class ApplicantProfileService {
         a.setLastName(applicant.getLastName());
         a.setDateOfBirth(applicant.getDateOfBirth());
         return a;
+    }
+    private ResponseEntity<?> handleApplicantQueries(Optional<Applicant> maybeApplicant) {
+        if(maybeApplicant.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return new ResponseEntity<>(makeDtoFromApplicant(maybeApplicant.get()), HttpStatus.OK);
     }
 }

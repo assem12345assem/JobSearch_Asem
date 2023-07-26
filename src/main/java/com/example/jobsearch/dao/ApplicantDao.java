@@ -59,19 +59,22 @@ public class ApplicantDao extends BaseDao {
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Applicant.class), id);
     }
 
-    public Applicant getApplicantByUserId(String userId) {
+    public Optional<Applicant> getApplicantByUserId(String userId) {
         String sql = "select * from applicants where userId = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Applicant.class), userId);
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql,
+                new BeanPropertyRowMapper<>(Applicant.class), userId)));
     }
 
-    public Applicant getApplicantByFirstName(String firstName) {
+    public Optional<Applicant> getApplicantByFirstName(String firstName) {
         String sql = "select * from applicants where firstName = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Applicant.class), firstName);
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql,
+                new BeanPropertyRowMapper<>(Applicant.class), firstName)));
     }
 
-    public Applicant getApplicantByLastName(String lastName) {
+    public Optional<Applicant> getApplicantByLastName(String lastName) {
         String sql = "select * from applicants where lastName = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Applicant.class), lastName);
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql,
+                new BeanPropertyRowMapper<>(Applicant.class), lastName)));
     }
 
     public void editApplicant(Applicant e) {
