@@ -9,6 +9,8 @@ import com.example.jobsearch.model.JobApplication;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -64,13 +66,18 @@ public class JobApplicationService {
         return resumeService.getAllResumesByApplicantId(applicantDto.getId());
     }
 
-    public List<VacancyDto> getAllAppliedVacanciesByApplicantId(long applicantId) {
+    public ResponseEntity<?> getAllAppliedVacanciesByApplicantId(long applicantId) {
         ApplicantDto applicantDto = service.getApplicantById(applicantId);
         List<ResumeDto> allMyResumes = getMyResumes(applicantDto);
         List<Long> ids = new ArrayList<>();
         allMyResumes.forEach(e -> ids.add(e.getId()));
         List<Long> allMyVacancyApplications = getAllVacanciesByResumeList(ids);
-        return vacancyService.getVacancyListByIdList(allMyVacancyApplications);
+        List<VacancyDto> list = vacancyService.getVacancyListByIdList(allMyVacancyApplications);
+        if(list.isEmpty()) {
+            return new ResponseEntity<>("Applicant ID does not exist", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        }
     }
 
     public void apply(long vacancyId, long resumeId, Authentication auth) {
