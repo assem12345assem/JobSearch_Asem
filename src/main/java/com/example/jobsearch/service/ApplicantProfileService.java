@@ -52,7 +52,7 @@ public class ApplicantProfileService {
                 applicantDao.editApplicant(buildApplicantFromDto(applicantDto));
                 return new ResponseEntity<>("Applicant is edited", HttpStatus.OK);
             } else {
-                log.warn("Tried to edit someone else's profile: {}", user.getId());
+                log.warn("Tried to edit other user's profile: {} {}", applicantDto.getUserId(), user.getId());
                 return new ResponseEntity<>("Tried to edit other user's profile", HttpStatus.BAD_REQUEST);
             }
 
@@ -78,12 +78,7 @@ public class ApplicantProfileService {
         var maybeApplicant = applicantDao.getApplicantByUserId(userId);
         return handleApplicantQueries(maybeApplicant);
     }
-    private ResponseEntity<?> handleApplicantQueries(Optional<Applicant> maybeApplicant) {
-        if(maybeApplicant.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return new ResponseEntity<>(makeDtoFromApplicant(maybeApplicant.get()), HttpStatus.OK);
-    }
+
     public ResponseEntity<?> getApplicantByFirstName(String firstName) {
         var maybeApplicant = applicantDao.getApplicantByFirstName(firstName);
         return handleApplicantQueries(maybeApplicant);
@@ -121,5 +116,11 @@ public class ApplicantProfileService {
         a.setLastName(applicant.getLastName());
         a.setDateOfBirth(applicant.getDateOfBirth());
         return a;
+    }
+    private ResponseEntity<?> handleApplicantQueries(Optional<Applicant> maybeApplicant) {
+        if(maybeApplicant.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return new ResponseEntity<>(makeDtoFromApplicant(maybeApplicant.get()), HttpStatus.OK);
     }
 }

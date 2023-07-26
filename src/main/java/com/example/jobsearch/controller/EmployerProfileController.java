@@ -3,7 +3,6 @@ package com.example.jobsearch.controller;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.service.EmployerProfileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -24,20 +23,13 @@ public class EmployerProfileController {
     }
     @PostMapping("/create_employer")
     public ResponseEntity<?> createEmployer(@RequestBody EmployerDto employerDto) {
-        if (!employerProfileService.ifEmployerExists(employerDto.getUserId())) {
-            employerProfileService.createEmployer(employerDto);
-            return HttpStatus.OK;
-        }
-        return HttpStatus.valueOf("Employer already exists");
+        return employerProfileService.createEmployer(employerDto);
     }
 
     @PostMapping("/edit_employer")
     public ResponseEntity<?> editEmployer(@RequestBody EmployerDto employerDto, Authentication auth) {
-        if (employerProfileService.ifEmployerExists(employerDto.getUserId())) {
-            employerProfileService.editEmployer(employerDto, auth);
-            return HttpStatus.OK;
-        }
-        return HttpStatus.valueOf("Employer does not exist");
+           return employerProfileService.editEmployer(employerDto, auth);
+
     }
 
 
