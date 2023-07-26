@@ -6,6 +6,7 @@ import com.example.jobsearch.model.Employer;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -33,11 +34,11 @@ public class EmployerProfileService {
         return e;
     }
 
-    public EmployerDto getEmployerByUserId(String email) {
+    public ResponseEntity<?> getEmployerByUserId(String email) {
         return makeDtoFromEmployer(employerDao.getEmployerByUserId(email));
     }
 
-    public EmployerDto getEmployerById(Long id) {
+    public ResponseEntity<?> getEmployerById(Long id) {
         return makeDtoFromEmployer(employerDao.getEmployerById(id));
     }
 

@@ -4,6 +4,7 @@ import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.service.EmployerProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +19,11 @@ public class EmployerProfileController {
     public List<EmployerDto> getAllEmployers() {
         return employerProfileService.getAllEmployers();}
     @GetMapping("/{userId}")
-    public EmployerDto getEmployerByUserId(@PathVariable String userId) {
+    public ResponseEntity<?> getEmployerByUserId(@PathVariable String userId) {
         return employerProfileService.getEmployerByUserId(userId);
     }
     @PostMapping("/create_employer")
-    public HttpStatus createEmployer(@RequestBody EmployerDto employerDto) {
+    public ResponseEntity<?> createEmployer(@RequestBody EmployerDto employerDto) {
         if (!employerProfileService.ifEmployerExists(employerDto.getUserId())) {
             employerProfileService.createEmployer(employerDto);
             return HttpStatus.OK;
@@ -31,7 +32,7 @@ public class EmployerProfileController {
     }
 
     @PostMapping("/edit_employer")
-    public HttpStatus editEmployer(@RequestBody EmployerDto employerDto, Authentication auth) {
+    public ResponseEntity<?> editEmployer(@RequestBody EmployerDto employerDto, Authentication auth) {
         if (employerProfileService.ifEmployerExists(employerDto.getUserId())) {
             employerProfileService.editEmployer(employerDto, auth);
             return HttpStatus.OK;
@@ -41,11 +42,11 @@ public class EmployerProfileController {
 
 
     @GetMapping("/get_employer_by_id/{id}")
-    public EmployerDto getEmployerById(@PathVariable Long id) {
+    public ResponseEntity<?> getEmployerById(@PathVariable Long id) {
         return employerProfileService.getEmployerById(id);
     }
     @GetMapping("/get_employer_by_company_name/{companyName}")
-    public List<EmployerDto> getEmployerByCompanyName(@PathVariable String companyName) {
+    public ResponseEntity<?> getEmployerByCompanyName(@PathVariable String companyName) {
         return employerProfileService.getEmployerByCompanyName(companyName);
     }
 
