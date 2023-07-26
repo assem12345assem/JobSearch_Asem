@@ -22,7 +22,7 @@ public class VacancyController {
     }
 
     @GetMapping("/all_vacancies_by_category/{category}")
-    public List<VacancyDto> getAllVacanciesByCategory(@PathVariable String category) {
+    public ResponseEntity<?> getAllVacanciesByCategory(@PathVariable String category) {
         return vacancyService.getAllVacanciesByCategory(category);
     }
 

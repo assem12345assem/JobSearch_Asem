@@ -64,11 +64,15 @@ public class VacancyService {
 
     }
 
-    public List<VacancyDto> getAllVacanciesByCategory(String category) {
+    public ResponseEntity<?> getAllVacanciesByCategory(String category) {
         List<Vacancy> list = vacancyDao.getAllVacanciesByCategory(category);
-        return list.stream()
-                .map(this::makeDtoFromVacancy)
-                .toList();
+        if(list.isEmpty()) {
+            return new ResponseEntity<>("There are no vacancies for given category", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(list.stream()
+                    .map(this::makeDtoFromVacancy)
+                    .toList(), HttpStatus.OK);
+        }
     }
 
     public VacancyDto getVacancyById(Long id) {
