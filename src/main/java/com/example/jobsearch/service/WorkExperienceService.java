@@ -5,6 +5,8 @@ import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.model.WorkExperience;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,16 +54,39 @@ public class WorkExperienceService {
         return w;
     }
 
-    public void createWorkExperience(WorkExperienceDto e) {
-        log.warn("Work experience was added: {}", e.getResumeId());
-        workExperienceDao.save(createWorkExpFromDto(e));
+    public ResponseEntity<?> createWorkExperience(WorkExperienceDto e) {
+        Long idTest = e.getResumeId();
+        if (idTest == null) {
+            log.warn("Tried to add work experience when resume does not exist: {}", e.getResumeId());
+            return new ResponseEntity<>("Cannot add work experience, resume does not exist", HttpStatus.NOT_FOUND);
+
+        } else {
+            workExperienceDao.save(createWorkExpFromDto(e));
+            return new ResponseEntity<>("Work experience added successfully", HttpStatus.OK);
+
+        }
     }
 
-    public void deleteWorkExperience(WorkExperienceDto e) {
-        workExperienceDao.delete(e.getId());
+    public ResponseEntity<?> deleteWorkExperience(WorkExperienceDto e) {
+        var we = workExperienceDao.findWorkExperienceById(e.getId());
+        if (we.isPresent()) {
+            workExperienceDao.delete(e.getId());
+            return new ResponseEntity<>("Work experience entry was deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Work experience entry does not exist", HttpStatus.OK);
+
+        }
     }
 
-    public void editWorkExperience(WorkExperienceDto e) {
-        workExperienceDao.editWorkExperience(createWorkExpFromDto(e));
+    public ResponseEntity<?> editWorkExperience(WorkExperienceDto e) {
+        Long x = e.getId();
+        if (x == null) {
+            return new ResponseEntity<>("Work experience id is not valid", HttpStatus.NOT_FOUND);
+        } else {
+            workExperienceDao.editWorkExperience(createWorkExpFromDto(e));
+
+            return new ResponseEntity<>("Work experience was edited successfully", HttpStatus.OK);
+
+        }
     }
 }

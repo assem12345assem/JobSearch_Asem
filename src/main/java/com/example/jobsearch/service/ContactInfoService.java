@@ -5,6 +5,8 @@ import com.example.jobsearch.dto.ContactInfoDto;
 import com.example.jobsearch.model.ContactInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -42,17 +44,39 @@ public class ContactInfoService {
                 .build();
     }
 
-    public void createContactInfo(ContactInfoDto e) {
-        log.warn("Created contact info for resume: {}", e.getResumeId());
-        contactInfoDao.save(createContactInfoFromDto(e));
+    public ResponseEntity<?> createContactInfo(ContactInfoDto e) {
+        Long idTest = e.getResumeId();
+        if(idTest == null) {
+            log.warn("Tried to add contact info when resume does not exist: {}", e.getResumeId());
+            return new ResponseEntity<>("Cannot add contact info, resume does not exist", HttpStatus.NOT_FOUND);
+
+        } else {
+            contactInfoDao.save(createContactInfoFromDto(e));
+            return new ResponseEntity<>("Contact info added successfully", HttpStatus.OK);
+
+        }
     }
 
-    public void deleteContactInfo(ContactInfoDto e) {
-        contactInfoDao.delete(e.getId());
+    public ResponseEntity<?>  deleteContactInfo(ContactInfoDto e) {
+        var ci = contactInfoDao.findContactInfoById(e.getId());
+        if(ci.isPresent()) {
+            contactInfoDao.delete(e.getId());
+            return new ResponseEntity<>("Contact info entry was deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Contact info entry does not exist", HttpStatus.OK);
+
+        }
     }
 
-    public void editContactInfo(ContactInfoDto e) {
-        contactInfoDao.editContactInfo(createContactInfoFromDto(e));
+    public ResponseEntity<?>  editContactInfo(ContactInfoDto e) {
+        Long x = e.getId();
+        if(x == null) {
+            return new ResponseEntity<>("Contact Info id is not valid", HttpStatus.NOT_FOUND);
+        } else {
+            contactInfoDao.editContactInfo(createContactInfoFromDto(e));
+            return new ResponseEntity<>("Contact Info was edited successfully", HttpStatus.OK);
+
+        }
     }
 
 }

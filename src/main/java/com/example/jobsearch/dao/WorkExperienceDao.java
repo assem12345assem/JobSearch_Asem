@@ -1,15 +1,18 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.WorkExperience;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.html.Option;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class WorkExperienceDao extends BaseDao{
@@ -44,6 +47,10 @@ public class WorkExperienceDao extends BaseDao{
     public WorkExperience getWorkExperienceById(long id) {
         String sql = "select * from WORKEXPERIENCE where id = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkExperience.class), id);
+    }
+    public Optional<WorkExperience> findWorkExperienceById(long id) {
+        String sql = "select * from WORKEXPERIENCE where id = ?";
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(WorkExperience.class), id)));
     }
     public List<WorkExperience> getAllWorkExperienceByResumeId(long resumeId) {
         String sql = "select * from WORKEXPERIENCE where resumeId = ?";

@@ -106,12 +106,16 @@ public class UserService {
         }
     }
 
-    public void uploadUserPhoto(String email, MultipartFile file, Authentication auth) {
+    public ResponseEntity<?> uploadUserPhoto(String email, MultipartFile file, Authentication auth) {
         var user = auth.getPrincipal();
         User u = getUserFromAuth(user.toString());
         if (u.getId().equalsIgnoreCase(email)) {
             String fileName = fileService.saveUploadedFile(file, "images");
             userDao.savePhoto(email, fileName);
+            return new ResponseEntity<>("Photo was uploaded successfully", HttpStatus.OK);
+        } else {
+            log.warn("Email and authentication id do not match: {}", u.getId());
+            return new ResponseEntity<>("Email and authentication id do not match", HttpStatus.OK);
         }
     }
 

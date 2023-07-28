@@ -35,57 +35,48 @@ public class ResumeController {
     }
 
     @PostMapping("/applicant/add_education")
-    public HttpStatus addEducation(EducationDto educationDto) {
-        resumeService.addEducation(educationDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?> addEducation(EducationDto educationDto) {
+       return resumeService.addEducation(educationDto);
     }
 
     @PostMapping("/applicant/add_work_experience")
-    public HttpStatus addWorkExperience(WorkExperienceDto workExperienceDto) {
-        resumeService.addWorkExperience(workExperienceDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?> addWorkExperience(WorkExperienceDto workExperienceDto) {
+        return resumeService.addWorkExperience(workExperienceDto);
     }
 
     @PostMapping("/applicant/add_contact_info")
-    public HttpStatus addContactInfo(ContactInfoDto contactInfoDto) {
-        resumeService.addContactInfo(contactInfoDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?> addContactInfo(ContactInfoDto contactInfoDto) {
+        return resumeService.addContactInfo(contactInfoDto);
     }
 
     @PostMapping("/applicant/edit_education")
-    public HttpStatus editEducation(EducationDto educationDto) {
-        resumeService.editEducation(educationDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?> editEducation(EducationDto educationDto) {
+        return resumeService.editEducation(educationDto);
     }
 
     @PostMapping("/applicant/edit_work_experience")
-    public HttpStatus editWorkExperience(WorkExperienceDto workExperienceDto) {
-        resumeService.editWorkExperience(workExperienceDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?>  editWorkExperience(WorkExperienceDto workExperienceDto) {
+        return resumeService.editWorkExperience(workExperienceDto);
     }
 
     @PostMapping("/applicant/edit_contact_info")
-    public HttpStatus editContactInfo(ContactInfoDto contactInfoDto) {
-        resumeService.editContactInfo(contactInfoDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?> editContactInfo(ContactInfoDto contactInfoDto) {
+        return resumeService.editContactInfo(contactInfoDto);
     }
 
     @DeleteMapping("/applicant/delete_education")
-    public HttpStatus deleteEducation(EducationDto educationDto) {
-        resumeService.deleteEducation(educationDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?>  deleteEducation(EducationDto educationDto) {
+        return resumeService.deleteEducation(educationDto);
     }
 
     @DeleteMapping("/applicant/delete_work_experience")
-    public HttpStatus deleteWorkExperience(WorkExperienceDto workExperienceDto) {
-        resumeService.deleteWorkExperience(workExperienceDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?> deleteWorkExperience(WorkExperienceDto workExperienceDto) {
+        return resumeService.deleteWorkExperience(workExperienceDto);
     }
 
     @DeleteMapping("/applicant/delete_contact_info")
-    public HttpStatus deleteContactInfo(ContactInfoDto contactInfoDto) {
-        resumeService.deleteContactInfo(contactInfoDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?> deleteContactInfo(ContactInfoDto contactInfoDto) {
+       return resumeService.deleteContactInfo(contactInfoDto);
     }
 
     @GetMapping("/view")

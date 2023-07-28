@@ -116,7 +116,7 @@ public class ResumeService {
         User user = userService.getUserFromAuth(u.toString());
         if(user.getId().equalsIgnoreCase(e.getAuthorEmail())) {
             var r = resumeDao.getResumeById(e.getId());
-            if (r != null) {
+            if (r.isPresent()) {
                 resumeDao.delete(e.getId());
                 return new ResponseEntity<>("Resume deleted successfully", HttpStatus.OK);
             } else {
@@ -134,7 +134,7 @@ public class ResumeService {
         User user = userService.getUserFromAuth(u.toString());
         if(user.getId().equalsIgnoreCase(e.getAuthorEmail())) {
             var r = resumeDao.getResumeById(e.getId());
-            if (r != null) {
+            if (r.isPresent()) {
                 resumeDao.editResume(createResumeFromDto(e));
             return new ResponseEntity<>("Resume edited successfully", HttpStatus.OK);
         } else {
@@ -165,41 +165,41 @@ public class ResumeService {
                 .toList();
     }
 
-    public void addEducation(EducationDto educationDto) {
-        educationService.createEducation(educationDto);
+    public ResponseEntity<?> addEducation(EducationDto educationDto) {
+        return educationService.createEducation(educationDto);
 
     }
 
-    public void editEducation(EducationDto educationDto) {
-        educationService.editEducation(educationDto);
+    public ResponseEntity<?> editEducation(EducationDto educationDto) {
+        return educationService.editEducation(educationDto);
     }
 
-    public void deleteEducation(EducationDto educationDto) {
-        educationService.deleteEducation(educationDto);
+    public ResponseEntity<?>  deleteEducation(EducationDto educationDto) {
+        return educationService.deleteEducation(educationDto);
     }
 
-    public void addWorkExperience(WorkExperienceDto workExperienceDto) {
-        workExperienceService.createWorkExperience(workExperienceDto);
+    public ResponseEntity<?> addWorkExperience(WorkExperienceDto workExperienceDto) {
+        return workExperienceService.createWorkExperience(workExperienceDto);
     }
 
-    public void editWorkExperience(WorkExperienceDto workExperienceDto) {
-        workExperienceService.editWorkExperience(workExperienceDto);
+    public ResponseEntity<?> editWorkExperience(WorkExperienceDto workExperienceDto) {
+        return workExperienceService.editWorkExperience(workExperienceDto);
     }
 
-    public void deleteWorkExperience(WorkExperienceDto workExperienceDto) {
-        workExperienceService.deleteWorkExperience(workExperienceDto);
+    public ResponseEntity<?> deleteWorkExperience(WorkExperienceDto workExperienceDto) {
+        return workExperienceService.deleteWorkExperience(workExperienceDto);
     }
 
-    public void addContactInfo(ContactInfoDto contactInfoDto) {
-        contactInfoService.createContactInfo(contactInfoDto);
+    public ResponseEntity<?> addContactInfo(ContactInfoDto contactInfoDto) {
+        return contactInfoService.createContactInfo(contactInfoDto);
     }
 
-    public void editContactInfo(ContactInfoDto contactInfoDto) {
-        contactInfoService.editContactInfo(contactInfoDto);
+    public ResponseEntity<?>  editContactInfo(ContactInfoDto contactInfoDto) {
+        return contactInfoService.editContactInfo(contactInfoDto);
     }
 
-    public void deleteContactInfo(ContactInfoDto contactInfoDto) {
-        contactInfoService.deleteContactInfo(contactInfoDto);
+    public ResponseEntity<?>  deleteContactInfo(ContactInfoDto contactInfoDto) {
+        return contactInfoService.deleteContactInfo(contactInfoDto);
     }
     public List<WorkExperienceDto> getAllWorkExperienceByResumeId(long resumeId) {
         return workExperienceService.getAllWorkExperienceByResumeId((resumeId));

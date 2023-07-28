@@ -12,8 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -65,7 +65,7 @@ public class VacancyService {
 
     public ResponseEntity<?> getAllVacanciesByCategory(String category) {
         List<Vacancy> list = vacancyDao.getAllVacanciesByCategory(category);
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             return new ResponseEntity<>("There are no vacancies for given category", HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(list.stream()
@@ -85,30 +85,35 @@ public class VacancyService {
                 .toList();
     }
 
-    public void createVacancy(Long employerId, String vacancyName, String category, int salary, String description,
-                              int minReqExp, int maxReqExp, Authentication auth) {
+    public ResponseEntity<?> createVacancy(VacancyDto vacancyDto, Authentication auth) {
         var u = auth.getPrincipal();
         User user = userService.getUserFromAuth(u.toString());
-        if(employerService.getUserIdByEmployerId(employerId).equalsIgnoreCase(user.getId())) {
-            vacancyDao.save(Vacancy.builder()
-                            .employerId(employerId)
-                            .vacancyName(vacancyName)
-                            .category(category)
-                            .description(description)
-                            .salary(salary)
-                            .requiredExperienceMin(minReqExp)
-                            .requiredExperienceMax(maxReqExp)
-                            .isActive(false)
-                            .isPublished(false)
-                            .publishedDateTime(LocalDateTime.now())
-                    .build());
+        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+            Optional<Vacancy> v;
+            if (vacancyDto.getId() == null) {
+                long x = (long) vacancyDao.getAllVacancies().size() + 1;
+                v = vacancyDao.findVacancyById(x);
+            } else {
+                v = vacancyDao.findVacancyById(vacancyDto.getId());
+            }
+            if (v.isEmpty()) {
+                vacancyDao.save(makeVacancyFromDto(vacancyDto));
+                return new ResponseEntity<>("Vacancy was created successfully", HttpStatus.OK);
+            } else {
+                log.info("Tried to create a vacancy that already exists: {}", vacancyDto.getId());
+                return new ResponseEntity<>("Vacancy already exists", HttpStatus.OK);
+            }
+        } else {
+            log.warn("Tried to create a vacancy for another user: {}", user.getId());
+            return new ResponseEntity<>("Tried to create a vacancy for another user", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     public void editVacancy(VacancyDto vacancyDto, Authentication auth) {
         var u = auth.getPrincipal();
         User user = userService.getUserFromAuth(u.toString());
-        if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
             Vacancy vacancy = makeVacancyFromDto(vacancyDto);
             vacancyDao.editVacancy(vacancy);
         }
@@ -117,7 +122,7 @@ public class VacancyService {
     public void deleteVacancy(VacancyDto vacancyDto, Authentication auth) {
         var u = auth.getPrincipal();
         User user = userService.getUserFromAuth(u.toString());
-        if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
             log.info("Vacancy was deleted: {}", vacancyDto.getId());
             vacancyDao.delete(vacancyDto.getId());
         }

@@ -3,11 +3,13 @@ package com.example.jobsearch.dao;
 import com.example.jobsearch.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.util.Objects;
 
-public class RoleDao extends BaseDao{
+@Component
+public class RoleDao extends BaseDao {
     public RoleDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
@@ -26,6 +28,7 @@ public class RoleDao extends BaseDao{
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
+
 
     @Override
     public void delete(Long id) {
