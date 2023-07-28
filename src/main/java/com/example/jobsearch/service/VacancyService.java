@@ -12,17 +12,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VacancyService {
     private final VacancyDao vacancyDao;
-    private final CategoryService categoryService;
     private final EmployerProfileService employerService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     public List<VacancyDto> getAllVacancies() {
         List<Vacancy> list = vacancyDao.getAllVacancies();
@@ -36,7 +36,7 @@ public class VacancyService {
                 .id(v.getId())
                 .employerId(v.getEmployerId())
                 .vacancyName(v.getVacancyName())
-                .categoryDto(categoryService.getCategoryByName(v.getCategory()))
+                .category(v.getCategory())
                 .salary(v.getSalary())
                 .description(v.getDescription())
                 .requiredExperienceMin(v.getRequiredExperienceMin())
@@ -52,7 +52,7 @@ public class VacancyService {
                 .id(v.getId())
                 .employerId(v.getEmployerId())
                 .vacancyName(v.getVacancyName())
-                .category(v.getCategoryDto().getCategory())
+                .category(v.getCategory())
                 .salary(v.getSalary())
                 .description(v.getDescription())
                 .requiredExperienceMin(v.getRequiredExperienceMin())
@@ -64,11 +64,15 @@ public class VacancyService {
 
     }
 
-    public List<VacancyDto> getAllVacanciesByCategory(String category) {
+    public ResponseEntity<?> getAllVacanciesByCategory(String category) {
         List<Vacancy> list = vacancyDao.getAllVacanciesByCategory(category);
-        return list.stream()
-                .map(this::makeDtoFromVacancy)
-                .toList();
+        if (list.isEmpty()) {
+            return new ResponseEntity<>("There are no vacancies for given category", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(list.stream()
+                    .map(this::makeDtoFromVacancy)
+                    .toList(), HttpStatus.OK);
+        }
     }
 
     public VacancyDto getVacancyById(Long id) {
@@ -82,42 +86,83 @@ public class VacancyService {
                 .toList();
     }
 
-    public void createVacancy(Long employerId, String vacancyName, String category, int salary, String description,
-                              int minReqExp, int maxReqExp, Authentication auth) {
+    public ResponseEntity<?> createVacancy(VacancyDto vacancyDto, Authentication auth) {
         var u = auth.getPrincipal();
         User user = userService.getUserFromAuth(u.toString());
-        if(employerService.getUserIdByEmployerId(employerId).equalsIgnoreCase(user.getId())) {
-            vacancyDao.save(Vacancy.builder()
-                            .employerId(employerId)
-                            .vacancyName(vacancyName)
-                            .category(category)
-                            .description(description)
-                            .salary(salary)
-                            .requiredExperienceMin(minReqExp)
-                            .requiredExperienceMax(maxReqExp)
-                            .isActive(false)
-                            .isPublished(false)
-                            .publishedDateTime(LocalDateTime.now())
-                    .build());
+        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+            Optional<Vacancy> v;
+            if (vacancyDto.getId() == null) {
+                long x = (long) vacancyDao.getAllVacancies().size() + 1;
+                v = vacancyDao.findVacancyById(x);
+            } else {
+                v = vacancyDao.findVacancyById(vacancyDto.getId());
+            }
+            if (v.isEmpty()) {
+                if (categoryService.getCategory(vacancyDto.getCategory()).isPresent()) {
+                    vacancyDao.save(makeVacancyFromDto(vacancyDto));
+                    return new ResponseEntity<>("Vacancy was created successfully", HttpStatus.OK);
+                } else {
+                    log.warn("Tried to use a category that does not exist: {}", vacancyDto.getCategory());
+                    return new ResponseEntity<>("Category does not exist", HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                log.info("Tried to create a vacancy that already exists: {}", vacancyDto.getId());
+                return new ResponseEntity<>("Vacancy already exists", HttpStatus.OK);
+            }
+        } else {
+            log.warn("Tried to create a vacancy for another user: {}", user.getId());
+            return new ResponseEntity<>("Tried to create a vacancy for another user", HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    public ResponseEntity<?> editVacancy(VacancyDto vacancyDto, Authentication auth) {
+        var u = auth.getPrincipal();
+        User user = userService.getUserFromAuth(u.toString());
+        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+            if (vacancyDto.getId() == null) {
+                return new ResponseEntity<>("Cannot edit a vacancy without vacancy id", HttpStatus.NOT_FOUND);
+            }
+            var v = vacancyDao.findVacancyById(vacancyDto.getId());
+            if (v.isEmpty()) {
+                log.info("Tried to edit a vacancy that that does not exist: {}", vacancyDto.getId());
+                return new ResponseEntity<>("Vacancy does not exist", HttpStatus.OK);
+            } else {
+                if(categoryService.getCategory(vacancyDto.getCategory()).isPresent()) {
+                    Vacancy vacancy = makeVacancyFromDto(vacancyDto);
+                    vacancyDao.editVacancy(vacancy);
+                    return new ResponseEntity<>("Vacancy edited successfully", HttpStatus.OK);
+                }else {
+                    log.warn("Tried to use a category that does not exist: {}", vacancyDto.getCategory());
+                    return new ResponseEntity<>("Category does not exist", HttpStatus.BAD_REQUEST);
+                }
+            }
+        } else {
+            log.warn("Tried to edit a vacancy of another user: {}", user.getId());
+            return new ResponseEntity<>("Tried to edit a vacancy of another user", HttpStatus.BAD_REQUEST);
         }
     }
 
-    public void editVacancy(VacancyDto vacancyDto, Authentication auth) {
+    public ResponseEntity<?> deleteVacancy(VacancyDto vacancyDto, Authentication auth) {
         var u = auth.getPrincipal();
         User user = userService.getUserFromAuth(u.toString());
-        if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
-            Vacancy vacancy = makeVacancyFromDto(vacancyDto);
-            vacancyDao.editVacancy(vacancy);
-        }
-    }
+        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+            var v = vacancyDao.findVacancyById(vacancyDto.getId());
+            if (v.isEmpty()) {
+                log.info("Tried to delete a vacancy that does not exist: {}", vacancyDto.getId());
+                return new ResponseEntity<>("Tried to delete a vacancy that does not exist", HttpStatus.OK);
+            } else {
+                vacancyDao.delete(vacancyDto.getId());
+                log.info("Vacancy was deleted: {}", vacancyDto.getId());
+                return new ResponseEntity<>("Vacancy was deleted successfully", HttpStatus.OK);
 
-    public void deleteVacancy(VacancyDto vacancyDto, Authentication auth) {
-        var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
-        if(employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
-            log.info("Vacancy was deleted: {}", vacancyDto.getId());
-            vacancyDao.delete(vacancyDto.getId());
+            }
+
+        } else {
+            log.warn("Tried to delete a vacancy of another user: {}", user.getId());
+            return new ResponseEntity<>("Tried to delete a vacancy of another user", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     public ResponseEntity<?> sortedListVacancies(String sortedCriteria) {
@@ -136,5 +181,14 @@ public class VacancyService {
         }
     }
 
-
+    public ResponseEntity<?> getAllVacanciesByEmployerId(Long employerId) {
+        List<Vacancy> list = vacancyDao.getAllVacanciesByEmployerId(employerId);
+        if (list.isEmpty()) {
+            return new ResponseEntity<>("There are no vacancies by this employer", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(list.stream()
+                    .map(this::makeDtoFromVacancy)
+                    .toList(), HttpStatus.OK);
+        }
+    }
 }

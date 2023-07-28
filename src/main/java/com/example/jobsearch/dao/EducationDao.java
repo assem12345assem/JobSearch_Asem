@@ -1,6 +1,7 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.Education;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -10,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class EducationDao extends BaseDao{
@@ -49,6 +51,10 @@ public class EducationDao extends BaseDao{
     public Education getEducationById(long id) {
         String sql = "select * from EDUCATION where id = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Education.class), id);
+    }
+    public Optional<Education> findEducationById(long id) {
+        String sql = "select * from EDUCATION where id = ?";
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Education.class), id)));
     }
     public void editEducation(Education e) {
         String sql = """

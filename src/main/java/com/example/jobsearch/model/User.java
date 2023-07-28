@@ -11,9 +11,9 @@ import lombok.experimental.FieldDefaults;
 public class User {
     String id;
     String phoneNumber;
+    String userName;
     String userType;
     String password;
     String photo;
     boolean enabled;
-    Long roleId;
 }

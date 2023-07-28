@@ -30,6 +30,8 @@ public class SecurityConfig {
             select user_email, role\s
             from roles\s
             where user_email = ?;""";
+
+
     private final DataSource dataSource;
 
     @Bean

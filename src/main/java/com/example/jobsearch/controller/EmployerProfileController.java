@@ -2,6 +2,7 @@ package com.example.jobsearch.controller;
 
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.service.EmployerProfileService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,17 +23,14 @@ public class EmployerProfileController {
         return employerProfileService.getEmployerByUserId(userId);
     }
     @PostMapping("/create_employer")
-    public ResponseEntity<?> createEmployer(@RequestBody EmployerDto employerDto) {
+    public ResponseEntity<?> createEmployer(@RequestBody @Valid EmployerDto employerDto) {
         return employerProfileService.createEmployer(employerDto);
     }
 
     @PostMapping("/edit_employer")
-    public ResponseEntity<?> editEmployer(@RequestBody EmployerDto employerDto, Authentication auth) {
+    public ResponseEntity<?> editEmployer(@RequestBody @Valid EmployerDto employerDto, Authentication auth) {
            return employerProfileService.editEmployer(employerDto, auth);
-
     }
-
-
     @GetMapping("/get_employer_by_id/{id}")
     public ResponseEntity<?> getEmployerById(@PathVariable Long id) {
         return employerProfileService.getEmployerById(id);

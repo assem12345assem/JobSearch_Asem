@@ -1,6 +1,7 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.ContactInfo;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Component
@@ -34,6 +36,11 @@ public class ContactInfoDao extends BaseDao{
             return ps;
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+    public Optional<ContactInfo> findContactInfoById(Long id) {
+        String sql = "select * from contactinfo where id = ?";
+        return Optional.ofNullable(DataAccessUtils.singleResult(
+                jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ContactInfo.class), id)));
     }
 
     @Override

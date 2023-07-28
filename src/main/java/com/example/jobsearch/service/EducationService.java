@@ -5,6 +5,8 @@ import com.example.jobsearch.dto.EducationDto;
 import com.example.jobsearch.model.Education;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,15 +48,35 @@ public class EducationService {
                 .build();
     }
 
-    public void createEducation(EducationDto e) {
-        log.warn("Added new education to resume: {}", e.getResumeId());
-        educationDao.save(createEducationFromDto(e));
+    public ResponseEntity<?> createEducation(EducationDto e) {
+        Long idTest = e.getResumeId();
+        if(idTest == null) {
+            log.warn("Tried to add education when resume does not exist");
+            return new ResponseEntity<>("Cannot add education, resume does not exist", HttpStatus.NOT_FOUND);
+        } else {
+            educationDao.save(createEducationFromDto(e));
+            return new ResponseEntity<>("Education added successfully", HttpStatus.OK);
+        }
     }
-    public void deleteEducation(EducationDto e) {
-        educationDao.delete(e.getId());
+    public ResponseEntity<?>  deleteEducation(EducationDto e) {
+        var edu = educationDao.findEducationById(e.getId());
+        if(edu.isPresent()) {
+            educationDao.delete(e.getId());
+            return new ResponseEntity<>("Education entry was deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Education entry does not exist", HttpStatus.OK);
+
+        }
     }
-    public void editEducation(EducationDto e) {
-        educationDao.editEducation(createEducationFromDto(e));
+    public ResponseEntity<?> editEducation(EducationDto e) {
+        Long x = e.getId();
+        if(x == null) {
+            return new ResponseEntity<>("Education entry id is not valid", HttpStatus.NOT_FOUND);
+        } else {
+            educationDao.editEducation(createEducationFromDto(e));
+            return new ResponseEntity<>("Education was edited successfully", HttpStatus.OK);
+
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.Vacancy;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Component
@@ -18,7 +20,6 @@ public class VacancyDao extends BaseDao{
     public VacancyDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
-
     @Override
     public Long save(Object obj) {
         Vacancy e = (Vacancy) obj;
@@ -42,9 +43,7 @@ public class VacancyDao extends BaseDao{
             return ps;
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
-
     }
-
     @Override
     public void delete(Long id) {
         String sql = "delete from VACANCIES where id = ?";
@@ -67,6 +66,10 @@ public class VacancyDao extends BaseDao{
         String sql = "select * from VACANCIES where id = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Vacancy.class), id);
 
+    }
+    public Optional<Vacancy> findVacancyById(Long id) {
+        String sql = "select * from VACANCIES where id = ?";
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), id)));
     }
 
     public List<Vacancy> getVacancyListByIdList(List<Long> id) {

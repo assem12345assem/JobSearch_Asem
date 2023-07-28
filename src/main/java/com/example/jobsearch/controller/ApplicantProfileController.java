@@ -14,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApplicantProfileController {
     private final ApplicantProfileService applicantProfileService;
-
     @GetMapping
     public List<ApplicantDto> getAllApplicants() {
         return applicantProfileService.getAllApplicants();

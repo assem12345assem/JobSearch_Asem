@@ -15,18 +15,12 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   type: varchar(255)
-                  constraints:
-                    nullable: false
               - column:
                   name: user_name
                   type: varchar(255)
-                  constraints:
-                    nullable: false
               - column:
                   name: user_type
                   type: varchar(45)
-                  constraints:
-                    nullable: false
               - column:
                   name: password
                   type: varchar(255)
@@ -39,8 +33,6 @@ databaseChangeLog:
               - column:
                   name: enabled
                   type: boolean
-                  constraints:
-                    nullable: false
   - changeSet:
       id: create roles
       author: Asem

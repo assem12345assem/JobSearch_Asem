@@ -3,7 +3,6 @@ package com.example.jobsearch.controller;
 import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,27 +21,25 @@ public class VacancyController {
     }
 
     @GetMapping("/all_vacancies_by_category/{category}")
-    public List<VacancyDto> getAllVacanciesByCategory(@PathVariable String category) {
+    public ResponseEntity<?> getAllVacanciesByCategory(@PathVariable String category) {
         return vacancyService.getAllVacanciesByCategory(category);
     }
-
+    @GetMapping("/all_by_employer/{employerId}")
+    public ResponseEntity<?> getAllVacanciesByEmployerId(@PathVariable Long employerId) {
+        return vacancyService.getAllVacanciesByEmployerId(employerId);
+    }
     @PostMapping("/employer/create_vacancy")
-    public HttpStatus createVacancy(Long employerId, String vacancyName, String category, int salary, String description,
-            int minReqExp, int maxReqExp, Authentication auth) {
-        vacancyService.createVacancy(employerId, vacancyName, category, salary, description, minReqExp, maxReqExp, auth);
-        return HttpStatus.OK;
+    public ResponseEntity<?> createVacancy(VacancyDto vacancyDto, Authentication auth) {
+        return vacancyService.createVacancy(vacancyDto, auth);
     }
 
     @PostMapping("/employer/edit_vacancy")
-    public HttpStatus editVacancy(VacancyDto vacancyDto, Authentication auth) {
-        vacancyService.editVacancy(vacancyDto, auth);
-        return HttpStatus.OK;
+    public ResponseEntity<?> editVacancy(VacancyDto vacancyDto, Authentication auth) {
+        return vacancyService.editVacancy(vacancyDto, auth);
     }
-
     @DeleteMapping("/employer/delete_vacancy")
-    public HttpStatus deleteVacancy(@RequestBody VacancyDto vacancyDto, Authentication auth) {
-        vacancyService.deleteVacancy(vacancyDto, auth);
-        return HttpStatus.OK;
+    public ResponseEntity<?> deleteVacancy(@RequestBody VacancyDto vacancyDto, Authentication auth) {
+        return vacancyService.deleteVacancy(vacancyDto, auth);
     }
 
     @GetMapping("sort_by_date")

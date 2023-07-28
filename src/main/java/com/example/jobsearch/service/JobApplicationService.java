@@ -80,17 +80,24 @@ public class JobApplicationService {
         }
     }
 
-    public void apply(long vacancyId, long resumeId, Authentication auth) {
+    public ResponseEntity<?> apply(long vacancyId, long resumeId, Authentication auth) {
         var u = auth.getPrincipal();
         User user = userService.getUserFromAuth(u.toString());
         ResumeDto r = resumeService.getResumeById(resumeId);
-        if(r.getApplicantDto().getUserId().equalsIgnoreCase(user.getId())) {
-            jobApplicationDao.save(JobApplication.builder()
-                            .vacancyId(vacancyId)
-                            .resumeId(resumeId)
-                            .dateTime(LocalDateTime.now())
-                    .build());
-
+        if(r.getAuthorEmail().equalsIgnoreCase(user.getId())) {
+            var jobApp = jobApplicationDao.getVacancyByIdAndResumeId(vacancyId, resumeId);
+            if(jobApp == null) {
+                return new ResponseEntity<>(jobApplicationDao.save(JobApplication.builder()
+                        .vacancyId(vacancyId)
+                        .resumeId(resumeId)
+                        .dateTime(LocalDateTime.now())
+                        .build()), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("User already applied for this vacancy", HttpStatus.OK);
+            }
+        } else {
+            log.warn("Job Application - Resume does not belong to the user: {}", user.getId());
+            return new ResponseEntity<>("Authentication id and resume's owner ids do not match", HttpStatus.BAD_REQUEST);
         }
 
     }
