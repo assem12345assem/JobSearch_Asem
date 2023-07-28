@@ -87,7 +87,12 @@ public class ApplicantDao extends BaseDao {
 
     public boolean ifApplicantExists(String userId) {
         String sql = "select * from APPLICANTS where USERID = ?";
-        Applicant applicant = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Applicant.class), userId);
-        return applicant != null;
+        var applicant = Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Applicant.class), userId)));
+        return applicant.isPresent();
+    }
+
+    public Applicant findApplicantByUserId(String userId) {
+        String sql = "select * from applicants where userId = ?";
+return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Applicant.class), userId);
     }
 }

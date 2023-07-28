@@ -84,7 +84,7 @@ public class JobApplicationService {
         var u = auth.getPrincipal();
         User user = userService.getUserFromAuth(u.toString());
         ResumeDto r = resumeService.getResumeById(resumeId);
-        if(r.getApplicantDto().getUserId().equalsIgnoreCase(user.getId())) {
+        if(r.getAuthorEmail().equalsIgnoreCase(user.getId())) {
             jobApplicationDao.save(JobApplication.builder()
                             .vacancyId(vacancyId)
                             .resumeId(resumeId)

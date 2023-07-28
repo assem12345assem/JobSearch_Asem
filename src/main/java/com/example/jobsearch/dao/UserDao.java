@@ -1,18 +1,42 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
-public class UserDao {
-    private final JdbcTemplate jdbcTemplate;
+public class UserDao extends BaseDao{
+    public UserDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        super(jdbcTemplate, namedParameterJdbcTemplate);
+    }
+
+
+
+    @Override
+    public Long save(Object obj) {
+        User u = (User) obj;
+        return (long) jdbcTemplate.update(
+                "insert into users(id, password, enabled) values (?, ?, ?)",
+                u.getId(),
+                u.getPassword(),
+                u.isEnabled()
+        );
+    }
+
+    public void delete(String id) {
+        String sql = "delete from users where id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+    @Override
+    public void delete(Long id) {
+
+    }
+
     public List<User> getAllUsers() {
         String sql = "select * from users";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
@@ -28,15 +52,6 @@ public class UserDao {
             return false;
         }
         return u.getPassword().equalsIgnoreCase(password);
-    }
-    public void createUser(User user) {
-        String sql = """
-                insert into USERS (ID, PHONE_NUMBER, USER_NAME,
-                USER_TYPE, PASSWORD, ENABLED)\s
-                VALUES (?, ?, ?, ?, ?, ?)""";
-            jdbcTemplate.update(sql, user.getId(), user.getPhoneNumber(),
-                    user.getUserType(), user.getPassword(), setNull(user.getPhoto()));
-
     }
     private String setNull(String string) {
         if(string.length() == 0) {
@@ -64,10 +79,11 @@ public class UserDao {
 
     public void editUser(User e) {
         String sql = """
-                update USERS
-                set PASSWORD = ?, PHONE_NUMBER = ?
-                where ID = ?""";
-        jdbcTemplate.update(sql, e.getPassword(), e.getPhoneNumber(), e.getId());
+                update USERS set PHONE_NUMBER = ?, USER_NAME = ?, USER_TYPE = ?,
+                                             PASSWORD = ?, PHOTO = ?, ENABLED = ?
+                            where id = ?""";
+        jdbcTemplate.update(sql, e.getPhoneNumber(), e.getUserName(), e.getUserType(),
+                e.getPassword(), e.getPhoto(), e.isEnabled(), e.getId());
     }
 
     public void savePhoto(String email, String photo) {

@@ -1,6 +1,7 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.Resume;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -10,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class ResumeDao extends BaseDao{
@@ -50,7 +52,11 @@ public class ResumeDao extends BaseDao{
         System.out.println(list.size());
         return list;
     }
-    public Resume getResumeById(long id) {
+    public Optional<Resume> getResumeById(long id) {
+        String sql = "select * from RESUMES where id = ?";
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Resume.class), id)));
+    }
+    public Resume findResumeById(long id) {
         String sql = "select * from RESUMES where id = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Resume.class), id);
     }
@@ -66,7 +72,7 @@ public class ResumeDao extends BaseDao{
         List<Resume> temp = new ArrayList<>();
         for (Long l:
              list) {
-            temp.add(getResumeById(l));
+            temp.add(findResumeById(l));
         }
         return temp;
     }

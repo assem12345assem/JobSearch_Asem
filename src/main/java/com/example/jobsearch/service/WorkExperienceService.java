@@ -22,6 +22,7 @@ public class WorkExperienceService {
 
     public List<WorkExperienceDto> getAllWorkExperienceByResumeId(long resumeId) {
         List<WorkExperience> list = workExperienceDao.getAllWorkExperienceByResumeId(resumeId);
+
         return list.stream()
                 .map(this::makeDtoFromWorkExperience)
                 .toList();

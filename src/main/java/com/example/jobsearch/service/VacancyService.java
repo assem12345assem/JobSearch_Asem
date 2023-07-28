@@ -20,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VacancyService {
     private final VacancyDao vacancyDao;
-    private final CategoryService categoryService;
     private final EmployerProfileService employerService;
     private final UserService userService;
 
@@ -36,7 +35,7 @@ public class VacancyService {
                 .id(v.getId())
                 .employerId(v.getEmployerId())
                 .vacancyName(v.getVacancyName())
-                .categoryDto(categoryService.getCategoryByName(v.getCategory()))
+                .category(v.getCategory())
                 .salary(v.getSalary())
                 .description(v.getDescription())
                 .requiredExperienceMin(v.getRequiredExperienceMin())
@@ -52,7 +51,7 @@ public class VacancyService {
                 .id(v.getId())
                 .employerId(v.getEmployerId())
                 .vacancyName(v.getVacancyName())
-                .category(v.getCategoryDto().getCategory())
+                .category(v.getCategory())
                 .salary(v.getSalary())
                 .description(v.getDescription())
                 .requiredExperienceMin(v.getRequiredExperienceMin())

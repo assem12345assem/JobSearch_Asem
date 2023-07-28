@@ -14,7 +14,7 @@ public class VacancyDto {
     Long id;
     Long employerId;
     String vacancyName;
-    CategoryDto categoryDto;
+    String category;
     Integer salary;
     String description;
     Integer requiredExperienceMin;

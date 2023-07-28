@@ -47,7 +47,7 @@ public class EducationService {
     }
 
     public void createEducation(EducationDto e) {
-        log.warn("Added new education to resume: {}", e.getResumeId());
+        log.info("Added new education to resume: {}", e.getResumeId());
         educationDao.save(createEducationFromDto(e));
     }
     public void deleteEducation(EducationDto e) {

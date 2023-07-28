@@ -7,6 +7,7 @@ import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,21 +20,18 @@ public class ResumeController {
     private final ResumeService resumeService;
 
     @PostMapping("/applicant/create")
-    public HttpStatus createResume(ResumeDto resumeDto, Authentication auth) {
-        resumeService.createResume(resumeDto, auth);
-        return HttpStatus.OK;
+    public ResponseEntity<?> createResume(@RequestBody ResumeDto resumeDto, Authentication auth) {
+        return resumeService.createResume(resumeDto, auth);
     }
 
     @PostMapping("/applicant/edit")
-    public HttpStatus editResume(ResumeDto resumeDto) {
-        resumeService.editResume(resumeDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?> editResume(ResumeDto resumeDto, Authentication auth) {
+        return resumeService.editResume(resumeDto, auth);
     }
 
     @DeleteMapping("/applicant/delete")
-    public HttpStatus deleteResume(ResumeDto resumeDto) {
-        resumeService.deleteResume(resumeDto);
-        return HttpStatus.OK;
+    public ResponseEntity<?> deleteResume(ResumeDto resumeDto, Authentication auth) {
+        return resumeService.deleteResume(resumeDto, auth);
     }
 
     @PostMapping("/applicant/add_education")

@@ -2,6 +2,7 @@ package com.example.jobsearch.controller;
 
 import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +39,8 @@ public class UserController {
     }
 
     @PostMapping("/create_user")
-    public HttpStatus createUser(UserDto userDto) {
-        if (!userService.ifUserExists(userDto.getId())) {
-            userService.createUser(userDto);
-            return HttpStatus.OK;
-        }
-        return HttpStatus.valueOf("User already exists");
+    public ResponseEntity<?> createUser(@Valid @RequestBody  UserDto userDto) {
+        return userService.createUser(userDto);
     }
 
     @PostMapping("/edit_user")

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,15 +21,19 @@ import java.util.Optional;
 public class UserService {
     private final UserDao userDao;
     private final FileService fileService;
+    private final PasswordEncoder encoder;
+
 
     public User getUserById(String email) {
         return userDao.getUserById(email);
     }
-public User getUserFromAuth(String auth) {
-    int x = auth.indexOf("=");
-    int y = auth.indexOf(",");
-    return getUserById(auth.substring(x+1, y));
-}
+
+    public User getUserFromAuth(String auth) {
+        int x = auth.indexOf("=");
+        int y = auth.indexOf(",");
+        return getUserById(auth.substring(x + 1, y));
+    }
+
     public List<UserDto> getAllUsers() {
         log.warn("Used getAllUsers method");
         List<User> users = userDao.getAllUsers();
@@ -49,9 +54,11 @@ public User getUserFromAuth(String auth) {
         UserDto u = new UserDto();
         u.setId(user.getId());
         u.setPhoneNumber(user.getPhoneNumber());
+        u.setUserName(user.getUserName());
         u.setUserType(user.getUserType());
         u.setPassword(user.getPassword());
         u.setPhoto(user.getPhoto());
+        u.setEnabled(user.isEnabled());
 
         return u;
     }
@@ -60,9 +67,11 @@ public User getUserFromAuth(String auth) {
         return User.builder()
                 .id(user.getId())
                 .phoneNumber(user.getPhoneNumber())
+                .userName(user.getUserName())
                 .userType(user.getUserType())
-                .password(user.getPassword())
+                .password(encoder.encode(user.getPassword()))
                 .photo(user.getPhoto())
+                .enabled(Boolean.TRUE)
                 .build();
     }
 
@@ -78,10 +87,14 @@ public User getUserFromAuth(String auth) {
         return userDao.ifUserExists(email);
     }
 
-    public void createUser(UserDto userDto) {
-
+    public ResponseEntity<?> createUser(UserDto userDto) {
         User user = makeUserFromDto(userDto);
-        userDao.createUser(user);
+        if (!ifUserExists(userDto.getId())) {
+            userDao.save(user);
+            return new ResponseEntity<>("User was created", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User already exists", HttpStatus.OK);
+        }
     }
 
 

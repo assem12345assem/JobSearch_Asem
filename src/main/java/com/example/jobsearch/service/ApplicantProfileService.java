@@ -78,6 +78,9 @@ public class ApplicantProfileService {
         var maybeApplicant = applicantDao.getApplicantByUserId(userId);
         return handleApplicantQueries(maybeApplicant);
     }
+    public Applicant findApplicantByUserId(String userId) {
+        return applicantDao.findApplicantByUserId(userId);
+    }
 
     public ResponseEntity<?> getApplicantByFirstName(String firstName) {
         var maybeApplicant = applicantDao.getApplicantByFirstName(firstName);

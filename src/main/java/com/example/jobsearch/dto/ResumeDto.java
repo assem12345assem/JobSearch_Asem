@@ -11,9 +11,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResumeDto {
     Long id;
-    ApplicantDto applicantDto;
+    String authorEmail;
     String resumeTitle;
-    CategoryDto categoryDto;
+    String category;
     Integer expectedSalary;
     boolean isActive;
     boolean isPublished;
