@@ -30,10 +30,7 @@ public class EmployerProfileController {
     @PostMapping("/edit_employer")
     public ResponseEntity<?> editEmployer(@RequestBody @Valid EmployerDto employerDto, Authentication auth) {
            return employerProfileService.editEmployer(employerDto, auth);
-
     }
-
-
     @GetMapping("/get_employer_by_id/{id}")
     public ResponseEntity<?> getEmployerById(@PathVariable Long id) {
         return employerProfileService.getEmployerById(id);

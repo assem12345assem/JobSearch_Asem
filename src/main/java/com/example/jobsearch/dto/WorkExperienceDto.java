@@ -1,5 +1,7 @@
 package com.example.jobsearch.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,7 +14,9 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WorkExperienceDto {
     Long id;
+    @NotNull
     Long resumeId;
+    @Past
     LocalDate dateStart;
     LocalDate dateEnd;
     String companyName;

@@ -28,6 +28,7 @@ public class ResumeService {
     private final ContactInfoService contactInfoService;
     private final ApplicantProfileService applicantService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     private ResumeDto makeDtoFromResume(Resume resume) {
         return ResumeDto.builder()
@@ -75,13 +76,6 @@ public class ResumeService {
                 .toList();
     }
 
-    public List<ResumeDto> getAllResumesByCategoryName(String categoryName) {
-        List<Resume> list = resumeDao.getAllResumesByCategoryName(categoryName);
-        return list.stream()
-                .map(this::makeDtoFromResume)
-                .toList();
-    }
-
     public ResponseEntity<?> createResume(ResumeDto e, Authentication auth) {
         var u = auth.getPrincipal();
         User user = userService.getUserFromAuth(u.toString());
@@ -94,8 +88,13 @@ public class ResumeService {
                 r = resumeDao.getResumeById(e.getId());
             }
             if(r.isEmpty()) {
-                resumeDao.save(createResumeFromDto(e));
-                return new ResponseEntity<>("Resume created successfully", HttpStatus.OK);
+                if(categoryService.getCategory(e.getCategory()).isPresent()) {
+                    resumeDao.save(createResumeFromDto(e));
+                    return new ResponseEntity<>("Resume created successfully", HttpStatus.OK);
+                } else {
+                    log.warn("Tried to use a category that does not exist: {}", e.getCategory());
+                    return new ResponseEntity<>("Category does not exist", HttpStatus.BAD_REQUEST);
+                }
             } else {
                 log.info("Tried to create a resume that already exists: {}", e.getId());
                 return new ResponseEntity<>("Resume already exists", HttpStatus.OK);
@@ -104,12 +103,6 @@ public class ResumeService {
             log.warn("Tried to create a resume for another user: {}", user.getId());
             return new ResponseEntity<>("Tried to create a resume for another user", HttpStatus.BAD_REQUEST);
         }
-    }
-    private ResponseEntity<?> handleResumeQueries(Optional<Resume> maybeResume) {
-        if(maybeResume.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return new ResponseEntity<>(makeDtoFromResume(maybeResume.get()), HttpStatus.OK);
     }
     public ResponseEntity<?> deleteResume(ResumeDto e, Authentication auth) {
         var u = auth.getPrincipal();
@@ -135,8 +128,13 @@ public class ResumeService {
         if(user.getId().equalsIgnoreCase(e.getAuthorEmail())) {
             var r = resumeDao.getResumeById(e.getId());
             if (r.isPresent()) {
-                resumeDao.editResume(createResumeFromDto(e));
-            return new ResponseEntity<>("Resume edited successfully", HttpStatus.OK);
+                if(categoryService.getCategory(e.getCategory()).isPresent()) {
+                    resumeDao.editResume(createResumeFromDto(e));
+                    return new ResponseEntity<>("Resume edited successfully", HttpStatus.OK);
+                }else {
+                    log.warn("Tried to use a category that does not exist: {}", e.getCategory());
+                    return new ResponseEntity<>("Category does not exist", HttpStatus.BAD_REQUEST);
+                }
         } else {
                 log.warn("Tried to edit a resume that does not exist: {}", e.getId());
                 return new ResponseEntity<>("Cannot edit a resume that does not exist", HttpStatus.NOT_FOUND);

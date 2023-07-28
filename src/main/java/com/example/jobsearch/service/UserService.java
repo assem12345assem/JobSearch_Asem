@@ -119,4 +119,10 @@ public class UserService {
         }
     }
 
+    public List<UserDto> getUsersByUserType(String userType) {
+        List<User> list = userDao.getUsersByUserType(userType);
+        return list.stream()
+                .map(this::makeUserDtoFromUser)
+                .toList();
+    }
 }

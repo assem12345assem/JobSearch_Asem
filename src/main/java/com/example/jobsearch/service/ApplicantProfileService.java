@@ -62,11 +62,6 @@ public class ApplicantProfileService {
         }
 
     }
-
-    public void deleteApplicant(ApplicantDto e) {
-        applicantDao.delete(e.getId());
-    }
-
     public ResponseEntity<?> findApplicantById(Long applicantId) {
         var maybeApplicant = applicantDao.findApplicantById(applicantId);
         return handleApplicantQueries(maybeApplicant);

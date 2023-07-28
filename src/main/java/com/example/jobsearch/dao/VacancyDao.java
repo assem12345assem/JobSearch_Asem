@@ -20,7 +20,6 @@ public class VacancyDao extends BaseDao{
     public VacancyDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
-
     @Override
     public Long save(Object obj) {
         Vacancy e = (Vacancy) obj;
@@ -44,9 +43,7 @@ public class VacancyDao extends BaseDao{
             return ps;
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
-
     }
-
     @Override
     public void delete(Long id) {
         String sql = "delete from VACANCIES where id = ?";
@@ -73,7 +70,6 @@ public class VacancyDao extends BaseDao{
     public Optional<Vacancy> findVacancyById(Long id) {
         String sql = "select * from VACANCIES where id = ?";
         return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), id)));
-
     }
 
     public List<Vacancy> getVacancyListByIdList(List<Long> id) {

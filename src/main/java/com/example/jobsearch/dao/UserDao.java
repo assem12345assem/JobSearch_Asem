@@ -14,9 +14,6 @@ public class UserDao extends BaseDao{
     public UserDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
-
-
-
     @Override
     public Long save(Object obj) {
         User u = (User) obj;
@@ -24,8 +21,7 @@ public class UserDao extends BaseDao{
                 "insert into users(id, password, enabled) values (?, ?, ?)",
                 u.getId(),
                 u.getPassword(),
-                u.isEnabled()
-        );
+                u.isEnabled());
     }
 
     public void delete(String id) {
@@ -34,7 +30,6 @@ public class UserDao extends BaseDao{
     }
     @Override
     public void delete(Long id) {
-
     }
 
     public List<User> getAllUsers() {
@@ -43,25 +38,10 @@ public class UserDao extends BaseDao{
     }
     public List<User> getUsersByUserType(String userType) {
         String sql = "select * from users where USER_TYPE = ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
-    }
-    public boolean ifPasswordCorrect(String email, String password) {
-        String sql = "select PASSWORD from USERS where ID = ?";
-        User u = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), email);
-        if(u == null) {
-            return false;
-        }
-        return u.getPassword().equalsIgnoreCase(password);
-    }
-    private String setNull(String string) {
-        if(string.length() == 0) {
-            return null;
-        }
-        return string;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), userType);
     }
     public boolean ifUserExists(String email) {
         String sql = "select * from users where id = ?";
-
         List<User> user = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), email);
         return !user.isEmpty();
     }
@@ -76,7 +56,6 @@ public class UserDao extends BaseDao{
         return Optional.ofNullable(user);
     }
 
-
     public void editUser(User e) {
         String sql = """
                 update USERS set PHONE_NUMBER = ?, USER_NAME = ?, USER_TYPE = ?,
@@ -85,7 +64,6 @@ public class UserDao extends BaseDao{
         jdbcTemplate.update(sql, e.getPhoneNumber(), e.getUserName(), e.getUserType(),
                 e.getPassword(), e.getPhoto(), e.isEnabled(), e.getId());
     }
-
     public void savePhoto(String email, String photo) {
         String sql = "update users set photo = ? where id = ?";
         jdbcTemplate.update(sql, photo, email);

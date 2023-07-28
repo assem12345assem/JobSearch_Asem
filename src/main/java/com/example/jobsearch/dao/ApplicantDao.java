@@ -34,7 +34,6 @@ public class ApplicantDao extends BaseDao {
             return ps;
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
-
     }
 
     @Override

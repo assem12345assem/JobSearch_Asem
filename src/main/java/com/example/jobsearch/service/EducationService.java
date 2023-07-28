@@ -51,7 +51,7 @@ public class EducationService {
     public ResponseEntity<?> createEducation(EducationDto e) {
         Long idTest = e.getResumeId();
         if(idTest == null) {
-            log.warn("Tried to add education when resume does not exist: {}", e.getResumeId());
+            log.warn("Tried to add education when resume does not exist");
             return new ResponseEntity<>("Cannot add education, resume does not exist", HttpStatus.NOT_FOUND);
         } else {
             educationDao.save(createEducationFromDto(e));

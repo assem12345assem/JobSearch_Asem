@@ -6,7 +6,6 @@ import com.example.jobsearch.dto.ResumeDto;
 import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService resumeService;
-
     @PostMapping("/applicant/create")
     public ResponseEntity<?> createResume(@RequestBody ResumeDto resumeDto, Authentication auth) {
         return resumeService.createResume(resumeDto, auth);
     }
-
     @PostMapping("/applicant/edit")
     public ResponseEntity<?> editResume(ResumeDto resumeDto, Authentication auth) {
         return resumeService.editResume(resumeDto, auth);
@@ -103,18 +100,15 @@ public class ResumeController {
     public List<ResumeDto> getResumeByResumeTitle(@PathVariable String title) {
         return resumeService.getResumeByResumeTitle(title);
     }
-
     @GetMapping("/view/by_category/{category}")
     public List<ResumeDto> getAllResumesByCategory(@PathVariable String category) {
         return resumeService.getAllResumesByCategory(category);
     }
 
-
     @GetMapping("/work_experience/{id}")
     public WorkExperienceDto getWorkExperienceById(@PathVariable long id) {
         return resumeService.getWorkExperienceById(id);
     }
-
     @GetMapping("/education/{id}")
     public EducationDto getEducationById(@PathVariable long id) {
         return resumeService.getEducationById(id);

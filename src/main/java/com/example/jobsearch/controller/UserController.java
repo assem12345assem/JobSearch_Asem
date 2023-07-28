@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
     @GetMapping
     public List<UserDto> getUsers() {
         return userService.getAllUsers();
@@ -27,7 +26,6 @@ public class UserController {
     public ResponseEntity<?> getUserByPhoneNumber(@PathVariable String phoneNumber) {
         return userService.getOptionalUserByPhoneNumber(phoneNumber);
     }
-
     @GetMapping("/{email}")
     public ResponseEntity<?> printUser(@PathVariable String email) {
         return userService.getUserByEmail(email);
@@ -37,12 +35,10 @@ public class UserController {
     public boolean ifUserExists(@PathVariable String email) {
         return userService.ifUserExists(email);
     }
-
     @PostMapping("/create_user")
     public ResponseEntity<?> createUser(@Valid @RequestBody  UserDto userDto) {
         return userService.createUser(userDto);
     }
-
     @PostMapping("/edit_user")
     public HttpStatus editUser(@RequestBody UserDto userDto, Authentication auth) {
         if (userService.ifUserExists(userDto.getId())) {
@@ -50,11 +46,13 @@ public class UserController {
             return HttpStatus.OK;
         }
         return HttpStatus.valueOf("User does not exist.");
-
     }
-
     @PostMapping("/upload_photo")
     public ResponseEntity<?> uploadPhoto(String email, MultipartFile file, Authentication auth) {
         return userService.uploadUserPhoto(email, file, auth);
+    }
+    @GetMapping("/user_type")
+    public List<UserDto> getUsersByUserType(String userType) {
+        return userService.getUsersByUserType(userType);
     }
 }

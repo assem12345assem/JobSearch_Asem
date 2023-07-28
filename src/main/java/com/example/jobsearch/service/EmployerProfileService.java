@@ -53,8 +53,6 @@ public class EmployerProfileService {
         }
     }
 
-
-
     public ResponseEntity<?> editEmployer(EmployerDto employerDto, Authentication auth) {
         var u = auth.getPrincipal();
         User user = userService.getUserFromAuth(u.toString());

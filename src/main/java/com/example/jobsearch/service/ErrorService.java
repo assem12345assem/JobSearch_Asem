@@ -12,7 +12,6 @@ import java.util.List;
 @Slf4j
 @Service
 public class ErrorService {
-
     public ErrorResponseBody makeBody(BindingResult result) {
         List<String> errors = new ArrayList<>();
 

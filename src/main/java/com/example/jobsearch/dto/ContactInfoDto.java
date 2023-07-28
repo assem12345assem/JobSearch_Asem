@@ -1,6 +1,7 @@
 package com.example.jobsearch.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContactInfoDto {
     Long id;
+    @NotNull
     Long resumeId;
     String telegram;
     @Email

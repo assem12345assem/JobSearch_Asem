@@ -45,11 +45,9 @@ public class ContactInfoService {
     }
 
     public ResponseEntity<?> createContactInfo(ContactInfoDto e) {
-        Long idTest = e.getResumeId();
-        if(idTest == null) {
-            log.warn("Tried to add contact info when resume does not exist: {}", e.getResumeId());
+        if(e.getResumeId() == null) {
+            log.warn("Cannot add contact info, resume does not exist");
             return new ResponseEntity<>("Cannot add contact info, resume does not exist", HttpStatus.NOT_FOUND);
-
         } else {
             contactInfoDao.save(createContactInfoFromDto(e));
             return new ResponseEntity<>("Contact info added successfully", HttpStatus.OK);

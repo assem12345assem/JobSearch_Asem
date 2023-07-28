@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.Option;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;

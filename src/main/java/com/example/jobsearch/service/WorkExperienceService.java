@@ -31,15 +31,15 @@ public class WorkExperienceService {
     }
 
     private WorkExperienceDto makeDtoFromWorkExperience(WorkExperience workExperience) {
-        WorkExperienceDto w = new WorkExperienceDto();
-        w.setId(workExperience.getId());
-        w.setResumeId(workExperience.getResumeId());
-        w.setDateStart(workExperience.getDateStart());
-        w.setDateEnd(workExperience.getDateEnd());
-        w.setCompanyName(workExperience.getCompanyName());
-        w.setPosition(workExperience.getPosition());
-        w.setResponsibilities(workExperience.getResponsibilities());
-        return w;
+        return WorkExperienceDto.builder()
+                .id(workExperience.getId())
+                .resumeId(workExperience.getResumeId())
+                .dateStart(workExperience.getDateStart())
+                .dateEnd(workExperience.getDateEnd())
+                .companyName(workExperience.getCompanyName())
+                .position(workExperience.getPosition())
+                .responsibilities(workExperience.getResponsibilities())
+                .build();
     }
 
     private WorkExperience createWorkExpFromDto(WorkExperienceDto workExperience) {
@@ -57,7 +57,7 @@ public class WorkExperienceService {
     public ResponseEntity<?> createWorkExperience(WorkExperienceDto e) {
         Long idTest = e.getResumeId();
         if (idTest == null) {
-            log.warn("Tried to add work experience when resume does not exist: {}", e.getResumeId());
+            log.warn("Tried to add work experience when resume does not exist");
             return new ResponseEntity<>("Cannot add work experience, resume does not exist", HttpStatus.NOT_FOUND);
 
         } else {
