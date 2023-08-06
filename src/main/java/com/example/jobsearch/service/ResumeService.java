@@ -45,7 +45,7 @@ public class ResumeService {
     private Resume createResumeFromDto(ResumeDto resume) {
         return Resume.builder()
                 .id(resume.getId())
-                .applicantId(applicantService.findApplicantByUserId(resume.getAuthorEmail()).getId())
+                .applicantId(applicantService.getApplicantByUserId(resume.getAuthorEmail()).get().getId())
                 .resumeTitle(resume.getResumeTitle())
                 .category(resume.getCategory())
                 .expectedSalary(resume.getExpectedSalary())

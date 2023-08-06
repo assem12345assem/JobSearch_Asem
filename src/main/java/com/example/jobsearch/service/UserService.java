@@ -1,6 +1,8 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.UserDao;
+import com.example.jobsearch.dto.ApplicantDto;
+import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -22,17 +25,11 @@ public class UserService {
     private final UserDao userDao;
     private final FileService fileService;
     private final PasswordEncoder encoder;
+    private final RoleService roleService;
+    private final ApplicantProfileService applicantService;
+    private final EmployerProfileService employerService;
 
 
-    public User getUserById(String email) {
-        return userDao.getUserById(email);
-    }
-
-    public User getUserFromAuth(String auth) {
-        int x = auth.indexOf("=");
-        int y = auth.indexOf(",");
-        return getUserById(auth.substring(x + 1, y));
-    }
 
     public List<UserDto> getAllUsers() {
         log.warn("Used getAllUsers method");
@@ -124,5 +121,64 @@ public class UserService {
         return list.stream()
                 .map(this::makeUserDtoFromUser)
                 .toList();
+    }
+
+    private String defaultPhoto(String userType) {
+        if (userType.equalsIgnoreCase("employer")) {
+            return "default_company.png";
+        } else {
+            return "default_user.png";
+        }
+    }
+
+    public void register(UserDto userDto) throws Exception {
+        var user = userDao.getUserById(userDto.getId());
+
+        if (user.isEmpty()) {
+            userDao.save(User.builder().id(userDto.getId()).phoneNumber(userDto.getPhoneNumber()).userName(userDto.getUserName()).userType(userDto.getUserType()).password(encoder.encode(userDto.getPassword())).photo(defaultPhoto(userDto.getUserType())).enabled(Boolean.TRUE).build());
+            roleService.insertRole(userDto.getUserType(), userDto.getId());
+            if (userDto.getUserType().equalsIgnoreCase("applicant")) {
+                applicantService.saveApplicant(ApplicantDto.builder()
+                        .userId(userDto.getId())
+                        .build());
+            } else {
+                employerService.saveEmployer(EmployerDto.builder()
+                        .userId(userDto.getId())
+                        .build());
+            }
+        } else {
+            throw new Exception("User already exists");
+        }
+    }
+
+    public Object getUserProfile(Authentication auth) {
+        var user = auth.getPrincipal();
+        User u = getUserFromAuth(user.toString());
+        if (u.getUserType().equalsIgnoreCase("applicant")) {
+            return applicantService.getApplicantByUserId(u.getId());
+        } else if (u.getUserType().equalsIgnoreCase("employer")) {
+            return employerService.getEmployerByUserId(u.getId());
+        } else throw new NoSuchElementException("User type is not found");
+    }
+
+    public Object getProfileContent(Authentication auth) {
+        var user = auth.getPrincipal();
+        User u = getUserFromAuth(user.toString());
+        if (u.getUserType().equalsIgnoreCase("applicant")) {
+            return
+        } else if (u.getUserType().equalsIgnoreCase("employer")) {
+            return
+        } else throw new NoSuchElementException("User type is not found");
+    }
+
+    public User getUserFromAuth(String auth) {
+        int x = auth.indexOf("=");
+        int y = auth.indexOf(",");
+        var user = userDao.getUserById(auth.substring(x + 1, y));
+
+        if (user.isEmpty()) {
+            throw new NoSuchElementException("Could not authenticate the user");
+        } else return user.get();
+
     }
 }

@@ -1,84 +1,5 @@
 databaseChangeLog:
   - changeSet:
-      id: create-users-table
-      author: Asem
-      changes:
-        - createTable:
-            tableName: users
-            columns:
-              - column:
-                  name: id
-                  type: varchar(45)
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: phone_number
-                  type: varchar(255)
-              - column:
-                  name: user_name
-                  type: varchar(255)
-              - column:
-                  name: user_type
-                  type: varchar(45)
-              - column:
-                  name: password
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: photo
-                  type: varchar(255)
-                  defaultValue: 'default_profile.png'
-              - column:
-                  name: enabled
-                  type: boolean
-  - changeSet:
-      id: create roles
-      author: Asem
-      changes:
-        - createTable:
-            tableName: roles
-            columns:
-              - column:
-                  name: id
-                  type: long
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: role
-                  type: varchar(50)
-              - column:
-                  name: user_email
-                  type: varchar(50)
-                  constraints:
-                    foreignKeyName: fk_user_email_rls
-                    nullable: false
-                    references: users(id)
-  - changeSet:
-      id: create authorities
-      author: Asem
-      changes:
-        - createTable:
-            tableName: authorities
-            columns:
-              - column:
-                  name: id
-                  type: long
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: authority
-                  type: varchar(50)
-              - column:
-                  name: role
-                  type: varchar(50)
-
-  - changeSet:
       id: create-employers-table
       author: Asem
       changes:
@@ -95,11 +16,11 @@ databaseChangeLog:
               - column:
                   name: userId
                   type: varchar(255)
+                  constraints:
+                    nullable: false
               - column:
                   name: companyName
                   type: varchar(255)
-                  constraints:
-                    nullable: false
   - changeSet:
       id: add new fk_e_user_id
       author: Asem
@@ -132,18 +53,12 @@ databaseChangeLog:
               - column:
                   name: firstName
                   type: varchar(255)
-                  constraints:
-                    nullable: false
               - column:
                   name: lastName
                   type: varchar(255)
-                  constraints:
-                    nullable: false
               - column:
                   name: dateOfBirth
                   type: date
-                  constraints:
-                    nullable: false
   - changeSet:
       id: add new fk_a_user_id
       author: Asem
@@ -333,7 +248,7 @@ databaseChangeLog:
       author: Asem
       changes:
         - createTable:
-            tableName: vacancies
+            tableName: vacancy
             columns:
               - column:
                   name: id
@@ -343,10 +258,10 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: employerId
+                  name: employer_id
                   type: long
               - column:
-                  name: vacancyName
+                  name: vacancy_name
                   type: varchar(255)
                   constraints:
                     nullable: false
@@ -368,35 +283,35 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: requiredExperienceMin
+                  name: required_experience_min
                   type: int
                   constraints:
                     nullable: false
               - column:
-                  name: requiredExperienceMax
+                  name: required_experience_max
                   type: int
                   constraints:
                     nullable: false
               - column:
-                  name: isActive
+                  name: is_active
                   type: boolean
                   constraints:
                     nullable: false
               - column:
-                  name: isPublished
+                  name: is_published
                   type: boolean
                   constraints:
                     nullable: false
               - column:
-                  name: publishedDateTime
+                  name: published_date_time
                   type: timestamp(6)
   - changeSet:
       id: add new fk_employer_id
       author: Asem
       changes:
         - addForeignKeyConstraint:
-            baseTableName: vacancies
-            baseColumnNames: employerId
+            baseTableName: vacancy
+            baseColumnNames: employer_id
             constraintName: fk_employer_id
             referencedTableName: employers
             referencedColumnNames: id
@@ -417,7 +332,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: vacancyId
+                  name: vacancy_id
                   type: long
               - column:
                   name: resumeId
@@ -445,9 +360,9 @@ databaseChangeLog:
       changes:
         - addForeignKeyConstraint:
             baseTableName: jobapplications
-            baseColumnNames: vacancyId
+            baseColumnNames: vacancy_id
             constraintName: fk_vacancy_id
-            referencedTableName: vacancies
+            referencedTableName: vacancy
             referencedColumnNames: id
             onDelete: cascade
             onUpdate: cascade
@@ -506,5 +421,3 @@ databaseChangeLog:
             referencedColumnNames: id
             onDelete: cascade
             onUpdate: cascade
-
-

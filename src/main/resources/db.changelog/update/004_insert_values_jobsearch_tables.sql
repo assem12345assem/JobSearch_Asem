@@ -1,19 +1,7 @@
-insert into USERS (ID, PHONE_NUMBER, USER_NAME, USER_TYPE, PASSWORD, ENABLED)
-values ('timcook@com.com','968-859-5215','Tim Cook', 'applicant',
-        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true),
-       ('leejy@com.com','578-525-5455', 'Lee JY', 'applicant',
-        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true),
-       ('samsung@com.com','548-556-8455','Samsung', 'employer',
-        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true),
-       ('apple@com.com','758-554-5662', 'Apple', 'employer',
-        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true),
-       ('test@com.com','454-52-15','Test','employer',
-        '$2a$12$EFiHl2LjTXGjgsD7Mh5j1eVfmCq4ZFevhggr5rHzP51IWX1YpRSwm', true);
-// password is 'qwe'
 insert into EMPLOYERS (USERID, COMPANYNAME)
 values ((select ID from USERS where ID like 'samsung%'), 'Samsung'),
        ((select ID from USERS where ID like 'apple%'), 'Apple'),
-       ((select ID from USERS where ID like 'test%'),'TestCompany');
+       ((select ID from USERS where ID like 'test@com%'),'TestCompany');
 
 insert into APPLICANTS (USERID, FIRSTNAME, LASTNAME, DATEOFBIRTH)
 VALUES ( (select ID from USERS where ID like 'tim%'), 'Tim','Cook','1960-11-01'),
@@ -33,8 +21,8 @@ values ('accounting'),
        ('design'),
        ('media');
 
-insert into VACANCIES (EMPLOYERID, VACANCYNAME, CATEGORY, SALARY, DESCRIPTION,
-                       REQUIREDEXPERIENCEMIN, REQUIREDEXPERIENCEMAX, ISACTIVE, ISPUBLISHED, PUBLISHEDDATETIME)
+insert into VACANCY (EMPLOYER_ID, VACANCY_NAME, CATEGORY, SALARY, DESCRIPTION,
+                     REQUIRED_EXPERIENCE_MIN, REQUIRED_EXPERIENCE_MAX, IS_ACTIVE, IS_PUBLISHED, PUBLISHED_DATE_TIME)
 values ( (select ID from EMPLOYERS where COMPANYNAME like 'Samsung'), 'Samsung CEO',
          'management', 1000,
          'Sed ut perspiciatis unde omnis iste natus', 10, 15, false, true, '2023-03-31 18:00:00' ),
@@ -79,29 +67,10 @@ VALUES ((select id from RESUMES where RESUMETITLE like 'Apple%'),
        ((select id from RESUMES where RESUMETITLE like 'Samsung%'),
         '@leeyu', 'leejy@com.com','578-525-5455', 'facebook.com/lee', 'www.linkedin.com/in/lee');
 
-insert into JOBAPPLICATIONS (VACANCYID, RESUMEID, DATETIME)
-VALUES ((select id from VACANCIES where VACANCYNAME like 'Apple%'),
+insert into JOBAPPLICATIONS (VACANCY_ID, RESUMEID, DATETIME)
+VALUES ((select id from VACANCY where VACANCY_NAME like 'Apple%'),
         (select id from RESUMES where RESUMETITLE like 'Apple%'),
         '2023-07-01 10:00:00'),
-       ((select id from VACANCIES where VACANCYNAME like 'Samsung%'),
+       ((select id from VACANCY where VACANCY_NAME like 'Samsung%'),
         (select id from RESUMES where RESUMETITLE like 'Samsung%'),
         '2023-07-02 10:00:00');
-
-insert into roles(role, user_email)
-values ('EMPLOYER', 'test@com.com'),
-       ('EMPLOYER', 'apple@com.com'),
-       ('EMPLOYER', 'samsung@com.com'),
-       ('APPLICANT','timcook@com.com'),
-       ('APPLICANT', 'leejy@com.com');
-
-insert into authorities (authority, role)
-values('ADD_VACANCY', 'EMPLOYER'),
-      ('EDIT_VACANCY', 'EMPLOYER'),
-      ('DELETE_VACANCY', 'EMPLOYER'),
-      ('ADD_RESUME', 'APPLICANT'),
-      ('EDIT_RESUME', 'APPLICANT'),
-      ('DELETE_RESUME', 'APPLICANT'),
-      ('JOB_APPLY', 'APPLICANT');
-
-
-

@@ -20,7 +20,7 @@ public class EmployerProfileController {
         return employerProfileService.getAllEmployers();}
     @GetMapping("/{userId}")
     public ResponseEntity<?> getEmployerByUserId(@PathVariable String userId) {
-        return employerProfileService.getEmployerByUserId(userId);
+        return employerProfileService.findEmployerByUserId(userId);
     }
     @PostMapping("/create_employer")
     public ResponseEntity<?> createEmployer(@RequestBody @Valid EmployerDto employerDto) {
