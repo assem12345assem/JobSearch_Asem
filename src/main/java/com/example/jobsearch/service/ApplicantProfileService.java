@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -29,14 +30,27 @@ public class ApplicantProfileService {
         Period intervalPeriod = Period.between(applicantDto.getDateOfBirth(), l);
         return intervalPeriod.getYears() + " years old";
     }
-
+    public void saveApplicant(ApplicantDto applicantDto) throws Exception {
+        if (!ifApplicantExists(applicantDto.getUserId())) {
+            applicantDao.save(makeApplicantFromDto(applicantDto));
+        } else {
+            log.info("Tried to create an applicant that exists: {}", applicantDto.getLastName());
+            throw new Exception("Applicant already exists");
+        }
+    }
     public boolean ifApplicantExists(String userId) {
-        return applicantDao.ifApplicantExists(userId);
+        var a = applicantDao.getApplicantByUserId(userId);
+        return a.isPresent();
+    }
+    public Optional<ApplicantDto> getApplicantByUserId(String userId) {
+        var a = applicantDao.getApplicantByUserId(userId);
+        if(a.isPresent()) return Optional.of(makeDtoFromApplicant(a.get()));
+        else throw new NoSuchElementException("Applicant profile not found");
     }
 
     public ResponseEntity<?> createApplicant(ApplicantDto applicantDto) {
         if (!ifApplicantExists(applicantDto.getUserId())) {
-            applicantDao.save(buildApplicantFromDto(applicantDto));
+            applicantDao.save(makeApplicantFromDto(applicantDto));
             return new ResponseEntity<>("Applicant created", HttpStatus.OK);
         } else {
             log.info("Tried to create an applicant that exists: {}", applicantDto.getLastName());
@@ -49,7 +63,7 @@ public class ApplicantProfileService {
         User user = userService.getUserFromAuth(u.toString());
         if (user.getId().equalsIgnoreCase(applicantDto.getUserId())) {
             if (ifApplicantExists(applicantDto.getUserId())) {
-                applicantDao.editApplicant(buildApplicantFromDto(applicantDto));
+                applicantDao.editApplicant(makeApplicantFromDto(applicantDto));
                 return new ResponseEntity<>("Applicant is edited", HttpStatus.OK);
             } else {
                 log.warn("Tried to edit other user's profile: {} {}", applicantDto.getUserId(), user.getId());
@@ -69,12 +83,9 @@ public class ApplicantProfileService {
     public ApplicantDto getApplicantById(long id) {
         return makeDtoFromApplicant(applicantDao.getApplicantById(id));
     }
-    public ResponseEntity<?> getApplicantByUserId(String userId) {
+    public ResponseEntity<?> findApplicantByUserId(String userId) {
         var maybeApplicant = applicantDao.getApplicantByUserId(userId);
         return handleApplicantQueries(maybeApplicant);
-    }
-    public Applicant findApplicantByUserId(String userId) {
-        return applicantDao.findApplicantByUserId(userId);
     }
 
     public ResponseEntity<?> getApplicantByFirstName(String firstName) {
@@ -94,7 +105,7 @@ public class ApplicantProfileService {
                 .toList();
     }
 
-    private Applicant buildApplicantFromDto(ApplicantDto applicantDto) {
+    private Applicant makeApplicantFromDto(ApplicantDto applicantDto) {
         Applicant a = new Applicant();
 
         a.setId(applicantDto.getId());

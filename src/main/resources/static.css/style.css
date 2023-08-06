@@ -1,0 +1,100 @@
+body{
+    font-size: 14px;
+    width: 1200px;
+}
+.main-add-border{
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px 0px;
+}
+.header-top{
+    color: tomato;
+    font-size: 24px;
+    text-align: center;
+}
+.section-header{
+    font-size: 18px;
+}
+.user-info {
+    margin: 0px 10px;
+    height: 100px;
+}
+.form-group{
+    margin: 5px 0;
+}
+.elem-container {
+    border: 1px solid blue;
+    margin: 20px 20px 0 0;
+    width: 100%;
+    float: left;
+    padding: 10px;
+    border-radius: 10px;
+}
+.form-brd-radius{
+    border: 2px solid black;
+    border-radius: 8px;
+}
+.solid-white{
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 5px 15px;
+    background: white;
+    width: 100px;
+    padding: 35px 10px 20px;
+    height: 100px;
+    text-align: center;
+
+    margin: 0 10px;
+}
+.lined-red{
+    border: 2px solid black;
+    border-radius: 8px;
+    background: repeating-linear-gradient(-65deg, red, red 1px, white 1px, white 4px);
+    width: 100px;
+    height: 100px;
+    padding: 10px 10px 20px;
+    text-align: center;
+}
+.lined-green-edit {
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 5px 15px;
+    background-image: repeating-linear-gradient(-65deg, #5bab11, #5bab11 1px, white 1px, white 4px);
+    width: 200px;
+    align-self: center;
+}
+.lined-green-publish{
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 5px 15px;
+    background-image: repeating-linear-gradient(-65deg, #5bab11, #5bab11 1px, white 1px, white 4px);
+    width: 100%;
+    align-self: center;
+}
+.lined-blue{
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 5px 15px;
+    background: repeating-linear-gradient(-65deg, #118fab, #118fab 1px, white 1px, white 4px);
+    width: 120px;
+}
+.lined-green {
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 5px 15px;
+    background-image: repeating-linear-gradient(-65deg, #5bab11, #5bab11 1px, white 1px, white 4px);
+    width: 120px;
+}
+.card-add-border{
+    border: 2px solid black;
+    border-radius: 8px;
+}
+.img-text{
+    margin: 2px 0;
+    width: 35px;
+    height: auto;
+}
+
+
+

@@ -1,6 +1,7 @@
 package com.example.jobsearch.dao;
 
 import com.example.jobsearch.model.User;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -69,8 +70,10 @@ public class UserDao extends BaseDao{
         jdbcTemplate.update(sql, photo, email);
     }
 
-    public User getUserById(String email) {
+    public Optional<User> getUserById(String email) {
         String sql = "select * from users where id = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), email);
+        return Optional.ofNullable(DataAccessUtils.singleResult(
+                jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), email)
+        ));
     }
 }

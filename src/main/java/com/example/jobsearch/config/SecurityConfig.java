@@ -44,21 +44,21 @@ public class SecurityConfig {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery(FETCH_USERS_QUERY)
-                .authoritiesByUsernameQuery(FETCH_ROLES_QUERY);
+                .authoritiesByUsernameQuery(FETCH_ROLES_QUERY)
+                .passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/applicant/**")).hasAuthority("APPLICANT")
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/**")).fullyAuthenticated()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/users/**")).fullyAuthenticated()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/vacancy/employer/**")).hasAuthority("EMPLOYER")
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/jobs/apply")).hasAuthority("APPLICANT")
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/jobs/**")).fullyAuthenticated()

@@ -41,7 +41,7 @@ public class ApplicantProfileController {
 
     @GetMapping("/view_user/{userId}")
     public ResponseEntity<?> getApplicantByUserId(@PathVariable String userId) {
-        return applicantProfileService.getApplicantByUserId(userId);
+        return applicantProfileService.findApplicantByUserId(userId);
     }
 
     @GetMapping("/get_applicant_by_first_name/{firstName}")

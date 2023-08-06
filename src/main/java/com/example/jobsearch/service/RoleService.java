@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RoleService {
     private final RoleDao roleDao;
-    public void save(Role role) {
-        roleDao.save(role);
+
+    public void insertRole(String userType, String email){
+        roleDao.save(Role.builder()
+                .role(userType.toUpperCase())
+                .user_email(email)
+                .build());
     }
 }

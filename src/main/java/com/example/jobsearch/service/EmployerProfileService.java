@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -27,8 +28,27 @@ public class EmployerProfileService {
                 .map(this::makeDtoFromEmployer)
                 .toList();
     }
+    public void saveEmployer(EmployerDto employerDto) throws Exception {
+        if(!ifEmployerExists(employerDto.getUserId())) {
+            Employer employer = makeEmployerFromDto(employerDto);
+            employerDao.save(employer);
+        } else {
+            log.info("Employer save error: Employer already exists {}", employerDto.getUserId());
+            throw new Exception("Employer already exists");
+        }
+    }
+    private boolean ifEmployerExists(String userId) {
+        var e = employerDao.getEmployerByUserId(userId);
+        if(e.isEmpty()) return false;
+        else return true;
+    }
+    public Optional<EmployerDto> getEmployerByUserId(String email) {
+        var e = employerDao.getEmployerByUserId(email);
+        if(e.isPresent()) return Optional.of(makeDtoFromEmployer(e.get()));
+        else throw new NoSuchElementException("Employer profile does not exist");
 
-    public ResponseEntity<?> getEmployerByUserId(String email) {
+    }
+    public ResponseEntity<?> findEmployerByUserId(String email) {
         var maybeEmployer = employerDao.getEmployerByUserId(email);
         return handleEmployerQueries(maybeEmployer);
     }
@@ -38,13 +58,9 @@ public class EmployerProfileService {
         return handleEmployerQueries(maybeEmployer);
     }
 
-    private boolean ifEmployerExists(String userId) {
-        return employerDao.ifEmployerExists(userId);
-    }
-
     public ResponseEntity<?> createEmployer(EmployerDto employerDto) {
         if(!ifEmployerExists(employerDto.getUserId())) {
-            Employer employer = createEmployerFromDto(employerDto);
+            Employer employer = makeEmployerFromDto(employerDto);
             employerDao.save(employer);
             return new ResponseEntity<>("Employer successfully created", HttpStatus.OK);
         } else {
@@ -59,7 +75,7 @@ public class EmployerProfileService {
 
         if(ifEmployerExists(employerDto.getUserId())) {
             if(user.getId().equalsIgnoreCase(employerDto.getUserId())) {
-                Employer employer = createEmployerFromDto(employerDto);
+                Employer employer = makeEmployerFromDto(employerDto);
                 employerDao.editEmployer(employer);
                 return new ResponseEntity<>("Employer was edited successfully", HttpStatus.OK);
             } else {
@@ -93,7 +109,7 @@ public class EmployerProfileService {
         e.setCompanyName(employer.getCompanyName());
         return e;
     }
-    private Employer createEmployerFromDto(EmployerDto employerDto) {
+    private Employer makeEmployerFromDto(EmployerDto employerDto) {
         Employer e = new Employer();
         e.setId(employerDto.getId());
         e.setUserId(employerDto.getUserId());
