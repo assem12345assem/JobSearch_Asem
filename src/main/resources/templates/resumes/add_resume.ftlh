@@ -1,4 +1,4 @@
-<#import "../layout.ftlh" as main>
+<#import "../../../templates/layout.ftlh" as main>
 <@main.layout>
     <div>
         <h3 class="header-top">Создание Резюме: </h3>

@@ -5,7 +5,6 @@ import com.example.jobsearch.service.EmployerProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,10 +26,10 @@ public class EmployerProfileController {
         return employerProfileService.createEmployer(employerDto);
     }
 
-    @PostMapping("/edit_employer")
-    public ResponseEntity<?> editEmployer(@RequestBody @Valid EmployerDto employerDto, Authentication auth) {
-           return employerProfileService.editEmployer(employerDto, auth);
-    }
+//    @PostMapping("/edit_employer")
+//    public ResponseEntity<?> editEmployer(@RequestBody @Valid EmployerDto employerDto, Authentication auth) {
+//           return employerProfileService.editEmployer(employerDto, auth);
+//    }
     @GetMapping("/get_employer_by_id/{id}")
     public ResponseEntity<?> getEmployerById(@PathVariable Long id) {
         return employerProfileService.getEmployerById(id);

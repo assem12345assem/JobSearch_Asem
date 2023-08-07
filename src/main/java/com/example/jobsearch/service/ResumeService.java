@@ -64,6 +64,7 @@ public class ResumeService {
 
     public List<ResumeDto> getAllResumesByApplicantId(long applicantId) {
         List<Resume> list = resumeDao.getAllResumesByApplicantId(applicantId);
+        if(list.isEmpty()) return null;
         return list.stream()
                 .map(this::makeDtoFromResume)
                 .toList();

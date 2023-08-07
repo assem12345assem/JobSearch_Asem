@@ -3,12 +3,10 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.dao.ApplicantDao;
 import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.model.Applicant;
-import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,7 +20,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ApplicantProfileService {
     private final ApplicantDao applicantDao;
-    private final UserService userService;
 
     public String displayAge(Long applicantId) {
         ApplicantDto applicantDto = getApplicantById(applicantId);
@@ -30,6 +27,7 @@ public class ApplicantProfileService {
         Period intervalPeriod = Period.between(applicantDto.getDateOfBirth(), l);
         return intervalPeriod.getYears() + " years old";
     }
+
     public void saveApplicant(ApplicantDto applicantDto) throws Exception {
         if (!ifApplicantExists(applicantDto.getUserId())) {
             applicantDao.save(makeApplicantFromDto(applicantDto));
@@ -38,13 +36,15 @@ public class ApplicantProfileService {
             throw new Exception("Applicant already exists");
         }
     }
+
     public boolean ifApplicantExists(String userId) {
         var a = applicantDao.getApplicantByUserId(userId);
         return a.isPresent();
     }
+
     public Optional<ApplicantDto> getApplicantByUserId(String userId) {
         var a = applicantDao.getApplicantByUserId(userId);
-        if(a.isPresent()) return Optional.of(makeDtoFromApplicant(a.get()));
+        if (a.isPresent()) return Optional.of(makeDtoFromApplicant(a.get()));
         else throw new NoSuchElementException("Applicant profile not found");
     }
 
@@ -58,31 +58,33 @@ public class ApplicantProfileService {
         }
     }
 
-    public ResponseEntity<?> editApplicant(ApplicantDto applicantDto, Authentication auth) {
-        var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
-        if (user.getId().equalsIgnoreCase(applicantDto.getUserId())) {
-            if (ifApplicantExists(applicantDto.getUserId())) {
-                applicantDao.editApplicant(makeApplicantFromDto(applicantDto));
-                return new ResponseEntity<>("Applicant is edited", HttpStatus.OK);
-            } else {
-                log.warn("Tried to edit other user's profile: {} {}", applicantDto.getUserId(), user.getId());
-                return new ResponseEntity<>("Tried to edit other user's profile", HttpStatus.BAD_REQUEST);
-            }
-
-        } else {
-            log.warn("Tried to edit applicant that does not exist: {}", applicantDto.getLastName());
-            return new ResponseEntity<>("Applicant does not exist", HttpStatus.OK);
-        }
-
-    }
+    //    public ResponseEntity<?> editApplicant(ApplicantDto applicantDto, Authentication auth) {
+//        var u = auth.getPrincipal();
+//        User user = userService.getUserFromAuth(u.toString());
+//        if (user.getId().equalsIgnoreCase(applicantDto.getUserId())) {
+//            if (ifApplicantExists(applicantDto.getUserId())) {
+//                applicantDao.editApplicant(makeApplicantFromDto(applicantDto));
+//                return new ResponseEntity<>("Applicant is edited", HttpStatus.OK);
+//            } else {
+//                log.warn("Tried to edit other user's profile: {} {}", applicantDto.getUserId(), user.getId());
+//                return new ResponseEntity<>("Tried to edit other user's profile", HttpStatus.BAD_REQUEST);
+//            }
+//
+//        } else {
+//            log.warn("Tried to edit applicant that does not exist: {}", applicantDto.getLastName());
+//            return new ResponseEntity<>("Applicant does not exist", HttpStatus.OK);
+//        }
+//
+//    }
     public ResponseEntity<?> findApplicantById(Long applicantId) {
         var maybeApplicant = applicantDao.findApplicantById(applicantId);
         return handleApplicantQueries(maybeApplicant);
     }
+
     public ApplicantDto getApplicantById(long id) {
         return makeDtoFromApplicant(applicantDao.getApplicantById(id));
     }
+
     public ResponseEntity<?> findApplicantByUserId(String userId) {
         var maybeApplicant = applicantDao.getApplicantByUserId(userId);
         return handleApplicantQueries(maybeApplicant);
@@ -126,8 +128,9 @@ public class ApplicantProfileService {
         a.setDateOfBirth(applicant.getDateOfBirth());
         return a;
     }
+
     private ResponseEntity<?> handleApplicantQueries(Optional<Applicant> maybeApplicant) {
-        if(maybeApplicant.isEmpty()) {
+        if (maybeApplicant.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return new ResponseEntity<>(makeDtoFromApplicant(maybeApplicant.get()), HttpStatus.OK);

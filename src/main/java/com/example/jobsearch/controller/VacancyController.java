@@ -26,7 +26,7 @@ public class VacancyController {
     }
     @GetMapping("/all_by_employer/{employerId}")
     public ResponseEntity<?> getAllVacanciesByEmployerId(@PathVariable Long employerId) {
-        return vacancyService.getAllVacanciesByEmployerId(employerId);
+        return vacancyService.findAllVacanciesByEmployerId(employerId);
     }
     @PostMapping("/employer/create_vacancy")
     public ResponseEntity<?> createVacancy(VacancyDto vacancyDto, Authentication auth) {

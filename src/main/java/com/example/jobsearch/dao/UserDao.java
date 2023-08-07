@@ -19,9 +19,14 @@ public class UserDao extends BaseDao{
     public Long save(Object obj) {
         User u = (User) obj;
         return (long) jdbcTemplate.update(
-                "insert into users(id, password, enabled) values (?, ?, ?)",
+                "insert into users(id, phone_number, user_name, user_type, password, photo, enabled) " +
+                        "values (?, ?, ?, ?, ?, ?, ?)",
                 u.getId(),
+                u.getPhoneNumber(),
+                u.getUserName(),
+                u.getUserType(),
                 u.getPassword(),
+                u.getPhoto(),
                 u.isEnabled());
     }
 
@@ -48,8 +53,7 @@ public class UserDao extends BaseDao{
     }
     public Optional<User> getOptionalUserById(String id) {
         String sql = "select * from users where id = ?";
-        User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), id);
-        return Optional.ofNullable(user);
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), id)));
     }
     public Optional<User> getOptionalUserByPhoneNumber(String phoneNumber) {
         String sql = "select * from users where PHONE_NUMBER = ?";

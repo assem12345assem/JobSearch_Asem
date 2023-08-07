@@ -3,12 +3,10 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.dao.EmployerDao;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.model.Employer;
-import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmployerProfileService {
     private final EmployerDao employerDao;
-    private final UserService userService;
+//    private final UserService userService;
 
     public List<EmployerDto> getAllEmployers() {
         List<Employer> list = employerDao.getAllEmployers();
@@ -69,24 +67,24 @@ public class EmployerProfileService {
         }
     }
 
-    public ResponseEntity<?> editEmployer(EmployerDto employerDto, Authentication auth) {
-        var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
-
-        if(ifEmployerExists(employerDto.getUserId())) {
-            if(user.getId().equalsIgnoreCase(employerDto.getUserId())) {
-                Employer employer = makeEmployerFromDto(employerDto);
-                employerDao.editEmployer(employer);
-                return new ResponseEntity<>("Employer was edited successfully", HttpStatus.OK);
-            } else {
-                log.warn("User tried to edit another employer's profile: {} {}", user.getId(), employerDto.getUserId());
-                return new ResponseEntity<>("Error: attempt to edit other user's profile", HttpStatus.NOT_FOUND);
-            }
-        } else {
-            log.warn("EDIT EMPLOYER Error: Employer does not exist {}", employerDto.getUserId());
-            return new ResponseEntity<>("Employer does not exist", HttpStatus.NOT_FOUND);
-        }
-    }
+//    public ResponseEntity<?> editEmployer(EmployerDto employerDto, Authentication auth) {
+//        var u = auth.getPrincipal();
+//        User user = userService.getUserFromAuth(u.toString());
+//
+//        if(ifEmployerExists(employerDto.getUserId())) {
+//            if(user.getId().equalsIgnoreCase(employerDto.getUserId())) {
+//                Employer employer = makeEmployerFromDto(employerDto);
+//                employerDao.editEmployer(employer);
+//                return new ResponseEntity<>("Employer was edited successfully", HttpStatus.OK);
+//            } else {
+//                log.warn("User tried to edit another employer's profile: {} {}", user.getId(), employerDto.getUserId());
+//                return new ResponseEntity<>("Error: attempt to edit other user's profile", HttpStatus.NOT_FOUND);
+//            }
+//        } else {
+//            log.warn("EDIT EMPLOYER Error: Employer does not exist {}", employerDto.getUserId());
+//            return new ResponseEntity<>("Employer does not exist", HttpStatus.NOT_FOUND);
+//        }
+//    }
     public String getUserIdByEmployerId(Long employerId) {
         return employerDao.getUserIdByEmployerId(employerId);
     }
