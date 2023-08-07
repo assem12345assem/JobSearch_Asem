@@ -1,32 +1,45 @@
 <#import "../layout.ftlh" as main>
 <@main.layout>
     <div class="elem-container">
-    <h1 class="header-top">Личный кабинет
-    <#if ${user.type}=='employer'>
-        Работодателя
-        <#else>
-            Соискателя
-    </#if>
-</h1>
+        <h1 class="header-top">Личный кабинет
+            <#if user.userType=="employer">
+                Работодателя
+            <#else>
+                Соискателя
+            </#if>
+        </h1>
     </div>
     <div class="d-flex elem-container row justify-content-around">
         <div class="align-self-start mb-3">
-<#--            ${user.photo}-->
-photo
+            <#--            <img src="data/images/${user.photo}">-->
+            photo
         </div>
         <div class="align-self-start mb-3">
             <div class="d-flex flex-column user-info justify-content-around">
-                <#if ${user.type}=='employer'>
-                    Company name
-                    <#else>
-                        ${user.firstName} ${user.lastName}
-                        55 лет
+                <#if user.userType=="employer">
+                    <#assign str = profile.companyName?default("Наименование компании не указано")>
+                    ${str}
+
+                <#else>
+                    <#assign variable1 = profile.firstName>
+                    <#assign variable2 = profile.lastName>
+
+                    <#assign combinedValue = variable1! + variable2!>
+                    <#assign result = combinedValue?default("Пользователь не указал свое имя и фамилию")>
+
+                    ${result}
+
+                    55 лет
                 </#if>
-                <button class="lined-green-edit">Редактировать</button>
+                <button class="lined-green-edit mt-4" action="users/profile/edit/${user.id}">Редактировать</button>
             </div>
         </div>
         <div class="lined-red align-self-start mb-3">
-            + Создать резюме
+            <#if user.userType=="employer">
+                + Создать вакансию
+            <#else>
+                + Создать резюме
+            </#if>
         </div>
         <div class="solid-white align-self-start mb-3">
             Отклики
@@ -34,39 +47,39 @@ photo
     </div>
     <div class="elem-container">
         <h2 class="section-header">
+            <#if user.userType=="employer">
+                Вакансии:
+            <#else>
+                Резюме:
 
-                    Резюме:
+            </#if>
         </h2>
         <div class="d-flex justify-content-around">
-            <div class="card">
-                <div class="card-body card-add-border">
-                    ${resume.title} ${vacancy.title}
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button class="lined-blue">Обновить</button>
-                    <button class="lined-green">Ред.</button>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body card-add-border">
-                    ${resume.title} ${vacancy.title}
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button class="lined-blue">Обновить</button>
-                    <button class="lined-green">Ред.</button>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body card-add-border">
-                    ${resume.title} ${vacancy.title}
-                    <p>Дата обновления:</p>
-                    <p>${date}</p>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button class="lined-blue">Обновить</button>
-                    <button class="lined-green">Ред.</button>
-                </div>
-            </div>
+            <#if items??>
+                <#list items as item>
+                    <div class="card">
+                        <div class="card-body card-add-border">
+                            <#if item.resumeTitle??>
+                                ${item.resumeTitle}
+                                <#else>
+                                ${item.vacancyName}
+                            </#if>
+
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button class="lined-blue">Обновить</button>
+                            <button class="lined-green">Ред.</button>
+                        </div>
+                    </div>
+
+                </#list>
+            <#else>
+                Пользователь ещё не создал <#if user.userType=="employer">
+                ни одной вакансии            <#else>
+                ни одного резюме
+            </#if>
+            </#if>
+
         </div>
     </div>
 

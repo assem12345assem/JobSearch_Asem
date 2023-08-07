@@ -181,7 +181,7 @@ public class VacancyService {
         }
     }
 
-    public ResponseEntity<?> getAllVacanciesByEmployerId(Long employerId) {
+    public ResponseEntity<?> findAllVacanciesByEmployerId(Long employerId) {
         List<Vacancy> list = vacancyDao.getAllVacanciesByEmployerId(employerId);
         if (list.isEmpty()) {
             return new ResponseEntity<>("There are no vacancies by this employer", HttpStatus.NOT_FOUND);
@@ -189,6 +189,16 @@ public class VacancyService {
             return new ResponseEntity<>(list.stream()
                     .map(this::makeDtoFromVacancy)
                     .toList(), HttpStatus.OK);
+        }
+    }
+    public List<VacancyDto> getAllVacanciesByEmployerId(Long employerId)  {
+        List<Vacancy> list = vacancyDao.getAllVacanciesByEmployerId(employerId);
+        if (list.isEmpty()) {
+            return null;
+        } else {
+            return list.stream()
+                    .map(this::makeDtoFromVacancy)
+                    .toList();
         }
     }
 }

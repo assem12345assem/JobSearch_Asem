@@ -24,9 +24,9 @@ public class VacancyDao extends BaseDao{
     public Long save(Object obj) {
         Vacancy e = (Vacancy) obj;
         String sql = """
-                insert into VACANCIES (EMPLOYERID, VACANCYNAME, CATEGORY, SALARY, DESCRIPTION,\s
-                               REQUIREDEXPERIENCEMIN, REQUIREDEXPERIENCEMAX, ISACTIVE, ISPUBLISHED,\s
-                               PUBLISHEDDATETIME)
+                insert into VACANCIES (EMPLOYER_ID, VACANCY_NAME, CATEGORY, SALARY, DESCRIPTION,\s
+                               REQUIRED_EXPERIENCE_MIN, REQUIRED_EXPERIENCE_MAX, IS_ACTIVE, IS_PUBLISHED,\s
+                               PUBLISHED_DATE_TIME)
                         values ( ?,?,?,?,?,?,?,?,?,? )""";
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
@@ -51,24 +51,24 @@ public class VacancyDao extends BaseDao{
     }
 
     public List<Vacancy> getAllVacancies() {
-        String sql = "select * from VACANCIES";
+        String sql = "select * from VACANCY";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class));
     }
     public List<Vacancy> getAllVacanciesByEmployerId(long id) {
-        String sql = "select * from VACANCIES where EMPLOYERID = ?";
+        String sql = "select * from VACANCY where EMPLOYER_ID = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), id);
     }
     public List<Vacancy> getAllVacanciesByCategory(String category) {
-        String sql = "select * from VACANCIES where category = ?";
+        String sql = "select * from VACANCY where category = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), category);
     }
     public Vacancy getVacancyById(Long id) {
-        String sql = "select * from VACANCIES where id = ?";
+        String sql = "select * from VACANCY where id = ?";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Vacancy.class), id);
 
     }
     public Optional<Vacancy> findVacancyById(Long id) {
-        String sql = "select * from VACANCIES where id = ?";
+        String sql = "select * from VACANCY where id = ?";
         return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), id)));
     }
 
@@ -81,8 +81,8 @@ public class VacancyDao extends BaseDao{
     public void editVacancy(Vacancy vacancy) {
         String sql = """
                 update VACANCIES
-                set VACANCYNAME = ?, CATEGORY = ?, SALARY = ?, DESCRIPTION = ?, REQUIREDEXPERIENCEMIN = ?,
-                    REQUIREDEXPERIENCEMAX = ?, ISACTIVE = ?, ISPUBLISHED = ?, PUBLISHEDDATETIME = ?
+                set VACANCY_NAME = ?, CATEGORY = ?, SALARY = ?, DESCRIPTION = ?, REQUIRED_EXPERIENCE_MIN = ?,
+                    REQUIRED_EXPERIENCE_MAX = ?, IS_ACTIVE = ?, IS_PUBLISHED = ?, PUBLISHED_DATE_TIME = ?
                 where ID = ?
                 """;
         jdbcTemplate.update(conn -> {

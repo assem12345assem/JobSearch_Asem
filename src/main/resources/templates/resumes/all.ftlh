@@ -7,7 +7,7 @@
                 <h5 class="card-header">${resume.resumeTitle}</h5>
                 <div class="card-body">
                     <h5 class="card-title">${resume.category}</h5>
-                    <a href="/?=resumeId=${resume.id}" class="btn btn-primary">More info</a>
+                    <a href="resumes/${resume.id}" class="btn btn-primary">More info</a>
                 </div>
             </div>
         </#list>

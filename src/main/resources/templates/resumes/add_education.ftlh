@@ -1,4 +1,4 @@
-<#import "../layout.ftlh" as main>
+<#import "../../../templates/layout.ftlh" as main>
 <@main.layout>
     <div class="elem-container">
         <div>

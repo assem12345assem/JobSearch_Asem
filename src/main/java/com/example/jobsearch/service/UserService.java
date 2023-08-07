@@ -39,12 +39,17 @@ public class UserService {
                 .toList();
     }
 
-    public ResponseEntity<?> getUserByEmail(String id) {
+    public ResponseEntity<?> findUserByEmail(String id) {
         Optional<User> maybeUser = userDao.getOptionalUserById(id);
         if (maybeUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return new ResponseEntity<>(makeUserDtoFromUser(maybeUser.get()), HttpStatus.OK);
+    }
+    public User getUserByEmail(String id) {
+        Optional<User> maybeUser = userDao.getOptionalUserById(id);
+    if(maybeUser.isPresent()) return maybeUser.get();
+    else throw new NoSuchElementException("User does not exist");
     }
 
     private UserDto makeUserDtoFromUser(User user) {
@@ -151,25 +156,7 @@ public class UserService {
         }
     }
 
-    public Object getUserProfile(Authentication auth) {
-        var user = auth.getPrincipal();
-        User u = getUserFromAuth(user.toString());
-        if (u.getUserType().equalsIgnoreCase("applicant")) {
-            return applicantService.getApplicantByUserId(u.getId());
-        } else if (u.getUserType().equalsIgnoreCase("employer")) {
-            return employerService.getEmployerByUserId(u.getId());
-        } else throw new NoSuchElementException("User type is not found");
-    }
 
-    public Object getProfileContent(Authentication auth) {
-        var user = auth.getPrincipal();
-        User u = getUserFromAuth(user.toString());
-        if (u.getUserType().equalsIgnoreCase("applicant")) {
-            return
-        } else if (u.getUserType().equalsIgnoreCase("employer")) {
-            return
-        } else throw new NoSuchElementException("User type is not found");
-    }
 
     public User getUserFromAuth(String auth) {
         int x = auth.indexOf("=");
@@ -180,5 +167,11 @@ public class UserService {
             throw new NoSuchElementException("Could not authenticate the user");
         } else return user.get();
 
+    }
+
+    public String login(UserDto userDto) {
+        var user = userDao.getUserById(userDto.getId());
+        if(user.isPresent()) return userDto.getId();
+        else return null;
     }
 }

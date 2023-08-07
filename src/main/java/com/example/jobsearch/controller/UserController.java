@@ -28,7 +28,7 @@ public class UserController {
     }
     @GetMapping("/{email}")
     public ResponseEntity<?> printUser(@PathVariable String email) {
-        return userService.getUserByEmail(email);
+        return userService.findUserByEmail(email);
     }
 
     @GetMapping("/if_user_exists/{email}")
