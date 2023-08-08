@@ -5,7 +5,7 @@
     </div>
 
     <div class="elem-container">
-        <form action="/add" class="mb-5" method="post">
+        <form action="/add_vacancy" class="mb-5" method="post">
             <label for="vacancyName">Название вакансии:</label> <br>
             <input type="text" name="vacancyName" class="form-brd-radius col-6" placeholder="Введите название">
             <br>

@@ -63,11 +63,12 @@ public class UserDao extends BaseDao{
 
     public void editUser(User e) {
         String sql = """
-                update USERS set PHONE_NUMBER = ?, USER_NAME = ?, USER_TYPE = ?,
-                                             PASSWORD = ?, PHOTO = ?, ENABLED = ?
-                            where id = ?""";
+                update USERS
+                set PHONE_NUMBER = ?, USER_NAME = ?,
+                    USER_TYPE=?, PASSWORD=?
+                where id=?""";
         jdbcTemplate.update(sql, e.getPhoneNumber(), e.getUserName(), e.getUserType(),
-                e.getPassword(), e.getPhoto(), e.isEnabled(), e.getId());
+                e.getPassword(), e.getId());
     }
     public void savePhoto(String email, String photo) {
         String sql = "update users set photo = ? where id = ?";

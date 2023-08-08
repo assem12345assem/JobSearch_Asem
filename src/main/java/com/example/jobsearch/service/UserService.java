@@ -4,6 +4,7 @@ import com.example.jobsearch.dao.UserDao;
 import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.dto.UserDto;
+import com.example.jobsearch.model.Employer;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -107,6 +108,29 @@ public class UserService {
             userDao.editUser(u);
         }
     }
+    public void edit(UserDto userDto) {
+
+            userDao.editUser(makeUserFromDto(userDto));
+
+    }
+    public ResponseEntity<?> editEmployer(EmployerDto employerDto, Authentication auth) {
+        var u = auth.getPrincipal();
+        User user = getUserFromAuth(u.toString());
+
+        if(employerService.ifEmployerExists(employerDto.getUserId())) {
+            if(user.getId().equalsIgnoreCase(employerDto.getUserId())) {
+                Employer employer = employerService.makeEmployerFromDto(employerDto);
+                employerService.editEmployer(employer);
+                return new ResponseEntity<>("Employer was edited successfully", HttpStatus.OK);
+            } else {
+                log.warn("User tried to edit another employer's profile: {} {}", user.getId(), employerDto.getUserId());
+                return new ResponseEntity<>("Error: attempt to edit other user's profile", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            log.warn("EDIT EMPLOYER Error: Employer does not exist {}", employerDto.getUserId());
+            return new ResponseEntity<>("Employer does not exist", HttpStatus.NOT_FOUND);
+        }
+    }
 
     public ResponseEntity<?> uploadUserPhoto(String email, MultipartFile file, Authentication auth) {
         var user = auth.getPrincipal();
@@ -119,6 +143,12 @@ public class UserService {
             log.warn("Email and authentication id do not match: {}", u.getId());
             return new ResponseEntity<>("Email and authentication id do not match", HttpStatus.OK);
         }
+    }
+    public void uploadPhoto(String email, MultipartFile file) {
+
+            String fileName = fileService.saveUploadedFile(file, "images");
+            userDao.savePhoto(email, fileName);
+
     }
 
     public List<UserDto> getUsersByUserType(String userType) {

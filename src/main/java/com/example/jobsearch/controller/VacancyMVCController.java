@@ -1,11 +1,13 @@
 package com.example.jobsearch.controller;
 
+import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -22,6 +24,15 @@ public class VacancyMVCController {
     public String getResume(@PathVariable Long vacancyId, Model model) {
         model.addAttribute("vacancy", vacancyService.getVacancyById(vacancyId));
         return "vacancies/vacancy_info";
+    }
+    @GetMapping("add_vacancy/{userId}")
+public String add(@PathVariable String userId) {
+        return "vacancies/add";
+    }
+    @PostMapping("add_vacancy/{userId}")
+public String add(@PathVariable String userId, VacancyDto vacancyDto) {
+        vacancyService.create(userId, vacancyDto);
+        return "all";
     }
 
 }
