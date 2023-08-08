@@ -1,10 +1,12 @@
 package com.example.jobsearch.enums;
 
 import com.example.jobsearch.model.Vacancy;
+import lombok.Getter;
 
 import java.util.Comparator;
 import java.util.List;
 
+@Getter
 public enum VacancySortStrategy {
     BY_DATE ("by_date") {
         @Override
@@ -40,9 +42,6 @@ public enum VacancySortStrategy {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
     public static VacancySortStrategy fromString(String sortCriteria) throws Exception {
         for (var e : VacancySortStrategy.values()) {
             if (e.value.equalsIgnoreCase(sortCriteria)) {

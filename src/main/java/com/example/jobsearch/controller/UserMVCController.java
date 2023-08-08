@@ -1,7 +1,6 @@
 package com.example.jobsearch.controller;
 
 import com.example.jobsearch.dto.UserDto;
-import com.example.jobsearch.model.User;
 import com.example.jobsearch.service.ProfileService;
 import com.example.jobsearch.service.UserService;
 import jakarta.validation.Valid;
@@ -27,8 +26,7 @@ public class UserMVCController {
 
     @PostMapping("users/register")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String register(@Valid UserDto userDto)
-            throws Exception {
+    public String register(@Valid UserDto userDto) throws Exception {
         userService.register(userDto);
         return "redirect:/";
     }
@@ -48,8 +46,7 @@ public class UserMVCController {
 
     @PostMapping("users/login")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String login(@Valid UserDto userDto)
-            throws Exception {
+    public String login(@Valid UserDto userDto) {
         String userId = userService.login(userDto);
         return "redirect:/users/profile/" + userId;
     }
@@ -62,16 +59,7 @@ public class UserMVCController {
     }
 
     @PostMapping("users/profile/edit/{userid}")
-    public String editProfile(@PathVariable String userId,
-                              @RequestParam(name = "phoneNumber", required=false) String phoneNumber,
-                              @RequestParam(name = "userName", required=false) String userName,
-                              @RequestParam(name = "password", required=false) String password,
-                              @RequestParam(name = "photo", required=false)MultipartFile file,
-                              @RequestParam(name = "companyName", required=false)String companyName,
-                              @RequestParam(name = "firstName", required=false)String firstName,
-                              @RequestParam(name = "lastName", required=false)String lastName,
-                              @RequestParam(name = "DOB", required=false)LocalDate date
-                              ) {
+    public String editProfile(@PathVariable String userId, @RequestParam(name = "phoneNumber", required = false, defaultValue = "") String phoneNumber, @RequestParam(name = "userName", required = false, defaultValue = "") String userName, @RequestParam(name = "password", required = false, defaultValue = "") String password, @RequestParam(name = "photo", required = false, defaultValue = "") MultipartFile file, @RequestParam(name = "companyName", required = false, defaultValue = "") String companyName, @RequestParam(name = "firstName", required = false, defaultValue = "") String firstName, @RequestParam(name = "lastName", required = false, defaultValue = "") String lastName, @RequestParam(name = "DOB", required = false, defaultValue = "") LocalDate date) {
         profileService.edit(userId, phoneNumber, userName, password, file, companyName, firstName, lastName, date);
         return "users/profile/" + userId;
     }

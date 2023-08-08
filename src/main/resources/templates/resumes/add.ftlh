@@ -1,4 +1,4 @@
-<#import "../../../templates/layout.ftlh" as main>
+<#import "../layout.ftlh" as main>
 <@main.layout>
     <div>
         <h3 class="header-top">Создание Резюме: </h3>
@@ -39,7 +39,6 @@
                 <div>
                     <h3 class="header-top mb-5">Добавить опыт работы: </h3>
                 </div>
-                <form action="/add_work_experience" class="mb-5" method="post">
                     <p>Период работы:</p>
                     <div class="form-group row">
                         <label for="dateStart" class="col-2">Начало работы</label>
@@ -92,25 +91,25 @@
             <p>Ссылки на соц. сети:</p>
             <div class="form-row">
                 <input type="text" name="telegram" class="col-sm-4 form-brd-radius text-center">
-                <img src="images/telegram.png" alt="telegram" class="img-text">
+                <img src="../../../../../data/images/telegram.png" alt="telegram" class="img-text">
 
 
                 <input type="text" name="facebookAccount" class="col-sm-4 form-brd-radius ml-4 text-center">
-                <img src="images/facebook.png" alt="facebookAccount" class="img-text">
+                <img src="../../../../../data/images/facebook.png" alt="facebookAccount" class="img-text">
             </div>
             <div class="form-row mt-2">
                 <input type="email" name="email" class="col-sm-4 form-brd-radius text-center"
                        placeholder="examle@mail.com">
-                <img src="images/email.png" alt="email" class="img-text">
+                <img src="../../../../../data/images/email.png" alt="email" class="img-text">
 
 
-                <input type="text" name="linkedinAccount" class="col-sm-4 form-brd-radius ml-4" text-center>
-                <img src="images/linkedin.png" alt="linkedinAccount" class="img-text">
+                <input type="text" name="linkedinAccount" class="col-sm-4 form-brd-radius ml-4 text-center" >
+                <img src="../../../../../data/images/linkedin.png" alt="linkedinAccount" class="img-text">
             </div>
             <div class="form-row mt-2 mb-5">
                 <input type="text" name="phoneNumber" class="col-sm-4 form-brd-radius text-center"
                        placeholder="+996 999 555 555">
-                <img src="images/phone.png" alt="phoneNumber" class="img-text">
+                <img src="../../../../../data/images/phone.png" alt="phoneNumber" class="img-text">
 
 
             </div>

@@ -36,8 +36,7 @@ public class EmployerProfileService {
     }
     public boolean ifEmployerExists(String userId) {
         var e = employerDao.getEmployerByUserId(userId);
-        if(e.isEmpty()) return false;
-        else return true;
+        return e.isPresent();
     }
     public Optional<EmployerDto> getEmployerByUserId(String email) {
         var e = employerDao.getEmployerByUserId(email);

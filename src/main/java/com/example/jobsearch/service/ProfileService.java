@@ -3,7 +3,6 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.dto.UserDto;
-import com.example.jobsearch.model.Employer;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +34,7 @@ public class ProfileService {
         } else throw new NoSuchElementException("User type is not found");
     }
 
-    public List<?> getProfileContent(String userId) throws Exception {
+    public List<?> getProfileContent(String userId) {
         User u = userService.getUserByEmail(userId);
         if (u.getUserType().equalsIgnoreCase("applicant")) {
             return resumeService.getAllResumesByApplicantId(applicantService.getApplicantByUserId(u.getId()).get().getId());

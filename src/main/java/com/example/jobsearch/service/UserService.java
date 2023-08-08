@@ -131,6 +131,7 @@ public class UserService {
             return new ResponseEntity<>("Employer does not exist", HttpStatus.NOT_FOUND);
         }
     }
+
     public ResponseEntity<?> uploadUserPhoto(String email, MultipartFile file, Authentication auth) {
         var user = auth.getPrincipal();
         User u = getUserFromAuth(user.toString());

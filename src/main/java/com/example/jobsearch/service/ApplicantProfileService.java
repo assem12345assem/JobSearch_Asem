@@ -36,6 +36,7 @@ public class ApplicantProfileService {
             throw new Exception("Applicant already exists");
         }
     }
+
     public void editApplicant(ApplicantDto applicantDto) {
         applicantDao.editApplicant(makeApplicantFromDto(applicantDto));
     }
@@ -61,24 +62,7 @@ public class ApplicantProfileService {
         }
     }
 
-    //    public ResponseEntity<?> editApplicant(ApplicantDto applicantDto, Authentication auth) {
-//        var u = auth.getPrincipal();
-//        User user = userService.getUserFromAuth(u.toString());
-//        if (user.getId().equalsIgnoreCase(applicantDto.getUserId())) {
-//            if (ifApplicantExists(applicantDto.getUserId())) {
-//                applicantDao.editApplicant(makeApplicantFromDto(applicantDto));
-//                return new ResponseEntity<>("Applicant is edited", HttpStatus.OK);
-//            } else {
-//                log.warn("Tried to edit other user's profile: {} {}", applicantDto.getUserId(), user.getId());
-//                return new ResponseEntity<>("Tried to edit other user's profile", HttpStatus.BAD_REQUEST);
-//            }
-//
-//        } else {
-//            log.warn("Tried to edit applicant that does not exist: {}", applicantDto.getLastName());
-//            return new ResponseEntity<>("Applicant does not exist", HttpStatus.OK);
-//        }
-//
-//    }
+
     public ResponseEntity<?> findApplicantById(Long applicantId) {
         var maybeApplicant = applicantDao.findApplicantById(applicantId);
         return handleApplicantQueries(maybeApplicant);
@@ -138,4 +122,6 @@ public class ApplicantProfileService {
         }
         return new ResponseEntity<>(makeDtoFromApplicant(maybeApplicant.get()), HttpStatus.OK);
     }
+
+
 }

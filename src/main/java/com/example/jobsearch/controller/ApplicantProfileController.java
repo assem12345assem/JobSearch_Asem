@@ -4,6 +4,7 @@ import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.service.ApplicantProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,10 +24,10 @@ public class ApplicantProfileController {
         return applicantProfileService.createApplicant(applicantDto);
     }
 
-//    @PostMapping("/edit_applicant")
-//    public ResponseEntity<?> editApplicant(@RequestBody ApplicantDto applicantDto, Authentication auth) {
-//        return applicantProfileService.editApplicant(applicantDto, auth);
-//    }
+    @PostMapping("/edit_applicant")
+    public ResponseEntity<?> editApplicant(@RequestBody ApplicantDto applicantDto, Authentication auth) {
+        return applicantProfileService.editAppt(applicantDto, auth);
+    }
 
     @GetMapping("/{applicantId}")
     public ResponseEntity<?> findApplicantById(@PathVariable Long applicantId) {

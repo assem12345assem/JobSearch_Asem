@@ -219,6 +219,8 @@ public class ResumeService {
 
     public void create(String userId, ResumeDto resumeDto, WorkExperienceDto workExperienceDto, EducationDto educationDto, ContactInfoDto contactInfoDto) {
         ApplicantDto a = applicantService.getApplicantByUserId(userId).get();
+resumeDao.save(Resume.builder()
 
+        .build());
     }
 }
