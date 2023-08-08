@@ -16,32 +16,53 @@
         <p>О себе:</p>
         Образование:
         <#list educationList as item>
-            ${item.education}
-            ${item.schoolName}
-            ${item.startDate}
-            ${item.graduationDate}
+            <p>${item.education}</p>
+            <p>${item.schoolName}</p>
+            <p>${item.startDate}</p>
+            <p>${item.graduationDate}</p>
             ------
         </#list>
         Опыт работы:
 <#list workList as item>
-    ${item.companyName}
-    ${item.position}
-    ${item.responsibilities}
-    ${item.dateStart}
-    ${item.dateEnd}
+        <p>${item.companyName}</p>
+        <p>${item.position}</p>
+        <p>${item.responsibilities}</p>
+        <p>${item.dateStart}</p>
+        <p>${item.dateEnd}</p>
     ------
 </#list>
         <p>Ссылки на соц. сети:</p>
-        <p>telegram:</p>
-        <p class="form-brd-radius col-6">${contactInfo.getTelegram()}</p>
-        <p>facebook:</p>
-        <p class="form-brd-radius col-6">${contactInfo.getFacebookAccount()}</p>
-        <p>email:</p>
+        <#if contactInfo.getTelegram()??>
+            <p>telegram:</p>
+            <p class="form-brd-radius col-6">${contactInfo.getTelegram()}</p>
+            <#else >
+
+        </#if>
+        <#if contactInfo.getFacebookAccount()??>
+            <p>facebook:</p>
+            <p class="form-brd-radius col-6">${contactInfo.getFacebookAccount()}</p>
+            <#else >
+
+        </#if>
+
+        <#if>
+            <p>email:</p>
         <p class="form-brd-radius col-6">${contactInfo.getEmail()}</p>
-        <p>linkedin:</p>
-        <p class="form-brd-radius col-6">${contactInfo.getLinkedinAccount()}</p>
-        <p>phone number:</p>
-        <p class="form-brd-radius col-6">${contactInfo.getPhoneNumber()}</p>
+        <#else >
+
+        </#if>
+        <#if contactInfo.getLinkedinAccount()??>
+            <p>linkedin:</p>
+            <p class="form-brd-radius col-6">${contactInfo.getLinkedinAccount()}</p>
+            <#else >
+
+        </#if>
+        <#if contactInfo.phoneNumber??>
+            <p>phone number:</p>
+            <p class="form-brd-radius col-6">${contactInfo.getPhoneNumber()}</p>
+            <#else >
+
+        </#if>
 
 
     </div>

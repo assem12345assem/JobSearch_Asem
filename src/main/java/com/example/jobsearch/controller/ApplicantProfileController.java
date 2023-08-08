@@ -24,11 +24,6 @@ public class ApplicantProfileController {
         return applicantProfileService.createApplicant(applicantDto);
     }
 
-    @PostMapping("/edit_applicant")
-    public ResponseEntity<?> editApplicant(@RequestBody ApplicantDto applicantDto, Authentication auth) {
-        return applicantProfileService.editAppt(applicantDto, auth);
-    }
-
     @GetMapping("/{applicantId}")
     public ResponseEntity<?> findApplicantById(@PathVariable Long applicantId) {
         return applicantProfileService.findApplicantById(applicantId);
