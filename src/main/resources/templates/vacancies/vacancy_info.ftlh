@@ -15,12 +15,12 @@
             <p class="form-brd-radius col-6">${vacancy.description}</p>
 
             <p>Требуемый опыт:</p>
-            <div class="form-row">
-                <p class="mr-2 ml-5 ">от</p>
-                <p class="col-sm-1 form-brd-radius"> ${vacancy.requiredExperienceMin}</p>
+            <div class="d-flex">
+                <div class="mr-2 ml-5">от</div>
+                <div class="col-sm-1 form-brd-radius"> ${vacancy.requiredExperienceMin}</div>
 
-                <p class="mr-2 ml-5">до</p>
-                <p class="col-sm-1 form-brd-radius">${vacancy.requiredExperienceMax}</p>
+                <div class="mr-2 ml-5">до</div>
+                <div class="col-sm-1 form-brd-radius">${vacancy.requiredExperienceMax}</div>
             </div>
 
     </div>

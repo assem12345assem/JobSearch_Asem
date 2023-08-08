@@ -45,7 +45,7 @@
 
         </#if>
 
-        <#if>
+        <#if contactInfo.getEmail()??>
             <p>email:</p>
         <p class="form-brd-radius col-6">${contactInfo.getEmail()}</p>
         <#else >
@@ -57,7 +57,7 @@
             <#else >
 
         </#if>
-        <#if contactInfo.phoneNumber??>
+        <#if contactInfo.getPhoneNumber()??>
             <p>phone number:</p>
             <p class="form-brd-radius col-6">${contactInfo.getPhoneNumber()}</p>
             <#else >
