@@ -2,10 +2,7 @@ package com.example.jobsearch.service;
 
 
 import com.example.jobsearch.dao.ResumeDao;
-import com.example.jobsearch.dto.ContactInfoDto;
-import com.example.jobsearch.dto.EducationDto;
-import com.example.jobsearch.dto.ResumeDto;
-import com.example.jobsearch.dto.WorkExperienceDto;
+import com.example.jobsearch.dto.*;
 import com.example.jobsearch.model.Resume;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
@@ -218,5 +215,10 @@ public class ResumeService {
 
     public ContactInfoDto getAllContactInfoByResumeId(long resumeId) {
         return contactInfoService.getAllContactInfoByResumeId(resumeId);
+    }
+
+    public void create(String userId, ResumeDto resumeDto, WorkExperienceDto workExperienceDto, EducationDto educationDto, ContactInfoDto contactInfoDto) {
+        ApplicantDto a = applicantService.getApplicantByUserId(userId).get();
+
     }
 }

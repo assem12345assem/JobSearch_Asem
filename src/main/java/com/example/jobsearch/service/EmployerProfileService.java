@@ -18,7 +18,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmployerProfileService {
     private final EmployerDao employerDao;
-//    private final UserService userService;
 
     public List<EmployerDto> getAllEmployers() {
         List<Employer> list = employerDao.getAllEmployers();
@@ -35,7 +34,7 @@ public class EmployerProfileService {
             throw new Exception("Employer already exists");
         }
     }
-    private boolean ifEmployerExists(String userId) {
+    public boolean ifEmployerExists(String userId) {
         var e = employerDao.getEmployerByUserId(userId);
         if(e.isEmpty()) return false;
         else return true;
@@ -65,26 +64,13 @@ public class EmployerProfileService {
             log.info("Employer save error: Employer already exists {}", employerDto.getUserId());
             return new ResponseEntity<>("Employer already exists", HttpStatus.OK);
         }
+
+    }
+    public void edit(EmployerDto e) {
+        employerDao.editEmployer(makeEmployerFromDto(e));
     }
 
-//    public ResponseEntity<?> editEmployer(EmployerDto employerDto, Authentication auth) {
-//        var u = auth.getPrincipal();
-//        User user = userService.getUserFromAuth(u.toString());
-//
-//        if(ifEmployerExists(employerDto.getUserId())) {
-//            if(user.getId().equalsIgnoreCase(employerDto.getUserId())) {
-//                Employer employer = makeEmployerFromDto(employerDto);
-//                employerDao.editEmployer(employer);
-//                return new ResponseEntity<>("Employer was edited successfully", HttpStatus.OK);
-//            } else {
-//                log.warn("User tried to edit another employer's profile: {} {}", user.getId(), employerDto.getUserId());
-//                return new ResponseEntity<>("Error: attempt to edit other user's profile", HttpStatus.NOT_FOUND);
-//            }
-//        } else {
-//            log.warn("EDIT EMPLOYER Error: Employer does not exist {}", employerDto.getUserId());
-//            return new ResponseEntity<>("Employer does not exist", HttpStatus.NOT_FOUND);
-//        }
-//    }
+
     public String getUserIdByEmployerId(Long employerId) {
         return employerDao.getUserIdByEmployerId(employerId);
     }
@@ -107,7 +93,7 @@ public class EmployerProfileService {
         e.setCompanyName(employer.getCompanyName());
         return e;
     }
-    private Employer makeEmployerFromDto(EmployerDto employerDto) {
+    public Employer makeEmployerFromDto(EmployerDto employerDto) {
         Employer e = new Employer();
         e.setId(employerDto.getId());
         e.setUserId(employerDto.getUserId());
@@ -119,5 +105,9 @@ public class EmployerProfileService {
             return ResponseEntity.notFound().build();
         }
         return new ResponseEntity<>(makeDtoFromEmployer(maybeEmployer.get()), HttpStatus.OK);
+    }
+
+    public void editEmployer(Employer employer) {
+        employerDao.editEmployer(employer);
     }
 }

@@ -36,6 +36,9 @@ public class ApplicantProfileService {
             throw new Exception("Applicant already exists");
         }
     }
+    public void editApplicant(ApplicantDto applicantDto) {
+        applicantDao.editApplicant(makeApplicantFromDto(applicantDto));
+    }
 
     public boolean ifApplicantExists(String userId) {
         var a = applicantDao.getApplicantByUserId(userId);

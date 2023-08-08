@@ -36,17 +36,55 @@
 
             <p>О себе:</p>
             <div class="d-flex align-items-center ">
-                <p><a href="/add_work-experience">Добавить опыт работы</a></p>
-                <a href="/add_work-experience">
+                <div>
+                    <h3 class="header-top mb-5">Добавить опыт работы: </h3>
+                </div>
+                <form action="/add_work_experience" class="mb-5" method="post">
+                    <p>Период работы:</p>
+                    <div class="form-group row">
+                        <label for="dateStart" class="col-2">Начало работы</label>
+                        <input type="date" name="dateStart" class="form-brd-radius col-6 " >
+                    </div>
+                    <div class="form-group row">
+                        <label for="dateEnd" class="col-2">Завершение работы</label>
+                        <input type="date" name="dateEnd" class="form-brd-radius col-6" >
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="companyName" class="col-2">Название компании</label>
+                        <input type="text" name="companyName" class="form-brd-radius col-6" >
+                    </div>
+                    <div class="form-group row">
+                        <label for="position" class="col-2">Должность</label>
+                        <input type="text" name="position" class="form-brd-radius col-6" >
+                    </div>
+                    <div class="form-group row">
+                        <label for="responsibilities" class="col-2">Обязанности</label>
+                        <input type="text" name="responsibilities" class="form-brd-radius col-6" >
+                    </div>
                     <div class="lined-green p-3 ml-3 text-center">+</div>
-                </a>
 
             </div>
             <div class="d-flex align-items-center mt-3 mb-4">
-                <p><a href="/add_education">Добавить образование</a></p>
-                <a href="/add_education">
+                <div class="form-group row">
+                    <label for="education" class="col-2">Образование</label>
+                    <input type="text" name="education" class="form-brd-radius col-6" placeholder="высшее/среднее/курсы/др.">
+                </div>
+                <div class="form-group row">
+                    <label for="schoolName" class="col-2">Где учился</label>
+                    <input type="text" name="schoolName" class="form-brd-radius col-6" placeholder="наименование учебного заведения">
+                </div>
+
+                <p>Срок обучения:</p>
+                <div class="form-group row">
+                    <label for="startDate" class="col-2">Начало обучения</label>
+                    <input type="date" name="startDate" class="form-brd-radius col-6 " >
+                </div>
+                <div class="form-group row">
+                    <label for="graduationDate" class="col-2">Дата выпуска</label>
+                    <input type="date" name="graduationDate" class="form-brd-radius col-6">
+                </div>
                     <div class="lined-blue p-3 ml-3 text-center">+</div>
-                </a>
 
             </div>
 

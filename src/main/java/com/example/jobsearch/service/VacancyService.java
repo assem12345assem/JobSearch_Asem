@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -200,5 +201,20 @@ public class VacancyService {
                     .map(this::makeDtoFromVacancy)
                     .toList();
         }
+    }
+
+    public void create(String userId, VacancyDto vacancyDto) {
+        vacancyDao.save(Vacancy.builder()
+                        .employerId(employerService.getEmployerByUserId(userId).get().getId())
+                .vacancyName(vacancyDto.getVacancyName())
+                .category(vacancyDto.getCategory())
+                .salary(vacancyDto.getSalary())
+                .description(vacancyDto.getDescription())
+                .requiredExperienceMin(vacancyDto.getRequiredExperienceMin())
+                .requiredExperienceMax(vacancyDto.getRequiredExperienceMax())
+                .isActive(Boolean.TRUE)
+                .isPublished(Boolean.TRUE)
+                        .publishedDateTime(LocalDateTime.now())
+                .build());
     }
 }

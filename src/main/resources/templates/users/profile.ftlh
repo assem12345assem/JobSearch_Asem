@@ -31,14 +31,15 @@
 
                     55 лет
                 </#if>
-                <button class="lined-green-edit mt-4" action="users/profile/edit/${user.id}">Редактировать</button>
+                <a class="btn lined-green-edit mt-4" href="/users/profile/edit/${user.id}">Редактировать</a>
             </div>
         </div>
         <div class="lined-red align-self-start mb-3">
             <#if user.userType=="employer">
-                + Создать вакансию
+                <a href="vacancies/add_vacancy/${user.id}">+ Создать вакансию</a>
             <#else>
-                + Создать резюме
+                <a href="resumes/add_resume/${user.id}">+ Создать резюме</a>
+
             </#if>
         </div>
         <div class="solid-white align-self-start mb-3">
