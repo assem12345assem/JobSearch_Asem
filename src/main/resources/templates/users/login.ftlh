@@ -4,7 +4,7 @@
         <form action="/users/login" class="mb-5" method="post">
             <div class="form-group row">
                 <label for="id" class="col-2">Email</label>
-                <input type="email" name="id" class="form-brd-radius col-6" placeholder="examle@mail.com" required>
+                <input type="email" name="username" class="form-brd-radius col-6" placeholder="examle@mail.com" required>
 
             </div>
             <div class="form-group row">

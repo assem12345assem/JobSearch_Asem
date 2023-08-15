@@ -89,8 +89,8 @@ public class VacancyService {
 
     public ResponseEntity<?> createVacancy(VacancyDto vacancyDto, Authentication auth) {
         var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
-        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+        Optional<User> user = userService.getUserFromAuth(u.toString());
+        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.get().getId())) {
             Optional<Vacancy> v;
             if (vacancyDto.getId() == null) {
                 long x = (long) vacancyDao.getAllVacancies().size() + 1;
@@ -111,7 +111,7 @@ public class VacancyService {
                 return new ResponseEntity<>("Vacancy already exists", HttpStatus.OK);
             }
         } else {
-            log.warn("Tried to create a vacancy for another user: {}", user.getId());
+            log.warn("Tried to create a vacancy for another user: {}", user.get().getId());
             return new ResponseEntity<>("Tried to create a vacancy for another user", HttpStatus.BAD_REQUEST);
         }
 
@@ -119,8 +119,8 @@ public class VacancyService {
 
     public ResponseEntity<?> editVacancy(VacancyDto vacancyDto, Authentication auth) {
         var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
-        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+        Optional<User> user = userService.getUserFromAuth(u.toString());
+        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.get().getId())) {
             if (vacancyDto.getId() == null) {
                 return new ResponseEntity<>("Cannot edit a vacancy without vacancy id", HttpStatus.NOT_FOUND);
             }
@@ -139,15 +139,15 @@ public class VacancyService {
                 }
             }
         } else {
-            log.warn("Tried to edit a vacancy of another user: {}", user.getId());
+            log.warn("Tried to edit a vacancy of another user: {}", user.get().getId());
             return new ResponseEntity<>("Tried to edit a vacancy of another user", HttpStatus.BAD_REQUEST);
         }
     }
 
     public ResponseEntity<?> deleteVacancy(VacancyDto vacancyDto, Authentication auth) {
         var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
-        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.getId())) {
+        Optional<User> user = userService.getUserFromAuth(u.toString());
+        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.get().getId())) {
             var v = vacancyDao.findVacancyById(vacancyDto.getId());
             if (v.isEmpty()) {
                 log.info("Tried to delete a vacancy that does not exist: {}", vacancyDto.getId());
@@ -160,7 +160,7 @@ public class VacancyService {
             }
 
         } else {
-            log.warn("Tried to delete a vacancy of another user: {}", user.getId());
+            log.warn("Tried to delete a vacancy of another user: {}", user.get().getId());
             return new ResponseEntity<>("Tried to delete a vacancy of another user", HttpStatus.BAD_REQUEST);
         }
 

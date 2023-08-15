@@ -103,9 +103,9 @@ public class UserService {
 
     public void editUser(UserDto userDto, Authentication auth) {
         var user = auth.getPrincipal();
-        User u = getUserFromAuth(user.toString());
-        if (u.getId().equalsIgnoreCase(userDto.getId())) {
-            userDao.editUser(u);
+        Optional<User> u = getUserFromAuth(user.toString());
+        if (u.get().getId().equalsIgnoreCase(userDto.getId())) {
+            userDao.editUser(u.get());
         }
     }
     public void edit(UserDto userDto) {
@@ -115,15 +115,15 @@ public class UserService {
     }
     public ResponseEntity<?> editEmployer(EmployerDto employerDto, Authentication auth) {
         var u = auth.getPrincipal();
-        User user = getUserFromAuth(u.toString());
+        Optional<User> user = getUserFromAuth(u.toString());
 
         if(employerService.ifEmployerExists(employerDto.getUserId())) {
-            if(user.getId().equalsIgnoreCase(employerDto.getUserId())) {
+            if(user.get().getId().equalsIgnoreCase(employerDto.getUserId())) {
                 Employer employer = employerService.makeEmployerFromDto(employerDto);
                 employerService.editEmployer(employer);
                 return new ResponseEntity<>("Employer was edited successfully", HttpStatus.OK);
             } else {
-                log.warn("User tried to edit another employer's profile: {} {}", user.getId(), employerDto.getUserId());
+                log.warn("User tried to edit another employer's profile: {} {}", user.get().getId(), employerDto.getUserId());
                 return new ResponseEntity<>("Error: attempt to edit other user's profile", HttpStatus.NOT_FOUND);
             }
         } else {
@@ -134,13 +134,13 @@ public class UserService {
 
     public ResponseEntity<?> uploadUserPhoto(String email, MultipartFile file, Authentication auth) {
         var user = auth.getPrincipal();
-        User u = getUserFromAuth(user.toString());
-        if (u.getId().equalsIgnoreCase(email)) {
+        Optional<User> u = getUserFromAuth(user.toString());
+        if (u.get().getId().equalsIgnoreCase(email)) {
             String fileName = fileService.saveUploadedFile(file, "images");
             userDao.savePhoto(email, fileName);
             return new ResponseEntity<>("Photo was uploaded successfully", HttpStatus.OK);
         } else {
-            log.warn("Email and authentication id do not match: {}", u.getId());
+            log.warn("Email and authentication id do not match: {}", u.get().getId());
             return new ResponseEntity<>("Email and authentication id do not match", HttpStatus.OK);
         }
     }
@@ -188,20 +188,27 @@ public class UserService {
 
 
 
-    public User getUserFromAuth(String auth) {
+    public Optional<User>getUserFromAuth(String auth) {
         int x = auth.indexOf("=");
         int y = auth.indexOf(",");
         var user = userDao.getUserById(auth.substring(x + 1, y));
 
         if (user.isEmpty()) {
             throw new NoSuchElementException("Could not authenticate the user");
-        } else return user.get();
+        } else return user;
 
     }
 
-    public String login(UserDto userDto) {
-        var user = userDao.getUserById(userDto.getId());
-        if(user.isPresent()) return userDto.getId();
-        else return null;
+//    public String login(UserDto userDto) {
+//        var user = userDao.getUserById(userDto.getId());
+//        if(user.isPresent()) return userDto.getId();
+//        else return null;
+//    }
+    public String login(Authentication auth) {
+        var u = auth.getPrincipal();
+        Optional<User> user = getUserFromAuth(u.toString());
+        return user.map(User::getId).orElse(null);
     }
+
+    
 }

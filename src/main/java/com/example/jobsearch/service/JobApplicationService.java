@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -82,9 +83,9 @@ public class JobApplicationService {
 
     public ResponseEntity<?> apply(long vacancyId, long resumeId, Authentication auth) {
         var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
+        Optional<User> user = userService.getUserFromAuth(u.toString());
         ResumeDto r = resumeService.getResumeById(resumeId);
-        if(r.getAuthorEmail().equalsIgnoreCase(user.getId())) {
+        if(r.getAuthorEmail().equalsIgnoreCase(user.get().getId())) {
             var jobApp = jobApplicationDao.getVacancyByIdAndResumeId(vacancyId, resumeId);
             if(jobApp == null) {
                 return new ResponseEntity<>(jobApplicationDao.save(JobApplication.builder()
@@ -96,7 +97,7 @@ public class JobApplicationService {
                 return new ResponseEntity<>("User already applied for this vacancy", HttpStatus.OK);
             }
         } else {
-            log.warn("Job Application - Resume does not belong to the user: {}", user.getId());
+            log.warn("Job Application - Resume does not belong to the user: {}", user.get().getId());
             return new ResponseEntity<>("Authentication id and resume's owner ids do not match", HttpStatus.BAD_REQUEST);
         }
 

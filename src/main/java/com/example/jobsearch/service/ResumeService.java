@@ -76,8 +76,8 @@ public class ResumeService {
 
     public ResponseEntity<?> createResume(ResumeDto e, Authentication auth) {
         var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
-        if(user.getId().equalsIgnoreCase(e.getAuthorEmail())) {
+        Optional<User> user = userService.getUserFromAuth(u.toString());
+        if(user.get().getId().equalsIgnoreCase(e.getAuthorEmail())) {
             Optional<Resume> r;
             if(e.getId() == null) {
             long x = (long)resumeDao.getAllResumes().size()+1;
@@ -98,14 +98,14 @@ public class ResumeService {
                 return new ResponseEntity<>("Resume already exists", HttpStatus.OK);
             }
         } else {
-            log.warn("Tried to create a resume for another user: {}", user.getId());
+            log.warn("Tried to create a resume for another user: {}", user.get().getId());
             return new ResponseEntity<>("Tried to create a resume for another user", HttpStatus.BAD_REQUEST);
         }
     }
     public ResponseEntity<?> deleteResume(ResumeDto e, Authentication auth) {
         var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
-        if(user.getId().equalsIgnoreCase(e.getAuthorEmail())) {
+        Optional<User> user = userService.getUserFromAuth(u.toString());
+        if(user.get().getId().equalsIgnoreCase(e.getAuthorEmail())) {
             var r = resumeDao.getResumeById(e.getId());
             if (r.isPresent()) {
                 resumeDao.delete(e.getId());
@@ -115,15 +115,15 @@ public class ResumeService {
                 return new ResponseEntity<>("Tried to delete a resume that does not exist", HttpStatus.OK);
             }
         } else {
-            log.warn("Tried to delete a resume of another user: {}", user.getId());
+            log.warn("Tried to delete a resume of another user: {}", user.get().getId());
             return new ResponseEntity<>("Tried to delete a resume of another user", HttpStatus.BAD_REQUEST);
         }
     }
 
     public ResponseEntity<?> editResume(ResumeDto e, Authentication auth) {
         var u = auth.getPrincipal();
-        User user = userService.getUserFromAuth(u.toString());
-        if(user.getId().equalsIgnoreCase(e.getAuthorEmail())) {
+        Optional<User> user = userService.getUserFromAuth(u.toString());
+        if(user.get().getId().equalsIgnoreCase(e.getAuthorEmail())) {
             var r = resumeDao.getResumeById(e.getId());
             if (r.isPresent()) {
                 if(categoryService.getCategory(e.getCategory()).isPresent()) {
@@ -138,7 +138,7 @@ public class ResumeService {
                 return new ResponseEntity<>("Cannot edit a resume that does not exist", HttpStatus.NOT_FOUND);
             }
         } else {
-            log.warn("Tried to edit a resume of another user: {}", user.getId());
+            log.warn("Tried to edit a resume of another user: {}", user.get().getId());
             return new ResponseEntity<>("Tried to edit a resume of another user", HttpStatus.BAD_REQUEST);
         }
     }

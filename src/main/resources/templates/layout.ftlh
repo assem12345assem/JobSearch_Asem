@@ -41,6 +41,19 @@
                         <a class="nav-link" href="users/register">Зарегистрироваться</a>
                     </li>
                 </ul>
+
+                <#assign known = SPRING_SECURITY_CONTEXT??>
+                   <#if known>
+                   <#assign
+                               name = SPRING_SECURITY_CONTEXT.authentication.principal.getUsername()
+                >
+                <a href="/users/profile/${name}" class="text-light m-2">Hi, ${name}</a>
+                <a href="/logout" class="btn btn-outline-info m-2">Logout</a>
+                <#else>
+                <a href="/users/login" class="btn btn-outline-info m-2">Sign in</a>
+                <a href="/users/register" class="btn btn-outline-info m-2">Register</a>
+                   </#if>
+
                 <#--            <a href="/profile" class="btn btn-outline-success my-2 my-sm-0">Profile</a>-->
                 <#--            <#if user?has_content>-->
                 <#--                <i class="btn btn-outline-success my-2 my-sm-0">${user.email}</i>-->

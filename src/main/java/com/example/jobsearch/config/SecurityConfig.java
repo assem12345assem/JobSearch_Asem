@@ -53,13 +53,21 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable)
+                .formLogin(form -> form
+                        .loginPage("/users/login")
+                        .loginProcessingUrl("/users/login")
+                        .defaultSuccessUrl("/")
+                        .failureForwardUrl("/users/login")
+                        .permitAll())
+
+                .logout(logout -> logout
+                        .logoutRequestMatcher((new AntPathRequestMatcher("/logout")))
+                        .permitAll())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AntPathRequestMatcher.antMatcher("users/profile")).fullyAuthenticated()
-//                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/applicant/**")).hasAuthority("APPLICANT")
-//                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/**")).fullyAuthenticated()
-//                        .requestMatchers(AntPathRequestMatcher.antMatcher("/vacancy/employer/**")).hasAuthority("EMPLOYER")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/applicant/**")).hasAuthority("APPLICANT")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/**")).fullyAuthenticated()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/vacancy/employer/**")).hasAuthority("EMPLOYER")
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/jobs/apply")).hasAuthority("APPLICANT")
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/jobs/**")).fullyAuthenticated()
                         .anyRequest().permitAll()

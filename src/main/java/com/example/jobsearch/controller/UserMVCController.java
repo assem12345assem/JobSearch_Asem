@@ -6,6 +6,7 @@ import com.example.jobsearch.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class UserMVCController {
 
     @PostMapping("users/register")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String register(@Valid UserDto userDto) throws Exception {
+    public String register(@Valid @ModelAttribute UserDto userDto) throws Exception {
         userService.register(userDto);
         return "redirect:/";
     }
@@ -44,11 +45,17 @@ public class UserMVCController {
         return "users/login";
     }
 
+//    @PostMapping("users/login")
+//    @ResponseStatus(HttpStatus.SEE_OTHER)
+//    public String login(@Valid UserDto userDto) {
+//        String userId = userService.login(userDto);
+//        return "redirect:/users/profile/" + userId;
+//    }
     @PostMapping("users/login")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String login(@Valid UserDto userDto) {
-        String userId = userService.login(userDto);
-        return "redirect:/users/profile/" + userId;
+    public String login(Authentication auth) {
+        String userId = userService.login(auth);
+        return "redicred:/" + userId;
     }
 
     @GetMapping("users/profile/edit/{userId}")
