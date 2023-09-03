@@ -1,22 +1,40 @@
 package com.example.jobsearch.dto;
 
-
-import jakarta.validation.constraints.Email;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResumeDto {
-    Long id;
-    @Email
-    String authorEmail;
-    String resumeTitle;
-    String category;
-    Integer expectedSalary;
-    boolean isActive;
-    boolean isPublished;
+    private Long id;
+    private ApplicantDto profile;
+    private String resumeTitle;
+    private String category;
+    private Integer expectedSalary;
+    private boolean isActive;
+    private boolean isPublished;
+    private List<EducationDto> eduList;
+    private List<WorkExperienceDto> workList;
+    private ContactInfoDto contact;
+    private LocalDateTime dateTime;
+
+
+    @Override
+    public String toString() {
+        return "ResumeDto{" +
+                "profile=" + profile +
+                ", resumeTitle='" + resumeTitle + '\'' +
+                ", category='" + category + '\'' +
+                ", expectedSalary=" + expectedSalary +
+                ", isActive=" + isActive +
+                ", isPublished=" + isPublished +
+                ", eduList=" + eduList +
+                ", workList=" + workList +
+                ", contact=" + contact +
+                '}';
+    }
 }

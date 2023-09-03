@@ -1,207 +1,183 @@
 package com.example.jobsearch.service;
 
+
+import com.example.jobsearch.dao.ApplicantDao;
+import com.example.jobsearch.dao.AuthorityDao;
+import com.example.jobsearch.dao.EmployerDao;
 import com.example.jobsearch.dao.UserDao;
 import com.example.jobsearch.dto.ApplicantDto;
+import com.example.jobsearch.dto.EditProfileDto;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.dto.UserDto;
+import com.example.jobsearch.model.Applicant;
 import com.example.jobsearch.model.Employer;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserDao userDao;
-    private final FileService fileService;
     private final PasswordEncoder encoder;
-    private final RoleService roleService;
-    private final ApplicantProfileService applicantService;
-    private final EmployerProfileService employerService;
-
-
-
-    public List<UserDto> getAllUsers() {
-        log.warn("Used getAllUsers method");
-        List<User> users = userDao.getAllUsers();
-        return users.stream()
-                .map(this::makeUserDtoFromUser)
-                .toList();
-    }
-
-    public ResponseEntity<?> findUserByEmail(String id) {
-        Optional<User> maybeUser = userDao.getOptionalUserById(id);
-        if (maybeUser.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return new ResponseEntity<>(makeUserDtoFromUser(maybeUser.get()), HttpStatus.OK);
-    }
-    public User getUserByEmail(String id) {
-        Optional<User> maybeUser = userDao.getOptionalUserById(id);
-    if(maybeUser.isPresent()) return maybeUser.get();
-    else throw new NoSuchElementException("User does not exist");
-    }
-
-    private UserDto makeUserDtoFromUser(User user) {
-        UserDto u = new UserDto();
-        u.setId(user.getId());
-        u.setPhoneNumber(user.getPhoneNumber());
-        u.setUserName(user.getUserName());
-        u.setUserType(user.getUserType());
-        u.setPassword(user.getPassword());
-        u.setPhoto(user.getPhoto());
-        u.setEnabled(user.isEnabled());
-
-        return u;
-    }
-
-    private User makeUserFromDto(UserDto user) {
-        return User.builder()
-                .id(user.getId())
-                .phoneNumber(user.getPhoneNumber())
-                .userName(user.getUserName())
-                .userType(user.getUserType())
-                .password(encoder.encode(user.getPassword()))
-                .photo(user.getPhoto())
-                .enabled(Boolean.TRUE)
-                .build();
-    }
-
-    public ResponseEntity<?> getOptionalUserByPhoneNumber(String phoneNumber) {
-        Optional<User> maybeUser = userDao.getOptionalUserByPhoneNumber(phoneNumber);
-        if (maybeUser.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return new ResponseEntity<>(makeUserDtoFromUser(maybeUser.get()), HttpStatus.OK);
-    }
-
-    public boolean ifUserExists(String email) {
-        return userDao.ifUserExists(email);
-    }
-
-    public ResponseEntity<?> createUser(UserDto userDto) {
-        User user = makeUserFromDto(userDto);
-        if (!ifUserExists(userDto.getId())) {
-            userDao.save(user);
-            return new ResponseEntity<>("User was created", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("User already exists", HttpStatus.OK);
-        }
-    }
-
-
-    public void editUser(UserDto userDto, Authentication auth) {
-        var user = auth.getPrincipal();
-        User u = getUserFromAuth(user.toString());
-        if (u.getId().equalsIgnoreCase(userDto.getId())) {
-            userDao.editUser(u);
-        }
-    }
-    public void edit(UserDto userDto) {
-
-            userDao.editUser(makeUserFromDto(userDto));
-
-    }
-    public ResponseEntity<?> editEmployer(EmployerDto employerDto, Authentication auth) {
-        var u = auth.getPrincipal();
-        User user = getUserFromAuth(u.toString());
-
-        if(employerService.ifEmployerExists(employerDto.getUserId())) {
-            if(user.getId().equalsIgnoreCase(employerDto.getUserId())) {
-                Employer employer = employerService.makeEmployerFromDto(employerDto);
-                employerService.editEmployer(employer);
-                return new ResponseEntity<>("Employer was edited successfully", HttpStatus.OK);
-            } else {
-                log.warn("User tried to edit another employer's profile: {} {}", user.getId(), employerDto.getUserId());
-                return new ResponseEntity<>("Error: attempt to edit other user's profile", HttpStatus.NOT_FOUND);
-            }
-        } else {
-            log.warn("EDIT EMPLOYER Error: Employer does not exist {}", employerDto.getUserId());
-            return new ResponseEntity<>("Employer does not exist", HttpStatus.NOT_FOUND);
-        }
-    }
-
-    public ResponseEntity<?> uploadUserPhoto(String email, MultipartFile file, Authentication auth) {
-        var user = auth.getPrincipal();
-        User u = getUserFromAuth(user.toString());
-        if (u.getId().equalsIgnoreCase(email)) {
-            String fileName = fileService.saveUploadedFile(file, "images");
-            userDao.savePhoto(email, fileName);
-            return new ResponseEntity<>("Photo was uploaded successfully", HttpStatus.OK);
-        } else {
-            log.warn("Email and authentication id do not match: {}", u.getId());
-            return new ResponseEntity<>("Email and authentication id do not match", HttpStatus.OK);
-        }
-    }
-    public void uploadPhoto(String email, MultipartFile file) {
-
-            String fileName = fileService.saveUploadedFile(file, "images");
-            userDao.savePhoto(email, fileName);
-
-    }
-
-    public List<UserDto> getUsersByUserType(String userType) {
-        List<User> list = userDao.getUsersByUserType(userType);
-        return list.stream()
-                .map(this::makeUserDtoFromUser)
-                .toList();
-    }
-
-    private String defaultPhoto(String userType) {
-        if (userType.equalsIgnoreCase("employer")) {
-            return "default_company.png";
-        } else {
-            return "default_user.png";
-        }
-    }
+    private final AuthorityDao authorityDao;
+    private final EmployerDao employerDao;
+    private final ApplicantDao applicantDao;
+    private final FileService fileService;
 
     public void register(UserDto userDto) throws Exception {
-        var user = userDao.getUserById(userDto.getId());
-
-        if (user.isEmpty()) {
-            userDao.save(User.builder().id(userDto.getId()).phoneNumber(userDto.getPhoneNumber()).userName(userDto.getUserName()).userType(userDto.getUserType()).password(encoder.encode(userDto.getPassword())).photo(defaultPhoto(userDto.getUserType())).enabled(Boolean.TRUE).build());
-            roleService.insertRole(userDto.getUserType(), userDto.getId());
+        var u = userDao.find(userDto.getEmail());
+        if (u.isEmpty()) {
+            userDao.saveUser(User.builder()
+                    .email(userDto.getEmail())
+                    .phoneNumber(userDto.getPhoneNumber())
+                    .userName(userDto.getUserName())
+                    .userType(userDto.getUserType())
+                    .password(encoder.encode(userDto.getPassword()))
+                    .photo(userDto.getPhoto())
+                    .enabled(Boolean.TRUE)
+                    .build());
+            authorityDao.save(userDto.getUserType().toUpperCase(), userDto.getEmail());
             if (userDto.getUserType().equalsIgnoreCase("applicant")) {
-                applicantService.saveApplicant(ApplicantDto.builder()
-                        .userId(userDto.getId())
-                        .build());
-            } else {
-                employerService.saveEmployer(EmployerDto.builder()
-                        .userId(userDto.getId())
-                        .build());
+                applicantDao.createAtRegister(userDto.getEmail());
+            }
+            if (userDto.getUserType().equalsIgnoreCase("employer")) {
+                employerDao.createAtRegister(userDto.getEmail());
             }
         } else {
             throw new Exception("User already exists");
         }
     }
 
-
-
-    public User getUserFromAuth(String auth) {
-        int x = auth.indexOf("=");
-        int y = auth.indexOf(",");
-        var user = userDao.getUserById(auth.substring(x + 1, y));
-
-        if (user.isEmpty()) {
-            throw new NoSuchElementException("Could not authenticate the user");
-        } else return user.get();
-
+    public UserDto getUserDto(Authentication auth) {
+        org.springframework.security.core.userdetails.User userAuth = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
+        User user = userDao.find(userAuth.getUsername()).orElseThrow(() -> new NoSuchElementException("User not found"));
+        return makeDtoFromUser(user);
+    }
+    public UserDto getUserDtoLocalStorage(String email) {
+        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        return makeDtoFromUser(user);
+    }
+    public UserDto getUserDtoTest(String email) {
+        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        return makeDtoFromUser(user);
+    }
+    private ApplicantDto makeDtoFromApplicant(Applicant a) {
+        return ApplicantDto.builder()
+                .id(a.getId())
+                .firstName(a.getFirstName())
+                .lastName(a.getLastName())
+                .dateOfBirth(a.getDateOfBirth())
+                .build();
+    }
+    private Applicant getApplicantByEmail (String email) {
+        return applicantDao.findByEmail(email).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+    }
+    public ResponseEntity<?> getProfile (Authentication auth) {
+        UserDto u = getUserDto(auth);
+        if(u.getUserType().equalsIgnoreCase("applicant")) {
+            Applicant a = getApplicantByEmail(u.getEmail());
+            return new ResponseEntity<>(makeDtoFromApplicant(a), HttpStatus.OK);
+        } else {
+            Employer e = employerDao.findByEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+        return new ResponseEntity<>(EmployerDto.builder().id(e.getId())
+                .companyName(e.getCompanyName()).build(), HttpStatus.OK);
+        }
+    }
+    private UserDto makeDtoFromUser(User user) {
+        return UserDto.builder()
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .userName(user.getUserName())
+                .userType(user.getUserType())
+                .password(user.getPassword())
+                .photo(user.getPhoto())
+                .build();
     }
 
-    public String login(UserDto userDto) {
-        var user = userDao.getUserById(userDto.getId());
-        if(user.isPresent()) return userDto.getId();
-        else return null;
+    public ResponseEntity<?> getProfileLocalStorage(String email) {
+        UserDto u = getUserDtoLocalStorage(email);
+        if(u.getUserType().equalsIgnoreCase("applicant")) {
+            Applicant a = getApplicantByEmail(u.getEmail());
+            return new ResponseEntity<>(makeDtoFromApplicant(a), HttpStatus.OK);
+        } else {
+            Employer e = employerDao.findByEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+            return new ResponseEntity<>(EmployerDto.builder().id(e.getId())
+                    .companyName(e.getCompanyName()).build(), HttpStatus.OK);
+        }
+    }
+    public ResponseEntity<?> getPhoto(String email) {
+        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        if(!((user.getPhoto() == null) && !user.getPhoto().isEmpty())){
+            String extension = getFileExtension(user.getPhoto());
+            if (extension != null && extension.equalsIgnoreCase("png")) {
+                return fileService.getOutputFile(user.getPhoto(), "images", MediaType.IMAGE_PNG);
+            } else if(extension != null && extension.equalsIgnoreCase("jpeg")) {
+                return fileService.getOutputFile(user.getPhoto(), "images", MediaType.IMAGE_JPEG);
+            }
+        } else {
+            return new ResponseEntity<>("Photo not found", HttpStatus.NOT_FOUND);
+        }
+        return null;
+    }
+    private String getFileExtension(String filename) {
+        int lastIndex = filename.lastIndexOf(".");
+        if (lastIndex != -1 && lastIndex < filename.length() - 1) {
+            return filename.substring(lastIndex + 1);
+        }
+        return null;
+    }
+
+    public void uploadUserPhoto(String email, MultipartFile file) {
+        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        String fileName = fileService.saveUploadedFile(file, "images");
+        userDao.savePhoto(email, fileName);
+    }
+
+    public void editProfile(String email, EditProfileDto editProfileDto) {
+        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        if (!(editProfileDto.getPhoneNumber().isEmpty() || editProfileDto.getPhoneNumber() == null)) {
+            user.setPhoneNumber(editProfileDto.getPhoneNumber());
+        }
+
+        if (!editProfileDto.getUserName().isEmpty() && editProfileDto.getUserName() != null) {
+            user.setUserName(editProfileDto.getUserName());
+        }
+
+        userDao.update(user);
+        if(user.getUserType().equalsIgnoreCase("applicant")) {
+            Applicant a = applicantDao.findByEmail(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+            if (!editProfileDto.getFirstName().isEmpty() && editProfileDto.getFirstName() != null) {
+                a.setFirstName(editProfileDto.getFirstName());
+            }
+
+            if (!editProfileDto.getLastName().isEmpty() && editProfileDto.getLastName() != null) {
+                a.setLastName(editProfileDto.getLastName());
+            }
+
+            if (!editProfileDto.getDateOfBirth().isEmpty() && editProfileDto.getDateOfBirth() != null) {
+                LocalDate dateOfBirth = LocalDate.parse(editProfileDto.getDateOfBirth());
+                a.setDateOfBirth(dateOfBirth);
+            }
+
+            applicantDao.update(a);
+        } else{
+            Employer e = employerDao.findByEmail(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+            if (!editProfileDto.getCompanyName().isEmpty() && editProfileDto.getCompanyName() != null) {
+                e.setCompanyName(editProfileDto.getCompanyName());
+            }
+employerDao.update(e);
+        }
     }
 }

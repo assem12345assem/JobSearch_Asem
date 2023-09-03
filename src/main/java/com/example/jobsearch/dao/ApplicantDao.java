@@ -9,31 +9,55 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Component
-
-public class ApplicantDao extends BaseDao {
+public class ApplicantDao extends BaseDao implements CrudDao<Applicant, Long>{
     public ApplicantDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
-
+    public void createAtRegister(String email) {
+        String sql = "INSERT INTO applicants(user_id, first_name, last_name, date_of_birth) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, email, null, null, null);
+    }
     @Override
-    public Long save(Object obj) {
-        Applicant e = (Applicant) obj;
-        String sql = "insert into applicants (userid, firstname, lastname, dateofbirth) \n" +
-                "values (?, ?, ?, ?)";
+    public Long save(Applicant applicant) {
+        String sql = "INSERT INTO applicants(user_id, first_name, last_name, date_of_birth) VALUES (?, ?, ?, ?)";
+
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, e.getUserId());
-            ps.setString(2, e.getFirstName());
-            ps.setString(3, e.getLastName());
-            ps.setTimestamp(4, Timestamp.valueOf(e.getDateOfBirth().atStartOfDay()));
+            ps.setString(1, applicant.getUserId());
+            ps.setString(2, applicant.getFirstName());
+            ps.setString(3, applicant.getLastName());
+            ps.setTimestamp(4, Timestamp.valueOf(applicant.getDateOfBirth().atStartOfDay()));
             return ps;
         }, keyHolder);
+
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
+
+    }
+
+    @Override
+    public Optional<Applicant> find(Long id) {
+        String sql = "SELECT * FROM applicants WHERE id = ?";
+        return Optional.of(DataAccessUtils.requiredSingleResult(
+                jdbcTemplate.query(sql,
+                        new BeanPropertyRowMapper<>(Applicant.class), id)));
+
+    }
+
+    @Override
+    public void update(Applicant obj) {
+        String sql = "UPDATE applicants SET first_name = ?, last_name = ?, date_of_birth = ? WHERE id = ?";
+
+        jdbcTemplate.update(
+                sql,
+                obj.getFirstName(),
+                obj.getLastName(),
+                obj.getDateOfBirth(),
+                obj.getId()
+        );
     }
 
     @Override
@@ -41,47 +65,11 @@ public class ApplicantDao extends BaseDao {
         String sql = "delete from applicants where id = ?";
         jdbcTemplate.update(sql, id);
     }
-
-    public List<Applicant> getAllApplicants() {
-        String sql = "select * from applicants";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Applicant.class));
-    }
-
-    public Optional<Applicant> findApplicantById(long id) {
-        String sql = "select * from applicants where id = ?";
-        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Applicant.class), id)));
-
-    }
-
-    public Applicant getApplicantById(long id) {
-        String sql = "select * from applicants where id = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Applicant.class), id);
-    }
-
-    public Optional<Applicant> getApplicantByUserId(String userId) {
-        String sql = "select * from applicants where userId = ?";
-        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql,
-                new BeanPropertyRowMapper<>(Applicant.class), userId)));
-    }
-
-    public Optional<Applicant> getApplicantByFirstName(String firstName) {
-        String sql = "select * from applicants where firstName = ?";
-        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql,
-                new BeanPropertyRowMapper<>(Applicant.class), firstName)));
-    }
-
-    public Optional<Applicant> getApplicantByLastName(String lastName) {
-        String sql = "select * from applicants where lastName = ?";
-        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql,
-                new BeanPropertyRowMapper<>(Applicant.class), lastName)));
-    }
-
-    public void editApplicant(Applicant e) {
+    public Optional<Applicant> findByEmail(String email) {
         String sql = """
-                update APPLICANTS
-                set USERID = ?, FIRSTNAME = ?, LASTNAME = ?, DATEOFBIRTH = ?
-                where ID = ?""";
-        jdbcTemplate.update(sql, e.getUserId(), e.getFirstName(), e.getLastName(), e.getDateOfBirth(), e.getId());
-    }
+                SELECT * FROM applicants WHERE user_id = ?
+                """;
 
+        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Applicant.class), email)));
+    }
 }

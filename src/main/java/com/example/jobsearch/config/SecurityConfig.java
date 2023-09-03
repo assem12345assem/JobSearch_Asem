@@ -21,29 +21,30 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private static final String FETCH_USERS_QUERY = """
-            select id, password, enabled\s
-            from users\s
-            where id = ?;""";
+            select email, password, enabled
+            from user_table
+            where email = ?;
+            """;
 
-    private static final String FETCH_ROLES_QUERY = """
-            select user_email, role\s
-            from roles\s
-            where user_email = ?;""";
-
-
-    private final DataSource dataSource;
+    private static final String FETCH_AUTHORITIES_QUERY = """
+            select email, authority
+             from authorities
+             where email = ?
+            """;
 
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
+    private final DataSource dataSource;
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery(FETCH_USERS_QUERY)
-                .authoritiesByUsernameQuery(FETCH_ROLES_QUERY)
+                .authoritiesByUsernameQuery(FETCH_AUTHORITIES_QUERY)
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
 
@@ -53,15 +54,23 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable)
+                .formLogin(form -> form
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .defaultSuccessUrl("/")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .permitAll())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("users/profile")).fullyAuthenticated()
-//                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/applicant/**")).hasAuthority("APPLICANT")
-//                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/**")).fullyAuthenticated()
-//                        .requestMatchers(AntPathRequestMatcher.antMatcher("/vacancy/employer/**")).hasAuthority("EMPLOYER")
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/jobs/apply")).hasAuthority("APPLICANT")
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/jobs/**")).fullyAuthenticated()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/apply/forjob/**")).hasAuthority("APPLICANT")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/apply/offerjob/**")).hasAuthority("EMPLOYER")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/apply/**")).fullyAuthenticated()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/all/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/**")).fullyAuthenticated()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/vacancy/all/**")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/vacancy/**")).fullyAuthenticated()
+
                         .anyRequest().permitAll()
                 );
         return http.build();

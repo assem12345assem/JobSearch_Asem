@@ -1,19 +1,18 @@
 package com.example.jobsearch.model;
 
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ContactInfo {
-    Long id;
-    Long resumeId;
-    String telegram;
-    String email;
-    String phoneNumber;
-    String facebookAccount;
-    String linkedinAccount;
+    private Long id;
+    private Long resumeId;
+    private String telegram;
+    private String email;
+    private String phoneNumber;
+    private String facebook;
+    private String linkedIn;
 }
+

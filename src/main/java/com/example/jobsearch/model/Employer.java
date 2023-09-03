@@ -1,15 +1,13 @@
 package com.example.jobsearch.model;
 
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Employer {
-    Long id;
-    String userId;
-    String companyName;
+    private Long id;
+    private String userId;
+    private String companyName;
 }
