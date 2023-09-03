@@ -1,6 +1,5 @@
 package com.example.jobsearch.controller;
 
-import com.example.jobsearch.service.ApplicantProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

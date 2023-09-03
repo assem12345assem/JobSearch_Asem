@@ -1,99 +1,148 @@
 package com.example.jobsearch.service;
 
-import com.example.jobsearch.dao.JobApplicationDao;
+import com.example.demo.dao.JobApplicationDao;
+import com.example.demo.dao.MessageDao;
+import com.example.demo.dto.*;
+import com.example.demo.entity.JobApplication;
+import com.example.demo.entity.Message;
+import com.example.demo.entity.Vacancy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class JobApplicationService {
     private final JobApplicationDao jobApplicationDao;
+    private final MessageDao messageDao;
+    private final AuthService authService;
     private final VacancyService vacancyService;
     private final ResumeService resumeService;
-    private final ApplicantProfileService service;
-    private final UserService userService;
 
-    public List<JobApplicationDto> getAllJobApplications() {
-        List<JobApplication> jobApplications = jobApplicationDao.getAllJobApplications();
-
-        return jobApplications.stream()
-                .map(this::makeDtoFromJobApplication)
-                .toList();
-    }
-
-    private JobApplicationDto makeDtoFromJobApplication(JobApplication a) {
-        JobApplicationDto j = new JobApplicationDto();
-        j.setId(a.getId());
-        j.setVacancyDto(vacancyService.getVacancyById(a.getVacancyId()));
-        j.setResumeDto(resumeService.getResumeById(a.getResumeId()));
-        return j;
-    }
-
-    private List<Long> getAllVacanciesByResumeList(List<Long> resumeId) {
-        return jobApplicationDao.getAllVacanciesByResumeList(resumeId);
-    }
-
-    public List<Long> getAllResumeIdsByVacancyId(long vacancyId) {
-        return jobApplicationDao.getAllResumeIdsByVacancyId(vacancyId);
-    }
-
-    public List<ResumeDto> getResumesByVacancyId(long vacancyId) {
-        List<Long> ids = getAllResumeIdsByVacancyId(vacancyId);
-        return resumeService.getAllResumesByLongList(ids);
-    }
-
-    private VacancyDto getVacancyByIdAndResumeId(long vacancyId, long resumeId) {
-        JobApplication j = jobApplicationDao.getVacancyByIdAndResumeId(vacancyId, resumeId);
-    return vacancyService.getVacancyById(j.getVacancyId());
-    }
-
-    public List<ResumeDto> getMyResumes(ApplicantDto applicantDto) {
-        return resumeService.getAllResumesByApplicantId(applicantDto.getId());
-    }
-
-    public ResponseEntity<?> getAllAppliedVacanciesByApplicantId(long applicantId) {
-        ApplicantDto applicantDto = service.getApplicantById(applicantId);
-        List<ResumeDto> allMyResumes = getMyResumes(applicantDto);
-        List<Long> ids = new ArrayList<>();
-        allMyResumes.forEach(e -> ids.add(e.getId()));
-        List<Long> allMyVacancyApplications = getAllVacanciesByResumeList(ids);
-        List<VacancyDto> list = vacancyService.getVacancyListByIdList(allMyVacancyApplications);
-        if(list.isEmpty()) {
-            return new ResponseEntity<>("Applicant ID does not exist", HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(list, HttpStatus.OK);
-        }
-    }
-
-    public ResponseEntity<?> apply(long vacancyId, long resumeId, Authentication auth) {
-        var u = auth.getPrincipal();
-        Optional<User> user = userService.getUserFromAuth(u.toString());
-        ResumeDto r = resumeService.getResumeById(resumeId);
-        if(r.getAuthorEmail().equalsIgnoreCase(user.get().getId())) {
-            var jobApp = jobApplicationDao.getVacancyByIdAndResumeId(vacancyId, resumeId);
-            if(jobApp == null) {
-                return new ResponseEntity<>(jobApplicationDao.save(JobApplication.builder()
-                        .vacancyId(vacancyId)
-                        .resumeId(resumeId)
+    public Long save(FirstJobApplicationDto firstJobApplicationDto, Authentication auth, String type) {
+        UserDto u = authService.getAuthor(auth);
+      Long id =  jobApplicationDao.save(JobApplication.builder()
+                        .vacancyId(firstJobApplicationDto.getVacancyId())
+                        .resumeId(firstJobApplicationDto.getResumeId())
                         .dateTime(LocalDateTime.now())
-                        .build()), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("User already applied for this vacancy", HttpStatus.OK);
+                .build());
+      messageDao.save(Message.builder()
+                      .jobApplicationId(id)
+                      .message(type + firstJobApplicationDto.getResumeId())
+                      .author(u.getEmail())
+              .createTime(LocalDateTime.now())
+              .build());
+         messageDao.save(Message.builder()
+                        .jobApplicationId(id)
+                        .message(firstJobApplicationDto.getMessageText())
+                        .author(u.getEmail())
+                         .createTime(LocalDateTime.now())
+                .build());
+         return id;
+    }
+
+    public VacancyDto findVacancyDtoById(Long jobApplicationId) {
+        JobApplication j = findById(jobApplicationId);
+        return vacancyService.findDtoById(j.getVacancyId());
+    }
+    public JobApplication findById(Long jobApplicationId) {
+        return jobApplicationDao.find(jobApplicationId).orElseThrow(() -> new NoSuchElementException("Job application not found"));
+    }
+
+    public List<MessageDto> getMessages(Long jobApplicationId, Authentication auth) {
+        UserDto u = authService.getAuthor(auth);
+        List<Message> list = messageDao.getAllByJobApplication(jobApplicationId);
+
+        return list.stream().map(this::makeDtoFromMessage).toList();
+    }
+    private MessageDto makeDtoFromMessage(Message m) {
+        return MessageDto.builder()
+                .id(m.getId())
+                .jobApplicationId(m.getJobApplicationId())
+                .message(m.getMessage())
+                .author(m.getAuthor())
+                .createTime(m.getCreateTime().toString())
+                .build();
+    }
+    private JobApplicationDto makeDtoFromJobApplication(JobApplication j) {
+        return JobApplicationDto.builder()
+                .id(j.getId())
+                .vacancyId(j.getVacancyId())
+                .resumeId(j.getResumeId())
+                .dateTime(j.getDateTime())
+                .build();
+    }
+
+    public List<MessageListDto> listMessages(Authentication auth) {
+        UserDto u = authService.getAuthor(auth);
+        List<JobApplication> j = new ArrayList<>();
+        if(u.getUserType().equalsIgnoreCase("applicant")) {
+            List<ResumeDto> re = resumeService.findAllByApplicant(auth);
+            if(re != null) {
+                for (ResumeDto r:
+                     re) {
+                    j.addAll(jobApplicationDao.findByResumeId(r.getId()));
+                }
             }
         } else {
-            log.warn("Job Application - Resume does not belong to the user: {}", user.get().getId());
-            return new ResponseEntity<>("Authentication id and resume's owner ids do not match", HttpStatus.BAD_REQUEST);
+            List<Vacancy> va = vacancyService.findAllByEmployer(auth);
+            if(va != null) {
+                for (Vacancy v:
+                     va) {
+                    j.addAll(jobApplicationDao.findByVacancyId(v.getId()));
+                }
+            }
         }
 
+        List<MessageListDto> list = new ArrayList<>();
+        for (JobApplication jobApplication:
+             j) {
+            List<Message> msg = messageDao.getAllByJobApplication(jobApplication.getId());
+
+            VacancyDto vDto = vacancyService.findDtoById(jobApplication.getVacancyId());
+            ResumeDto rDto = resumeService.findDtoById(jobApplication.getResumeId());
+            list.add(MessageListDto.builder()
+                            .jobApplicationId(jobApplication.getId())
+                            .vacancyName(vDto.getVacancyName())
+                            .publisher(vDto.getProfile().getCompanyName())
+                            .applicant(rDto.getProfile().getFirstName() + " " + rDto.getProfile().getLastName())
+                            .newMessage(msg.size())
+                    .build());
+        }
+        return list;
+    }
+
+    public Integer getNew(Authentication auth) {
+        List<MessageListDto> temp = listMessages(auth);
+        int counter = 0;
+        for (MessageListDto m:
+             temp) {
+            if(m.getNewMessage() > 0) {
+                counter += m.getNewMessage();
+            }
+        }
+        return counter;
+    }
+
+    public void sendMessage(MessageDto messageDto, Authentication auth) {
+        UserDto u = authService.getAuthor(auth);
+        messageDao.save(Message.builder()
+                        .jobApplicationId(messageDto.getJobApplicationId())
+                        .message(messageDto.getMessage())
+                        .author(u.getEmail())
+                        .createTime(LocalDateTime.now())
+                .build());
+    }
+
+    public ResumeDto findResumeDtoById(Long jobApplicationId) {
+        JobApplication j = findById(jobApplicationId);
+        return resumeService.findDtoById(j.getResumeId());
     }
 }

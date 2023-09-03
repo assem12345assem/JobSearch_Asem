@@ -1,67 +1,82 @@
 package com.example.jobsearch.dao;
 
+import com.example.demo.entity.WorkExperience;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Component
-public class WorkExperienceDao extends BaseDao{
+
+public class WorkExperienceDao extends BaseDao implements CrudDao<WorkExperience, Long> {
     public WorkExperienceDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 
     @Override
-    public Long save(Object obj) {
-        WorkExperience e = (WorkExperience) obj;
-        String sql = "insert into WORKEXPERIENCE (RESUMEID, DATESTART, DATEEND, COMPANYNAME, POSITION, RESPONSIBILITIES) \n" +
-                "values ( ?, ?, ?, ?, ?, ? )";
+    public Long save(WorkExperience workExperience) {
+        String sql = "INSERT INTO work_experience(resume_id, date_start, date_end, company_name, position, responsibilities) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, e.getResumeId());
-            ps.setTimestamp(2, Timestamp.valueOf(e.getDateStart().atStartOfDay()));
-            ps.setTimestamp(3, Timestamp.valueOf(e.getDateEnd().atStartOfDay()));
-            ps.setString(4, e.getCompanyName());
-            ps.setString(5, e.getPosition());
-            ps.setString(6, e.getResponsibilities());
+            ps.setLong(1, workExperience.getResumeId());
+            if(workExperience.getDateStart() !=null) {
+                ps.setDate(2, Date.valueOf(workExperience.getDateStart()));
+
+            } else {
+                ps.setDate(2, null);
+
+            }
+            if(workExperience.getDateEnd() !=null) {
+                ps.setDate(3, Date.valueOf(workExperience.getDateEnd()));
+
+            } else {
+                ps.setDate(3, null);
+
+            }
+            ps.setString(4, workExperience.getCompanyName());
+            ps.setString(5, workExperience.getPosition());
+            ps.setString(6, workExperience.getResponsibilities());
             return ps;
         }, keyHolder);
+
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override
+    public Optional<WorkExperience> find(Long id) {
+        String sql = "SELECT * FROM work_experience WHERE id = ?";
+        return Optional.of(DataAccessUtils.requiredSingleResult(
+                jdbcTemplate.query(sql,
+                new BeanPropertyRowMapper<>(WorkExperience.class), id)));
+
+    }
+
+    @Override
+    public void update(WorkExperience obj) {
+        String sql = "UPDATE work_experience SET resume_id = ?, date_start = ?, date_end = ?, company_name = ?, position = ?, responsibilities = ? WHERE id = ?";
+
+        jdbcTemplate.update(
+                sql, obj.getResumeId(), obj.getDateStart(), obj.getDateEnd(), obj.getCompanyName(), obj.getPosition(), obj.getResponsibilities(), obj.getId());
+
+    }
+
+    @Override
     public void delete(Long id) {
-        String sql = "delete from WORKEXPERIENCE where id = ?";
-        jdbcTemplate.update(sql, id);
+String sql = "delete from WORK_EXPERIENCE where id = ?";
+jdbcTemplate.update(sql, id);
     }
 
-    public WorkExperience getWorkExperienceById(long id) {
-        String sql = "select * from WORKEXPERIENCE where id = ?";
-        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkExperience.class), id);
-    }
-    public Optional<WorkExperience> findWorkExperienceById(long id) {
-        String sql = "select * from WORKEXPERIENCE where id = ?";
-        return Optional.ofNullable(DataAccessUtils.singleResult(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(WorkExperience.class), id)));
-    }
-    public List<WorkExperience> getAllWorkExperienceByResumeId(long resumeId) {
-        String sql = "select * from WORKEXPERIENCE where resumeId = ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(WorkExperience.class), resumeId);
-    }
-
-    public void editWorkExperience(WorkExperience e) {
-        String sql = """
-                update WORKEXPERIENCE
-                set RESUMEID = ?, DATESTART = ?, DATEEND = ?, COMPANYNAME = ?,\s
-                    POSITION = ?, RESPONSIBILITIES = ?
-                where ID = ?""";
-        jdbcTemplate.update(sql, e.getResumeId(), e.getDateStart(), e.getDateEnd(), e.getCompanyName(),
-                e.getPosition(), e.getResponsibilities(), e.getId());
+    public List<WorkExperience> findByResumeId(Long resumeId) {
+        return jdbcTemplate.query("SELECT * FROM work_experience WHERE resume_id = ?",
+                new BeanPropertyRowMapper<>(WorkExperience.class), resumeId);
     }
 }

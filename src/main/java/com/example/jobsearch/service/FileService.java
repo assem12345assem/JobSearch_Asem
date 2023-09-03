@@ -31,7 +31,6 @@ public class FileService {
 
         Path pathDir = Paths.get(UPLOAD_DIR + subDir);
         Files.createDirectories(pathDir);
-
         Path filePath = Paths.get(pathDir + "/" + resultFileName);
         if (!Files.exists(filePath)) {
             Files.createFile(filePath);

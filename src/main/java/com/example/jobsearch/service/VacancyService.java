@@ -1,38 +1,90 @@
 package com.example.jobsearch.service;
 
-import com.example.jobsearch.dao.VacancyDao;
-import com.example.jobsearch.enums.VacancySortStrategy;
+import com.example.demo.dao.EmployerDao;
+import com.example.demo.dao.VacancyDao;
+import com.example.demo.dto.EmployerDto;
+import com.example.demo.dto.SummaryDto;
+import com.example.demo.dto.UserDto;
+import com.example.demo.dto.VacancyDto;
+import com.example.demo.entity.Employer;
+import com.example.demo.entity.Vacancy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VacancyService {
     private final VacancyDao vacancyDao;
-    private final EmployerProfileService employerService;
+    private final EmployerDao employerDao;
     private final UserService userService;
-    private final CategoryService categoryService;
+    private final AuthService authService;
+private Vacancy getById(Long id) {
+    return vacancyDao.find(id).orElseThrow(() -> {
+        log.warn("Vacancy not found: {}", id);
+        return new NoSuchElementException("Vacancy not found");
+    });
+}
+private VacancyDto makeDtoFromVacancy(Vacancy v) {
+    Employer e = employerDao.find(v.getEmployerId()).orElseThrow(() -> {
+        log.warn("Employer not found: {}", v.getEmployerId());
+        return new NoSuchElementException("Employer not found");
+    });
 
-    public List<VacancyDto> getAllVacancies() {
-        List<Vacancy> list = vacancyDao.getAllVacancies();
-        return list.stream()
-                .map(this::makeDtoFromVacancy)
-                .toList();
+    return VacancyDto.builder()
+            .id(v.getId())
+            .profile(EmployerDto.builder()
+                    .id(e.getId())
+                    .companyName(e.getCompanyName())
+                    .build())
+            .vacancyName(v.getVacancyName())
+            .category(v.getCategory())
+            .salary(v.getSalary())
+            .description(v.getDescription())
+            .requiredExperienceMin(v.getRequiredExperienceMin())
+            .requiredExperienceMax(v.getRequiredExperienceMax())
+            .isActive(Boolean.TRUE)
+            .isPublished(Boolean.TRUE)
+            .dateTime(v.getDateTime())
+            .build();
+}
+    public VacancyDto findDtoById(Long id) {
+        Vacancy v = getById(id);
+        return makeDtoFromVacancy(v);
     }
 
-    private VacancyDto makeDtoFromVacancy(Vacancy v) {
-        return VacancyDto.builder()
-                .id(v.getId())
-                .employerId(v.getEmployerId())
+    public void edit(Long id, VacancyDto vacancyDto, Authentication auth) {
+    Vacancy v = getById(id);
+    UserDto u = authService.getAuthor(auth);
+    Employer e = employerDao.findByEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer is not found."));
+    vacancyDao.update(Vacancy.builder()
+                    .id (v.getId())
+                    .employerId(e.getId())
+                    .vacancyName(vacancyDto.getVacancyName())
+                    .category(vacancyDto.getCategory())
+                    .salary(vacancyDto.getSalary())
+                    .description(vacancyDto.getDescription())
+                    .requiredExperienceMin(vacancyDto.getRequiredExperienceMin())
+                    .requiredExperienceMax(vacancyDto.getRequiredExperienceMax())
+                    .isActive(vacancyDto.isActive())
+                    .isPublished(vacancyDto.isPublished())
+                    .dateTime(LocalDateTime.now())
+            .build());
+    }
+
+    public void dateFix(Long id) {
+        Vacancy v = getById(id);
+        vacancyDao.update(Vacancy.builder()
+                .id (v.getId())
+                .employerId(v.getId())
                 .vacancyName(v.getVacancyName())
                 .category(v.getCategory())
                 .salary(v.getSalary())
@@ -41,177 +93,189 @@ public class VacancyService {
                 .requiredExperienceMax(v.getRequiredExperienceMax())
                 .isActive(v.isActive())
                 .isPublished(v.isPublished())
-                .publishedDateTime(v.getPublishedDateTime())
-                .build();
-    }
-
-    private Vacancy makeVacancyFromDto(VacancyDto v) {
-        return Vacancy.builder()
-                .id(v.getId())
-                .employerId(v.getEmployerId())
-                .vacancyName(v.getVacancyName())
-                .category(v.getCategory())
-                .salary(v.getSalary())
-                .description(v.getDescription())
-                .requiredExperienceMin(v.getRequiredExperienceMin())
-                .requiredExperienceMax(v.getRequiredExperienceMax())
-                .isActive(v.isActive())
-                .isPublished(v.isPublished())
-                .publishedDateTime(v.getPublishedDateTime())
-                .build();
-
-    }
-
-    public ResponseEntity<?> getAllVacanciesByCategory(String category) {
-        List<Vacancy> list = vacancyDao.getAllVacanciesByCategory(category);
-        if (list.isEmpty()) {
-            return new ResponseEntity<>("There are no vacancies for given category", HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(list.stream()
-                    .map(this::makeDtoFromVacancy)
-                    .toList(), HttpStatus.OK);
-        }
-    }
-
-    public VacancyDto getVacancyById(Long id) {
-        return makeDtoFromVacancy(vacancyDao.getVacancyById(id));
-    }
-
-    public List<VacancyDto> getVacancyListByIdList(List<Long> id) {
-        List<Vacancy> list = vacancyDao.getVacancyListByIdList(id);
-        return list.stream()
-                .map(this::makeDtoFromVacancy)
-                .toList();
-    }
-
-    public ResponseEntity<?> createVacancy(VacancyDto vacancyDto, Authentication auth) {
-        var u = auth.getPrincipal();
-        Optional<User> user = userService.getUserFromAuth(u.toString());
-        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.get().getId())) {
-            Optional<Vacancy> v;
-            if (vacancyDto.getId() == null) {
-                long x = (long) vacancyDao.getAllVacancies().size() + 1;
-                v = vacancyDao.findVacancyById(x);
-            } else {
-                v = vacancyDao.findVacancyById(vacancyDto.getId());
-            }
-            if (v.isEmpty()) {
-                if (categoryService.getCategory(vacancyDto.getCategory()).isPresent()) {
-                    vacancyDao.save(makeVacancyFromDto(vacancyDto));
-                    return new ResponseEntity<>("Vacancy was created successfully", HttpStatus.OK);
-                } else {
-                    log.warn("Tried to use a category that does not exist: {}", vacancyDto.getCategory());
-                    return new ResponseEntity<>("Category does not exist", HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                log.info("Tried to create a vacancy that already exists: {}", vacancyDto.getId());
-                return new ResponseEntity<>("Vacancy already exists", HttpStatus.OK);
-            }
-        } else {
-            log.warn("Tried to create a vacancy for another user: {}", user.get().getId());
-            return new ResponseEntity<>("Tried to create a vacancy for another user", HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
-    public ResponseEntity<?> editVacancy(VacancyDto vacancyDto, Authentication auth) {
-        var u = auth.getPrincipal();
-        Optional<User> user = userService.getUserFromAuth(u.toString());
-        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.get().getId())) {
-            if (vacancyDto.getId() == null) {
-                return new ResponseEntity<>("Cannot edit a vacancy without vacancy id", HttpStatus.NOT_FOUND);
-            }
-            var v = vacancyDao.findVacancyById(vacancyDto.getId());
-            if (v.isEmpty()) {
-                log.info("Tried to edit a vacancy that that does not exist: {}", vacancyDto.getId());
-                return new ResponseEntity<>("Vacancy does not exist", HttpStatus.OK);
-            } else {
-                if(categoryService.getCategory(vacancyDto.getCategory()).isPresent()) {
-                    Vacancy vacancy = makeVacancyFromDto(vacancyDto);
-                    vacancyDao.editVacancy(vacancy);
-                    return new ResponseEntity<>("Vacancy edited successfully", HttpStatus.OK);
-                }else {
-                    log.warn("Tried to use a category that does not exist: {}", vacancyDto.getCategory());
-                    return new ResponseEntity<>("Category does not exist", HttpStatus.BAD_REQUEST);
-                }
-            }
-        } else {
-            log.warn("Tried to edit a vacancy of another user: {}", user.get().getId());
-            return new ResponseEntity<>("Tried to edit a vacancy of another user", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    public ResponseEntity<?> deleteVacancy(VacancyDto vacancyDto, Authentication auth) {
-        var u = auth.getPrincipal();
-        Optional<User> user = userService.getUserFromAuth(u.toString());
-        if (employerService.getUserIdByEmployerId(vacancyDto.getEmployerId()).equalsIgnoreCase(user.get().getId())) {
-            var v = vacancyDao.findVacancyById(vacancyDto.getId());
-            if (v.isEmpty()) {
-                log.info("Tried to delete a vacancy that does not exist: {}", vacancyDto.getId());
-                return new ResponseEntity<>("Tried to delete a vacancy that does not exist", HttpStatus.OK);
-            } else {
-                vacancyDao.delete(vacancyDto.getId());
-                log.info("Vacancy was deleted: {}", vacancyDto.getId());
-                return new ResponseEntity<>("Vacancy was deleted successfully", HttpStatus.OK);
-
-            }
-
-        } else {
-            log.warn("Tried to delete a vacancy of another user: {}", user.get().getId());
-            return new ResponseEntity<>("Tried to delete a vacancy of another user", HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
-    public ResponseEntity<?> sortedListVacancies(String sortedCriteria) {
-        List<Vacancy> list = vacancyDao.getAllVacancies();
-        try {
-            var sortedVacancies = VacancySortStrategy.fromString(sortedCriteria).sortingVacancies(list);
-            return new ResponseEntity<>(
-                    sortedVacancies.stream()
-                            .map(this::makeDtoFromVacancy)
-                            .toList(),
-                    HttpStatus.OK
-            );
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    public ResponseEntity<?> findAllVacanciesByEmployerId(Long employerId) {
-        List<Vacancy> list = vacancyDao.getAllVacanciesByEmployerId(employerId);
-        if (list.isEmpty()) {
-            return new ResponseEntity<>("There are no vacancies by this employer", HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(list.stream()
-                    .map(this::makeDtoFromVacancy)
-                    .toList(), HttpStatus.OK);
-        }
-    }
-    public List<VacancyDto> getAllVacanciesByEmployerId(Long employerId)  {
-        List<Vacancy> list = vacancyDao.getAllVacanciesByEmployerId(employerId);
-        if (list.isEmpty()) {
-            return null;
-        } else {
-            return list.stream()
-                    .map(this::makeDtoFromVacancy)
-                    .toList();
-        }
-    }
-
-    public void create(String userId, VacancyDto vacancyDto) {
-        vacancyDao.save(Vacancy.builder()
-                        .employerId(employerService.getEmployerByUserId(userId).get().getId())
-                .vacancyName(vacancyDto.getVacancyName())
-                .category(vacancyDto.getCategory())
-                .salary(vacancyDto.getSalary())
-                .description(vacancyDto.getDescription())
-                .requiredExperienceMin(vacancyDto.getRequiredExperienceMin())
-                .requiredExperienceMax(vacancyDto.getRequiredExperienceMax())
-                .isActive(Boolean.TRUE)
-                .isPublished(Boolean.TRUE)
-                        .publishedDateTime(LocalDateTime.now())
+                .dateTime(LocalDateTime.now())
                 .build());
+    }
+
+    public VacancyDto newVacancy(Authentication auth) {
+    UserDto u = authService.getAuthor(auth);
+        Employer e = employerDao.findByEmail(u.getEmail()).orElseThrow(() -> {
+            log.warn("Employer not found: {}", u.getEmail());
+            return new NoSuchElementException("Employer not found");
+        });
+        Vacancy v = Vacancy.builder()
+                .employerId(e.getId())
+                .vacancyName(null)
+                .category("Other")
+                .salary(0)
+                .description(null)
+                .requiredExperienceMin(0)
+                .requiredExperienceMax(0)
+                .isActive(Boolean.FALSE)
+                .isPublished(Boolean.FALSE)
+                .dateTime(LocalDateTime.now())
+                .build();
+        Long id = vacancyDao.save(v);
+        Vacancy va = getById(id);
+        return makeDtoFromVacancy(va);
+    }
+
+    public UserDto getVacancyOwner(Long id) {
+    Vacancy v = getById(id);
+    Employer e = employerDao.find(v.getEmployerId()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+        return userService.getUserDtoTest(e.getUserId());
+    }
+
+    public List<SummaryDto> findSummaryByEmployerId(Long employerId) {
+    List<Vacancy> employerVacancies = vacancyDao.findByEmployerId(employerId);
+    List<SummaryDto> list = new ArrayList<>();
+    for(Vacancy v : employerVacancies) {
+        cleanEmptyTemplate(v);
+    }
+        List<Vacancy> employerVacancies2 = vacancyDao.findByEmployerId(employerId);
+
+        for(Vacancy v: employerVacancies2) {
+        list.add(SummaryDto.builder()
+                        .id(v.getId())
+                        .title(v.getVacancyName())
+                        .dateTime(v.getDateTime())
+                .build());
+    }
+    return list;
+    }
+    public List<Vacancy> findAllByEmployer(Authentication auth) {
+    UserDto u = authService.getAuthor(auth);
+    var e = employerDao.findByEmail(u.getEmail());
+        return e.map(employer -> vacancyDao.findByEmployerId(employer.getId())).orElse(null);
+    }
+    private void cleanEmptyTemplate(Vacancy v){
+        if (v.getVacancyName() == null) {
+            if (v.getDescription() == null) {
+                if (v.getCategory() == null) {
+                    if (v.getSalary() == null) {
+                        vacancyDao.delete(v.getId());
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void delete(Long id) {
+    vacancyDao.delete(id);
+    }
+
+    public List<VacancyDto> getAll() {
+    List<Vacancy> v = vacancyDao.getAll();
+    return v.stream().map(this::makeDtoFromVacancy).toList();
+    }
+
+    public List<VacancyDto> getAllByDate() {
+    List<VacancyDto> v = getAll();
+        List<VacancyDto> notEmptyField = new ArrayList<>();
+        List<VacancyDto> emptyField = new ArrayList<>();
+        for (VacancyDto vacancy:
+             v) {
+            if(vacancy.getDateTime() == null) {
+                emptyField.add(vacancy);
+            } else {
+                notEmptyField.add(vacancy);
+            }
+        }
+
+        notEmptyField.sort(Comparator.comparing(VacancyDto::getDateTime));
+
+        notEmptyField.addAll(emptyField);
+        return notEmptyField;
+    }
+    public List<VacancyDto> getAllByDateReversed() {
+        List<VacancyDto> v = getAll();
+        List<VacancyDto> notEmptyField = new ArrayList<>();
+        List<VacancyDto> emptyField = new ArrayList<>();
+        for (VacancyDto vacancy:
+                v) {
+            if(vacancy.getDateTime() == null) {
+                emptyField.add(vacancy);
+            } else {
+                notEmptyField.add(vacancy);
+            }
+        }
+
+        notEmptyField.sort(Comparator.comparing(VacancyDto::getDateTime).reversed());
+
+        notEmptyField.addAll(emptyField);
+        return notEmptyField;
+    }
+
+    public List<VacancyDto> getAllBySalary() {
+        List<VacancyDto> v = getAll();
+        List<VacancyDto> notEmptyField = new ArrayList<>();
+        List<VacancyDto> emptyField = new ArrayList<>();
+        for (VacancyDto vacancy:
+                v) {
+            if(vacancy.getSalary() == null) {
+                emptyField.add(vacancy);
+            } else {
+                notEmptyField.add(vacancy);
+            }
+        }
+
+        notEmptyField.sort(Comparator.comparing(VacancyDto::getSalary).reversed());
+
+        notEmptyField.addAll(emptyField);
+        return notEmptyField;
+    }
+
+    public List<VacancyDto> filterByCategory(String category) {
+    List<VacancyDto> v = getAll();
+    List<VacancyDto> v2 = new ArrayList<>();
+        for (VacancyDto vacancy:
+            v ) {
+            if(vacancy.getCategory() != null) {
+                if(vacancy.getCategory().equalsIgnoreCase(category)) {
+                    v2.add(vacancy);
+                }
+            }
+
+        }
+        return v2;
+    }
+
+    public List<VacancyDto> searchResult(String searchWord) {
+    String search = searchWord.toLowerCase();
+    List<VacancyDto> v = getAll();
+    List<VacancyDto> searchResult = new ArrayList<>();
+        for (VacancyDto vacancy:
+             v) {
+            if(vacancy.getVacancyName() !=null) {
+                if(vacancy.getVacancyName().toLowerCase().contains(search)) {
+                    searchResult.add(vacancy);
+                }
+            }
+            if(vacancy.getSalary() != null) {
+                if(vacancy.getSalary().toString().contains(search)) {
+                    searchResult.add(vacancy);
+                }
+            }
+            if(vacancy.getDescription() != null) {
+                if(vacancy.getDescription().toLowerCase().contains(search)) {
+                    searchResult.add(vacancy);
+                }
+            }
+        }
+        return searchResult;
+    }
+
+    public List<SummaryDto> findSummaryForMain() {
+    List<VacancyDto> l = getAllByDateReversed();
+    List<SummaryDto> summaryDtos = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            summaryDtos.add(SummaryDto.builder()
+                            .id((long)i)
+                            .title(l.get(i).getVacancyName())
+                            .dateTime(l.get(i).getDateTime())
+                    .build());
+        }
+        return summaryDtos;
     }
 }
