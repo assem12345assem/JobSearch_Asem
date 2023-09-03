@@ -14,6 +14,7 @@
                 src="https://kit.fontawesome.com/198548d859.js"
                 crossorigin="anonymous"
         ></script>
+        <script type="text/javascript" src="/static/js/main.js"></script>
     </head>
 
     <body>
@@ -29,27 +30,30 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/">Главная <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/vacancies">Вакансии</a>
+                        <a class="nav-link" href="/vacancy/all/view">Вакансии</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/resumes">Резюме</a>
+                        <a class="nav-link" href="/resume/all/view">Резюме</a>
                     </li>
                 </ul>
 
-                <div class="ml-auto">
-                    <#assign known = SPRING_SECURITY_CONTEXT??>
+                <div class="ml-auto" >
+                    <#assign
+                    known = SPRING_SECURITY_CONTEXT??
+                    >
                     <#if known>
                         <#assign
-                        name = SPRING_SECURITY_CONTEXT.authentication.principal.getUsername()
+                        user = SPRING_SECURITY_CONTEXT.authentication.principal
+                        name = user.getUsername()
                         >
-                        <a href="/users/profile/${name}" class="text-light m-2">Hi, ${name}</a>
-                        <a href="/logout" class="btn btn-outline-info m-2">Logout</a>
+                        <a href="/auth/profile" class="text-light m-2 m-sm-0" id="profile_page">Hi, ${name}</a>
+                        <a href="/logout" class="btn btn-outline-info m-2" id="logout">Logout</a>
                     <#else>
-                        <a href="/users/login" class="btn btn-outline-info m-2">Sign in</a>
-                        <a href="/users/register" class="btn btn-outline-info m-2">Register</a>
+                        <a href="/auth/login" class="btn btn-outline-info m-2">SignIn</a>
+                        <a href="/auth/register" class="btn btn-outline-info m-2">SignUp</a>
                     </#if>
                 </div>
 
@@ -61,5 +65,14 @@
         <#nested>
     </div>
     </body>
-    </html>
+    <script>
+
+            let logout = document.getElementById('logout');
+            if (logout) {
+                logout.addEventListener('click', () => localStorage.removeItem('user'));
+            }
+
+    </script>
+
+</html>
 </#macro>
