@@ -6,8 +6,9 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Employer {
+public class Authority {
     private Long id;
-    private String userId;
-    private String companyName;
+    private String authority;
+    private String email;
 }
+

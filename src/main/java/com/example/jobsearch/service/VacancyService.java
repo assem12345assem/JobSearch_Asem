@@ -2,8 +2,6 @@ package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.VacancyDao;
 import com.example.jobsearch.enums.VacancySortStrategy;
-import com.example.jobsearch.model.User;
-import com.example.jobsearch.model.Vacancy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

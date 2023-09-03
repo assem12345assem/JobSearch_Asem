@@ -1,7 +1,6 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.WorkExperienceDao;
-import com.example.jobsearch.model.WorkExperience;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

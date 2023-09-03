@@ -3,8 +3,6 @@ package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.ResumeDao;
 import com.example.jobsearch.dto.*;
-import com.example.jobsearch.model.Resume;
-import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

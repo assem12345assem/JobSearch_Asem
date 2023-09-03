@@ -1,6 +1,5 @@
 package com.example.jobsearch.enums;
 
-import com.example.jobsearch.model.Vacancy;
 import lombok.Getter;
 
 import java.util.Comparator;
