@@ -9,6 +9,7 @@ import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,7 +53,13 @@ public class UserService {
     if(maybeUser.isPresent()) return maybeUser.get();
     else throw new NoSuchElementException("User does not exist");
     }
+    public User getUserByEmail(Authentication auth) {
+        var use = auth.getPrincipal();
+        Optional<User> maybeUser = getUserFromAuth(use.toString());
 
+        if(maybeUser.isPresent()) return maybeUser.get();
+        else throw new NoSuchElementException("User does not exist");
+    }
     private UserDto makeUserDtoFromUser(User user) {
         UserDto u = new UserDto();
         u.setId(user.getId());
@@ -199,16 +206,30 @@ public class UserService {
 
     }
 
-//    public String login(UserDto userDto) {
-//        var user = userDao.getUserById(userDto.getId());
-//        if(user.isPresent()) return userDto.getId();
-//        else return null;
-//    }
     public String login(Authentication auth) {
         var u = auth.getPrincipal();
         Optional<User> user = getUserFromAuth(u.toString());
         return user.map(User::getId).orElse(null);
     }
 
-    
+
+    public ResponseEntity<?> getPhoto(String id) {
+        var user = userDao.getUserById(id);
+        if(user.isEmpty()) {
+            System.out.println("no photo");
+            return fileService.getOutputFile("default_profile.png", "images", MediaType.IMAGE_PNG);
+        }
+        if(user.get().getPhoto() == null || user.get().getPhoto().isEmpty()){
+            if(user.get().getUserType().equalsIgnoreCase("employer")) {
+            return fileService.getOutputFile("default_company.png", "images", MediaType.IMAGE_PNG);
+            } else {
+                return fileService.getOutputFile("default_user.png", "images", MediaType.IMAGE_PNG);
+
+            }
+        } else {
+            return fileService.getOutputFile(user.get().getPhoto(), "images", MediaType.ALL);
+        }
+
+
+    }
 }

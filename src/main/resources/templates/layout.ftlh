@@ -10,7 +10,10 @@
         <title>JobSearch Index page</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="./css/style.css">
+        <script
+                src="https://kit.fontawesome.com/198548d859.js"
+                crossorigin="anonymous"
+        ></script>
     </head>
 
     <body>
@@ -29,43 +32,27 @@
                         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="vacancies">Вакансии</a>
+                        <a class="nav-link" href="/vacancies">Вакансии</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="resumes">Резюме</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="users/login">Мой профиль</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="users/register">Зарегистрироваться</a>
+                        <a class="nav-link" href="/resumes">Резюме</a>
                     </li>
                 </ul>
 
-                <#assign known = SPRING_SECURITY_CONTEXT??>
-                   <#if known>
-                   <#assign
-                               name = SPRING_SECURITY_CONTEXT.authentication.principal.getUsername()
-                >
-                <a href="/users/profile/${name}" class="text-light m-2">Hi, ${name}</a>
-                <a href="/logout" class="btn btn-outline-info m-2">Logout</a>
-                <#else>
-                <a href="/users/login" class="btn btn-outline-info m-2">Sign in</a>
-                <a href="/users/register" class="btn btn-outline-info m-2">Register</a>
-                   </#if>
+                <div class="ml-auto">
+                    <#assign known = SPRING_SECURITY_CONTEXT??>
+                    <#if known>
+                        <#assign
+                        name = SPRING_SECURITY_CONTEXT.authentication.principal.getUsername()
+                        >
+                        <a href="/users/profile/${name}" class="text-light m-2">Hi, ${name}</a>
+                        <a href="/logout" class="btn btn-outline-info m-2">Logout</a>
+                    <#else>
+                        <a href="/users/login" class="btn btn-outline-info m-2">Sign in</a>
+                        <a href="/users/register" class="btn btn-outline-info m-2">Register</a>
+                    </#if>
+                </div>
 
-                <#--            <a href="/profile" class="btn btn-outline-success my-2 my-sm-0">Profile</a>-->
-                <#--            <#if user?has_content>-->
-                <#--                <i class="btn btn-outline-success my-2 my-sm-0">${user.email}</i>-->
-                <#--            <#else>-->
-                <#--                <a href="/login" class="btn btn-outline-success my-2 my-sm-0">LogIn</a>-->
-                <#--            </#if>-->
-                <#--            <#if user?has_content>-->
-                <#--                <i></i>-->
-                <#--            <#else>-->
-                <#--                <a href="/register" class="btn btn-outline-success my-2 my-sm-0">Sign up</a>-->
-                <#--            </#if>-->
-                <#--            <a href="/exit" class="btn btn-outline-success my-2 my-sm-0">Exit</a>-->
             </div>
         </div>
     </nav>

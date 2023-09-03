@@ -17,7 +17,6 @@ public class EducationDto {
     Long resumeId;
     String education;
     String schoolName;
-    @Past
     LocalDate startDate;
     LocalDate graduationDate;
 }

@@ -11,21 +11,20 @@
     </div>
     <div class="d-flex elem-container row justify-content-around">
         <div class="align-self-start mb-3">
-            <#--            <img src="data/images/${user.photo}">-->
-            photo
+            <img src="/images/${user.id}" alt="photo">
         </div>
         <div class="align-self-start mb-3">
             <div class="d-flex flex-column user-info justify-content-around">
                 <#if user.userType=="employer">
-                    <#assign str = profile.companyName?default("Наименование компании не указано")>
+                    <#assign str = profile.companyName!"Наименование компании не указано">
                     ${str}
 
                 <#else>
-                    <#assign variable1 = profile.firstName>
-                    <#assign variable2 = profile.lastName>
+                    <#assign variable1 = profile.getFirstName!"">
+                    <#assign variable2 = profile.getLastName!"">
 
                     <#assign combinedValue = variable1! + variable2!>
-                    <#assign result = combinedValue?default("Пользователь не указал свое имя и фамилию")>
+                    <#assign result = combinedValue!"Пользователь не указал своего имени и фамилии">
 
                     ${result}
 
@@ -36,9 +35,9 @@
         </div>
         <div class="lined-red align-self-start mb-3">
             <#if user.userType=="employer">
-                <a href="vacancies/add_vacancy/${user.id}">+ Создать вакансию</a>
+                <a href="/vacancies/add/${user.id}">+ Создать вакансию</a>
             <#else>
-                <a href="resumes/add_resume/${user.id}">+ Создать резюме</a>
+                <a href="/resumes/add/${user.id}">+ Создать резюме</a>
 
             </#if>
         </div>

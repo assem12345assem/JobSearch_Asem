@@ -81,4 +81,5 @@ public class UserDao extends BaseDao{
                 jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), email)
         ));
     }
+
 }

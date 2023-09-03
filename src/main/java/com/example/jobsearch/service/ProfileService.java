@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -28,9 +29,9 @@ public class ProfileService {
     public Object getUserProfile(String userId) {
         User u = userService.getUserByEmail(userId);
         if (u.getUserType().equalsIgnoreCase("applicant")) {
-            return applicantService.getApplicantByUserId(u.getId()).get();
+            return applicantService.getApplicantByUserId(u.getId());
         } else if (u.getUserType().equalsIgnoreCase("employer")) {
-            return employerService.getEmployerByUserId(u.getId()).get();
+            return employerService.getEmployerByUserId(u.getId());
         } else throw new NoSuchElementException("User type is not found");
     }
 

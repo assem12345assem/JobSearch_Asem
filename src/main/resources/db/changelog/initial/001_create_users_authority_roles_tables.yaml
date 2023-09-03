@@ -4,10 +4,10 @@ databaseChangeLog:
       author: Asem
       changes:
         - createTable:
-            tableName: users
+            tableName: user_table
             columns:
               - column:
-                  name: id
+                  name: email
                   type: varchar(45)
                   constraints:
                     primaryKey: true
@@ -55,7 +55,7 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_user_email_rls
                     nullable: false
-                    references: users(id)
+                    references: user_table(email)
   - changeSet:
       id: create authorities
       author: Asem

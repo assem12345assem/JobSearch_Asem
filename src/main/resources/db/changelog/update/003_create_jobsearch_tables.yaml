@@ -14,7 +14,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: userId
+                  name: user_id
                   type: varchar(255)
                   constraints:
                     nullable: false
@@ -27,10 +27,10 @@ databaseChangeLog:
       changes:
         - addForeignKeyConstraint:
             baseTableName: employers
-            baseColumnNames: userid
+            baseColumnNames: user_id
             constraintName: fk_e_user_id
-            referencedTableName: users
-            referencedColumnNames: id
+            referencedTableName: user_table
+            referencedColumnNames: email
             onDelete: cascade
             onUpdate: cascade
   - changeSet:
@@ -48,7 +48,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: userId
+                  name: user_id
                   type: varchar(255)
               - column:
                   name: firstName
@@ -65,10 +65,10 @@ databaseChangeLog:
       changes:
         - addForeignKeyConstraint:
             baseTableName: applicants
-            baseColumnNames: userid
+            baseColumnNames: user_id
             constraintName: fk_a_user_id
-            referencedTableName: users
-            referencedColumnNames: id
+            referencedTableName: user_table
+            referencedColumnNames: email
             onDelete: cascade
             onUpdate: cascade
   - changeSet:
@@ -134,7 +134,7 @@ databaseChangeLog:
       changes:
         - addForeignKeyConstraint:
             baseTableName: resumes
-            baseColumnNames: applicantid
+            baseColumnNames: applicantId
             constraintName: fk_applicant_id
             referencedTableName: applicants
             referencedColumnNames: id
@@ -145,7 +145,7 @@ databaseChangeLog:
       author: Asem
       changes:
         - createTable:
-            tableName: workexperience
+            tableName: work_experience
             columns:
               - column:
                   name: id
@@ -187,7 +187,7 @@ databaseChangeLog:
       author: Asem
       changes:
         - addForeignKeyConstraint:
-            baseTableName: workexperience
+            baseTableName: work_experience
             baseColumnNames: resumeId
             constraintName: fk_we_resume_id
             referencedTableName: resumes

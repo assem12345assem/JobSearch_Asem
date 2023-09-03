@@ -1,74 +1,105 @@
-package com.example.jobsearch.controller;
+package com.example.demo.controller;
 
-import com.example.jobsearch.dto.UserDto;
-import com.example.jobsearch.service.ProfileService;
-import com.example.jobsearch.service.UserService;
+import com.example.demo.dto.ApplicantDto;
+import com.example.demo.dto.EditProfileDto;
+import com.example.demo.dto.EmployerDto;
+import com.example.demo.dto.UserDto;
+import com.example.demo.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-
 @Controller
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class UserMVCController {
     private final UserService userService;
-    private final ProfileService profileService;
+    private final ResumeService resumeService;
+    private final VacancyService vacancyService;
+    private final JobApplicationService jobApplicationService;
+    private final AuthService authService;
 
-    @GetMapping("users/register")
+    @GetMapping("/register")
     public String register() {
-        return "users/register";
+        return "auth/register";
     }
 
-    @PostMapping("users/register")
-    @ResponseStatus(HttpStatus.SEE_OTHER)
+    @PostMapping("/register")
+    @ResponseStatus(code = HttpStatus.SEE_OTHER)
     public String register(@Valid @ModelAttribute UserDto userDto) throws Exception {
         userService.register(userDto);
         return "redirect:/";
     }
 
-    @GetMapping("users/profile/{userId}")
-    public String profile(@PathVariable String userId, Model model, Model model2, Model model3) throws Exception {
-        model.addAttribute("profile", profileService.getUserProfile(userId));
-        model2.addAttribute("items", profileService.getProfileContent(userId));
-        model3.addAttribute("user", userService.getUserByEmail(userId));
-        return "users/profile";
-    }
-
-    @GetMapping("users/login")
+    @GetMapping("/login")
     public String login() {
-        return "users/login";
+        return "/auth/login";
     }
 
-//    @PostMapping("users/login")
-//    @ResponseStatus(HttpStatus.SEE_OTHER)
-//    public String login(@Valid UserDto userDto) {
-//        String userId = userService.login(userDto);
-//        return "redirect:/users/profile/" + userId;
-//    }
-    @PostMapping("users/login")
-    @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String login(Authentication auth) {
-        String userId = userService.login(auth);
-        return "redicred:/" + userId;
+    @GetMapping("/profile")
+    public String profile(Model model, Authentication auth) {
+        UserDto u = authService.getAuthor(auth);
+        model.addAttribute("user", userService.getUserDtoLocalStorage(u.getEmail()));
+        ResponseEntity<?> responseEntity = userService.getProfileLocalStorage(u.getEmail());
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            Object responseBody = responseEntity.getBody();
+            if (responseBody instanceof ApplicantDto) {
+                model.addAttribute("applicantProfile", (ApplicantDto) responseBody);
+                Long applicantId = ((ApplicantDto) responseBody).getId();
+                model.addAttribute("myList", resumeService.findSummaryByApplicantId(applicantId));
+            }
+            if (responseBody instanceof EmployerDto) {
+                model.addAttribute("employerProfile", (EmployerDto) responseBody);
+                Long employerId = ((EmployerDto) responseBody).getId();
+                model.addAttribute("myList", vacancyService.findSummaryByEmployerId(employerId));
+            }
+        }
+        model.addAttribute("new_message_number", jobApplicationService.getNew(auth));
+        return "auth/profile";
     }
 
-    @GetMapping("users/profile/edit/{userId}")
-    public String editProfile(@PathVariable String userId, Model model) {
-        model.addAttribute("user", userService.getUserByEmail(userId));
+    @GetMapping("/edit/{userLocalStorage}")
+    public String edit(@PathVariable String userLocalStorage, Model model) {
+        model.addAttribute("user", userService.getUserDtoLocalStorage(userLocalStorage));
+        ResponseEntity<?> responseEntity = userService.getProfileLocalStorage(userLocalStorage);
 
-        return "users/edit";
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            Object responseBody = responseEntity.getBody();
+
+            if (responseBody instanceof ApplicantDto) {
+                model.addAttribute("applicantProfile", (ApplicantDto) responseBody);
+            }
+            if (responseBody instanceof EmployerDto) {
+                model.addAttribute("employerProfile", (EmployerDto) responseBody);
+            }
+        }        return "auth/edit";
     }
 
-    @PostMapping("users/profile/edit/{userid}")
-    public String editProfile(@PathVariable String userId, @RequestParam(name = "phoneNumber", required = false, defaultValue = "") String phoneNumber, @RequestParam(name = "userName", required = false, defaultValue = "") String userName, @RequestParam(name = "password", required = false, defaultValue = "") String password, @RequestParam(name = "photo", required = false, defaultValue = "") MultipartFile file, @RequestParam(name = "companyName", required = false, defaultValue = "") String companyName, @RequestParam(name = "firstName", required = false, defaultValue = "") String firstName, @RequestParam(name = "lastName", required = false, defaultValue = "") String lastName, @RequestParam(name = "DOB", required = false, defaultValue = "") LocalDate date) {
-        profileService.edit(userId, phoneNumber, userName, password, file, companyName, firstName, lastName, date);
-        return "users/profile/" + userId;
+    @PostMapping(path = "/edit/{userLocalStorage}", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @ResponseStatus(code = HttpStatus.SEE_OTHER)
+    public String edit(@PathVariable String userLocalStorage, EditProfileDto editProfileDto)  {
+        userService.editProfile(userLocalStorage, editProfileDto);
+        return "redirect:/auth/profile/" + userLocalStorage;
+    }
+
+    @GetMapping("/images/{email}")
+    public ResponseEntity<?> getImageByName(@PathVariable String email) {
+        return userService.getPhoto(email);
+    }
+
+    @PostMapping("/images/upload/{userLocalStorage}")
+    @ResponseStatus(code = HttpStatus.SEE_OTHER)
+    public String uploadPhoto(@PathVariable String userLocalStorage, @RequestBody MultipartFile file) {
+        userService.uploadUserPhoto(userLocalStorage, file);
+        return "redirect:/auth/edit/" + userLocalStorage;
     }
 
 }

@@ -61,7 +61,7 @@ public class ResumeService {
 
     public List<ResumeDto> getAllResumesByApplicantId(long applicantId) {
         List<Resume> list = resumeDao.getAllResumesByApplicantId(applicantId);
-        if(list.isEmpty()) return null;
+        if (list.isEmpty()) return null;
         return list.stream()
                 .map(this::makeDtoFromResume)
                 .toList();
@@ -77,16 +77,16 @@ public class ResumeService {
     public ResponseEntity<?> createResume(ResumeDto e, Authentication auth) {
         var u = auth.getPrincipal();
         Optional<User> user = userService.getUserFromAuth(u.toString());
-        if(user.get().getId().equalsIgnoreCase(e.getAuthorEmail())) {
+        if (user.get().getId().equalsIgnoreCase(e.getAuthorEmail())) {
             Optional<Resume> r;
-            if(e.getId() == null) {
-            long x = (long)resumeDao.getAllResumes().size()+1;
-            r = resumeDao.getResumeById(x);
+            if (e.getId() == null) {
+                long x = (long) resumeDao.getAllResumes().size() + 1;
+                r = resumeDao.getResumeById(x);
             } else {
                 r = resumeDao.getResumeById(e.getId());
             }
-            if(r.isEmpty()) {
-                if(categoryService.getCategory(e.getCategory()).isPresent()) {
+            if (r.isEmpty()) {
+                if (categoryService.getCategory(e.getCategory()).isPresent()) {
                     resumeDao.save(createResumeFromDto(e));
                     return new ResponseEntity<>("Resume created successfully", HttpStatus.OK);
                 } else {
@@ -102,10 +102,11 @@ public class ResumeService {
             return new ResponseEntity<>("Tried to create a resume for another user", HttpStatus.BAD_REQUEST);
         }
     }
+
     public ResponseEntity<?> deleteResume(ResumeDto e, Authentication auth) {
         var u = auth.getPrincipal();
         Optional<User> user = userService.getUserFromAuth(u.toString());
-        if(user.get().getId().equalsIgnoreCase(e.getAuthorEmail())) {
+        if (user.get().getId().equalsIgnoreCase(e.getAuthorEmail())) {
             var r = resumeDao.getResumeById(e.getId());
             if (r.isPresent()) {
                 resumeDao.delete(e.getId());
@@ -123,17 +124,17 @@ public class ResumeService {
     public ResponseEntity<?> editResume(ResumeDto e, Authentication auth) {
         var u = auth.getPrincipal();
         Optional<User> user = userService.getUserFromAuth(u.toString());
-        if(user.get().getId().equalsIgnoreCase(e.getAuthorEmail())) {
+        if (user.get().getId().equalsIgnoreCase(e.getAuthorEmail())) {
             var r = resumeDao.getResumeById(e.getId());
             if (r.isPresent()) {
-                if(categoryService.getCategory(e.getCategory()).isPresent()) {
+                if (categoryService.getCategory(e.getCategory()).isPresent()) {
                     resumeDao.editResume(createResumeFromDto(e));
                     return new ResponseEntity<>("Resume edited successfully", HttpStatus.OK);
-                }else {
+                } else {
                     log.warn("Tried to use a category that does not exist: {}", e.getCategory());
                     return new ResponseEntity<>("Category does not exist", HttpStatus.BAD_REQUEST);
                 }
-        } else {
+            } else {
                 log.warn("Tried to edit a resume that does not exist: {}", e.getId());
                 return new ResponseEntity<>("Cannot edit a resume that does not exist", HttpStatus.NOT_FOUND);
             }
@@ -170,7 +171,7 @@ public class ResumeService {
         return educationService.editEducation(educationDto);
     }
 
-    public ResponseEntity<?>  deleteEducation(EducationDto educationDto) {
+    public ResponseEntity<?> deleteEducation(EducationDto educationDto) {
         return educationService.deleteEducation(educationDto);
     }
 
@@ -190,13 +191,14 @@ public class ResumeService {
         return contactInfoService.createContactInfo(contactInfoDto);
     }
 
-    public ResponseEntity<?>  editContactInfo(ContactInfoDto contactInfoDto) {
+    public ResponseEntity<?> editContactInfo(ContactInfoDto contactInfoDto) {
         return contactInfoService.editContactInfo(contactInfoDto);
     }
 
-    public ResponseEntity<?>  deleteContactInfo(ContactInfoDto contactInfoDto) {
+    public ResponseEntity<?> deleteContactInfo(ContactInfoDto contactInfoDto) {
         return contactInfoService.deleteContactInfo(contactInfoDto);
     }
+
     public List<WorkExperienceDto> getAllWorkExperienceByResumeId(long resumeId) {
         return workExperienceService.getAllWorkExperienceByResumeId((resumeId));
     }
@@ -217,10 +219,47 @@ public class ResumeService {
         return contactInfoService.getAllContactInfoByResumeId(resumeId);
     }
 
-    public void create(String userId, ResumeDto resumeDto, WorkExperienceDto workExperienceDto, EducationDto educationDto, ContactInfoDto contactInfoDto) {
+    public void create(String userId, ResumeDto resumeDto, List<InputWorkExperienceDto> workExperienceDto,
+                       List<InputEducationDto> educationDto, InputContactInfoDto contactInfoDto) {
         ApplicantDto a = applicantService.getApplicantByUserId(userId).get();
-resumeDao.save(Resume.builder()
+        Long resumeId = resumeDao.save(Resume.builder()
+                .id(a.getId())
+                .resumeTitle(resumeDto.getResumeTitle())
+                .category(resumeDto.getCategory())
+                .expectedSalary(resumeDto.getExpectedSalary())
+                .isActive(resumeDto.isActive())
+                .isPublished(Boolean.TRUE)
+                .build());
+        List<WorkExperienceDto> we = workExperienceDto.stream()
+                .map(w -> WorkExperienceDto.builder()
+                        .resumeId(resumeId)
+                        .dateStart(w.getDateStart())
+                        .dateEnd(w.getDateEnd())
+                        .companyName(w.getCompanyName())
+                        .position(w.getPosition())
+                        .responsibilities(w.getResponsibilities())
+                        .build())
+                .toList();
+        we.forEach(workExperienceService::createWorkExperience);
 
-        .build());
+        List<EducationDto> ed = educationDto.stream()
+                .map(e -> EducationDto.builder()
+                        .resumeId(resumeId)
+                        .education(e.getEducation())
+                        .schoolName(e.getSchoolName())
+                        .startDate(e.getStartDate())
+                        .graduationDate(e.getGraduationDate())
+                        .build())
+                .toList();
+        ed.forEach(educationService::createEducation);
+
+        contactInfoService.createContactInfo(ContactInfoDto.builder()
+                .resumeId(resumeId)
+                .telegram(contactInfoDto.getTelegram())
+                .email(contactInfoDto.getEmail())
+                .phoneNumber(contactInfoDto.getPhoneNumber())
+                .facebookAccount(contactInfoDto.getFacebookAccount())
+                .linkedinAccount(contactInfoDto.getLinkedinAccount())
+                .build());
     }
 }
