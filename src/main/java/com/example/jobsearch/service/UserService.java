@@ -58,7 +58,6 @@ public class UserService {
             throw new Exception("User already exists");
         }
     }
-
     public UserDto getUserDto(Authentication auth) {
         org.springframework.security.core.userdetails.User userAuth = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
         User user = userDao.find(userAuth.getUsername()).orElseThrow(() -> new NoSuchElementException("User not found"));
