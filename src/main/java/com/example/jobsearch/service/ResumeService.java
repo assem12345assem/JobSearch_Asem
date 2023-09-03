@@ -129,7 +129,7 @@ public class ResumeService {
 
     public void edit(Long id, ResumeDto resumeDto, Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Applicant a = applicantRepository.findByUserId(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+        Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         Resume r = findById(id);
         Resume updatedResume = resumeRepository.save(Resume.builder()
                 .id(r.getId())
@@ -208,7 +208,7 @@ public class ResumeService {
 
     public ResumeDto newResume(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Applicant a = applicantRepository.findByUserId(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+        Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         ApplicantDto applicantDto = ApplicantDto.builder()
                 .firstName(a.getFirstName())
                 .lastName(a.getLastName())
@@ -263,7 +263,7 @@ public class ResumeService {
 
     public List<ResumeDto> findAllByApplicant(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Applicant a = applicantRepository.findByUserId(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+        Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         List<Resume> list = resumeRepository.findByApplicantId(a.getId());
         return list.stream().map(this::makeDtoFromResume).toList();
     }

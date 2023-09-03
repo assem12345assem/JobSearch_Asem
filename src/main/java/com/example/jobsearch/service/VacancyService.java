@@ -42,6 +42,7 @@ public class VacancyService {
             log.warn("Employer not found: {}", v.getEmployer().getId());
             return new NoSuchElementException("Employer not found");
         });
+        String categoryValue = (v.getCategory() != null) ? v.getCategory().getCategory() : null;
 
         return VacancyDto.builder()
                 .id(v.getId())
@@ -50,7 +51,7 @@ public class VacancyService {
                         .companyName(e.getCompanyName())
                         .build())
                 .vacancyName(v.getVacancyName())
-                .category(v.getCategory().getCategory())
+                .category(categoryValue)
                 .salary(v.getSalary())
                 .description(v.getDescription())
                 .requiredExperienceMin(v.getRequiredExperienceMin())
@@ -69,7 +70,7 @@ public class VacancyService {
     public void edit(Long id, VacancyDto vacancyDto, Authentication auth) {
         Vacancy v = getById(id);
         UserDto u = authService.getAuthor(auth);
-        Employer e = employerRepository.findByUserId(u.getEmail()).orElseThrow(() ->
+        Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() ->
                 new NoSuchElementException("Employer is not found."));
         vacancyRepository.save(Vacancy.builder()
                 .id(v.getId())
@@ -105,7 +106,7 @@ public class VacancyService {
 
     public VacancyDto newVacancy(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Employer e = employerRepository.findByUserId(u.getEmail()).orElseThrow(() -> {
+        Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> {
             log.warn("Employer not found: {}", u.getEmail());
             return new NoSuchElementException("Employer not found");
         });
@@ -150,7 +151,7 @@ public class VacancyService {
 
     public List<Vacancy> findAllByEmployer(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Employer e = employerRepository.findByUserId(u.getEmail()).orElseThrow(() -> {
+        Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> {
             throw new NoSuchElementException("Employer not found");
         });
         return vacancyRepository.findByEmployerId(e.getId());

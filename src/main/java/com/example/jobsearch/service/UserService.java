@@ -1,9 +1,6 @@
 package com.example.jobsearch.service;
 
-import com.example.jobsearch.dao.ApplicantDao;
-import com.example.jobsearch.dao.AuthorityDao;
-import com.example.jobsearch.dao.EmployerDao;
-import com.example.jobsearch.dao.userRepository;
+
 import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.dto.EditProfileDto;
 import com.example.jobsearch.dto.EmployerDto;
@@ -88,7 +85,7 @@ public class UserService {
                 .build();
     }
     private Applicant getApplicantByEmail (String email) {
-        return applicantRepository.findByUserId(email).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+        return applicantRepository.findByUserEmail(email).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
     }
     public ResponseEntity<?> getProfile (Authentication auth) {
         UserDto u = getUserDto(auth);
@@ -96,7 +93,7 @@ public class UserService {
             Applicant a = getApplicantByEmail(u.getEmail());
             return new ResponseEntity<>(makeDtoFromApplicant(a), HttpStatus.OK);
         } else {
-            Employer e = employerRepository.findByUserId(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+            Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
         return new ResponseEntity<>(EmployerDto.builder().id(e.getId())
                 .companyName(e.getCompanyName()).build(), HttpStatus.OK);
         }
@@ -118,7 +115,7 @@ public class UserService {
             Applicant a = getApplicantByEmail(u.getEmail());
             return new ResponseEntity<>(makeDtoFromApplicant(a), HttpStatus.OK);
         } else {
-            Employer e = employerRepository.findByUserId(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+            Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
             return new ResponseEntity<>(EmployerDto.builder().id(e.getId())
                     .companyName(e.getCompanyName()).build(), HttpStatus.OK);
         }
@@ -164,7 +161,7 @@ public class UserService {
 
         userRepository.save(user);
         if(user.getUserType().equalsIgnoreCase("applicant")) {
-            Applicant a = applicantRepository.findByUserId(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+            Applicant a = applicantRepository.findByUserEmail(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
             if (!editProfileDto.getFirstName().isEmpty() && editProfileDto.getFirstName() != null) {
                 a.setFirstName(editProfileDto.getFirstName());
             }
@@ -180,7 +177,7 @@ public class UserService {
 
             applicantRepository.save(a);
         } else{
-            Employer e = employerRepository.findByUserId(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+            Employer e = employerRepository.findByUserEmail(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
             if (!editProfileDto.getCompanyName().isEmpty() && editProfileDto.getCompanyName() != null) {
                 e.setCompanyName(editProfileDto.getCompanyName());
             }
