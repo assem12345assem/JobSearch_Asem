@@ -1,21 +1,16 @@
 package com.example.jobsearch.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContactInfoDto {
-    Long id;
-    Long resumeId;
-    String telegram;
-    String email;
-    String phoneNumber;
-    String facebookAccount;
-    String linkedinAccount;
+    private String telegram;
+    private String email;
+    private String phoneNumber;
+    private String facebook;
+    private String linkedIn;
 }
+

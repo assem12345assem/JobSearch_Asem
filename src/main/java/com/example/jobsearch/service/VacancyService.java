@@ -1,7 +1,6 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.VacancyDao;
-import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.enums.VacancySortStrategy;
 import com.example.jobsearch.model.User;
 import com.example.jobsearch.model.Vacancy;

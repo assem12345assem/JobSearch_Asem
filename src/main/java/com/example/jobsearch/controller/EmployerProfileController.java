@@ -1,6 +1,5 @@
 package com.example.jobsearch.controller;
 
-import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.service.EmployerProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

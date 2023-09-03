@@ -1,10 +1,6 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.JobApplicationDao;
-import com.example.jobsearch.dto.ApplicantDto;
-import com.example.jobsearch.dto.JobApplicationDto;
-import com.example.jobsearch.dto.ResumeDto;
-import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.model.JobApplication;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;

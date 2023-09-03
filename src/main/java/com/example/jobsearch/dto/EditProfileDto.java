@@ -1,19 +1,17 @@
 package com.example.jobsearch.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserDto {
-    @Email
+public class EditProfileDto {
     private String email;
     private String phoneNumber;
     private String userName;
-    private String userType;
-    @NotBlank
-    private String password;
-    private String photo;
+    private String firstName;
+    private String lastName;
+    private String dateOfBirth;
+    private String companyName;
 }

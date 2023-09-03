@@ -1,7 +1,6 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.EducationDao;
-import com.example.jobsearch.dto.EducationDto;
 import com.example.jobsearch.model.Education;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

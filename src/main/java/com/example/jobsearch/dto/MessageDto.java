@@ -6,7 +6,12 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class EmployerDto {
+public class MessageDto {
     private Long id;
-    private String companyName;
+    private Long jobApplicationId;
+    private String message;
+    private String author;
+    private String createTime;
+
 }
+

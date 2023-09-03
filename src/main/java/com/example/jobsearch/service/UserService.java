@@ -1,9 +1,6 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.UserDao;
-import com.example.jobsearch.dto.ApplicantDto;
-import com.example.jobsearch.dto.EmployerDto;
-import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.model.Employer;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,6 @@
 package com.example.jobsearch.service;
 
 import com.example.jobsearch.dao.ContactInfoDao;
-import com.example.jobsearch.dto.ContactInfoDto;
 import com.example.jobsearch.model.ContactInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,5 @@
 package com.example.jobsearch.service;
 
-import com.example.jobsearch.dto.ApplicantDto;
-import com.example.jobsearch.dto.EmployerDto;
-import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Slf4j
 @Service

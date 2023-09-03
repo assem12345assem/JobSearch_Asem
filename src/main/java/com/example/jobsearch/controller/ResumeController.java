@@ -1,9 +1,5 @@
 package com.example.jobsearch.controller;
 
-import com.example.jobsearch.dto.ContactInfoDto;
-import com.example.jobsearch.dto.EducationDto;
-import com.example.jobsearch.dto.ResumeDto;
-import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
