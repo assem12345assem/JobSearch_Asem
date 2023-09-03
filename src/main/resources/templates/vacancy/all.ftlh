@@ -49,7 +49,19 @@
             <#if vacancies??>
                 <#list vacancies as item>
                     <div class="col">
-                        <div class="p-3 border bg-light"><p>${item.vacancyName}</p><p>${item.salary}</p><p>${item.dateTime}</p>
+                        <div class="p-3 border bg-light">
+                            <#if (item.vacancyName)??>
+                                <p>${item.vacancyName}</p>
+                            </#if>
+
+                            <#if (item.salary)??>
+                                <p>${item.salary}</p>
+                            </#if>
+
+                            <#if (item.dateTime)??>
+                                <p>${item.dateTime}</p>
+                            </#if>
+
                             <a href="/vacancy/${item.id}" class="btn btn-success d-flex justify-content-center">Подробно</a>
 
                         </div>

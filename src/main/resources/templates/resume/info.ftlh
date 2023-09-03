@@ -5,11 +5,9 @@
         <div class="main-body">
             <h2 class="text-primary fs-2 text-center"> Резюме пользователя:</h2>
             <#if user.email == viewer.email>
-                <div class="row text-center">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12 text-center">
                         <a class="btn btn-info mt-3 text-dark px-4" target="__blank" href="/resume/edit/${resume.id}">Редактировать</a>
                     </div>
-                </div>
             </#if>
 
             <!-- /Breadcrumb -->
@@ -185,6 +183,7 @@
 
         </div>
     </div>
+
     <style>
         body{
             margin-top:20px;

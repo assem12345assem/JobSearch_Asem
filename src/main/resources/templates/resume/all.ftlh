@@ -3,7 +3,8 @@
     <div class="container">
         <h1 class="my-3 text-center">Резюме</h1>
         <form class="d-flex m-5" method="post" action="/resume/all/search">
-            <input class="form-control me-2" type="search" placeholder="Поиск резюме по названию или ожидаемой зарплате" aria-label="Search" name="search">
+            <input class="form-control me-2" type="search" placeholder="Поиск резюме по названию или ожидаемой зарплате"
+                   aria-label="Search" name="search">
             <button class="btn btn-outline-success" type="submit">Поиск</button>
         </form>
         <div class="m-3">
@@ -29,7 +30,8 @@
                         <option value="Customer Service" class="form-brd-radius col-6">Customer Service</option>
                         <option value="Sales" class="form-brd-radius col-6">Sales</option>
                         <option value="Manufacturing" class="form-brd-radius col-6">Manufacturing</option>
-                        <option value="Media and Entertainment" class="form-brd-radius col-6">Media and Entertainment</option>
+                        <option value="Media and Entertainment" class="form-brd-radius col-6">Media and Entertainment
+                        </option>
                         <option value="Science" class="form-brd-radius col-6">Science</option>
                         <option value="Legal" class="form-brd-radius col-6">Legal</option>
                         <option value="Human Resources" class="form-brd-radius col-6">Human Resources</option>
@@ -61,9 +63,8 @@
                             <#if (item.dateTime)?has_content>
                                 <p>${item.dateTime}</p>
                             </#if>
-
-                            <a href="/resume/${item.id}" class="btn btn-success d-flex justify-content-center">Подробно</a>
-
+                            <a href="/resume/${item.id}"
+                               class="btn btn-success d-flex justify-content-center">Подробно</a>
                         </div>
                     </div>
                 </#list>
