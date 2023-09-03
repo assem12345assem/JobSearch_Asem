@@ -81,7 +81,7 @@ public class ResumeMVCController {
     public String deleteResume(@PathVariable Long id, Authentication auth) {
         UserDto u = authService.getAuthor(auth);
         resumeService.delete(id);
-        return "redirect:/auth/profile" + u.getEmail();
+        return "redirect:/auth/profile/" + u.getEmail();
     }
 
     @GetMapping("/all/view")

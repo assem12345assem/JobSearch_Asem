@@ -44,11 +44,11 @@ public class UserMVCController {
         return "/auth/login";
     }
 
-    @GetMapping("/profile")
-    public String profile(Model model, Authentication auth) {
+    @GetMapping("/profile/{username}")
+    public String profile(@PathVariable String username, Model model, Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        model.addAttribute("user", userService.getUserDtoLocalStorage(u.getEmail()));
-        ResponseEntity<?> responseEntity = userService.getProfileLocalStorage(u.getEmail());
+        model.addAttribute("user", userService.getUserDtoLocalStorage(username));
+        ResponseEntity<?> responseEntity = userService.getProfileLocalStorage(username);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             Object responseBody = responseEntity.getBody();

@@ -14,7 +14,7 @@
                 src="https://kit.fontawesome.com/198548d859.js"
                 crossorigin="anonymous"
         ></script>
-        <script type="text/javascript" src="/static/js/main.js"></script>
+        <script type="text/javascript" src="/static/scripts/main.js"></script>
     </head>
 
     <body>
@@ -49,7 +49,7 @@
                         user = SPRING_SECURITY_CONTEXT.authentication.principal
                         name = user.getUsername()
                         >
-                        <a href="/auth/profile" class="text-light m-2 m-sm-0" id="profile_page">Hi, ${name}</a>
+                        <a href="/auth/profile/${name}" class="text-light m-2 m-sm-0" id="profile_page">Hi, ${name}</a>
                         <a href="/logout" class="btn btn-outline-info m-2" id="logout">Logout</a>
                     <#else>
                         <a href="/auth/login" class="btn btn-outline-info m-2">SignIn</a>
