@@ -1,6 +1,5 @@
 package com.example.jobsearch.service;
 
-
 import com.example.jobsearch.dao.ApplicantDao;
 import com.example.jobsearch.dao.AuthorityDao;
 import com.example.jobsearch.dao.EmployerDao;
