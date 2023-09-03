@@ -151,9 +151,7 @@ public class VacancyService {
 
     public List<Vacancy> findAllByEmployer(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> {
-            throw new NoSuchElementException("Employer not found");
-        });
+        Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
         return vacancyRepository.findByEmployerId(e.getId());
     }
 
@@ -162,7 +160,7 @@ public class VacancyService {
             if (v.getDescription() == null) {
                 if (v.getCategory() == null) {
                     if (v.getSalary() == null) {
-                        vacancyRepository.delete(vacancyRepository.findById(v.getId()).orElseThrow(() -> {throw new NoSuchElementException("Vacancy does not exist.");}));
+                        vacancyRepository.delete(vacancyRepository.findById(v.getId()).orElseThrow(() -> new NoSuchElementException("Vacancy does not exist.")));
                     }
                 }
             }
@@ -171,7 +169,7 @@ public class VacancyService {
     }
 
     public void delete(Long id) {
-        vacancyRepository.delete(vacancyRepository.findById(id).orElseThrow(() -> {throw new NoSuchElementException("Vacancy does not exist.");}));
+        vacancyRepository.delete(vacancyRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Vacancy does not exist.")));
     }
 
     public List<VacancyDto> getAll() {

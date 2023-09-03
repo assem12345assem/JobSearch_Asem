@@ -37,8 +37,8 @@ public class UserService {
     private final ApplicantRepository applicantRepository;
     private final EmployerRepository employerRepository;
 
-    public void register(UserDto userDto) throws Exception {
-        User u = userRepository.findById(userDto.getEmail()).orElseThrow(() -> {throw new NoSuchElementException("User not found");});
+    public void register(UserDto userDto) {
+        User u = userRepository.findById(userDto.getEmail()).orElseThrow(() -> new NoSuchElementException("User not found"));
             userRepository.save(User.builder()
                     .email(userDto.getEmail())
                     .phoneNumber(userDto.getPhoneNumber())
