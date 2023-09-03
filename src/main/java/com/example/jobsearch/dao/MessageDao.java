@@ -1,6 +1,6 @@
 package com.example.jobsearch.dao;
 
-import com.example.demo.entity.Message;
+import com.example.jobsearch.model.Message;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

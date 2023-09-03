@@ -22,9 +22,9 @@
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPgCd93aiNba8lHWJYHQ1C1YwBPwcH_NUmw&usqp=CAU" alt="profile picture">
                                     </#if>
                                     <div class="mt-3">
-                                        <h4>${resume.profile.firstName} ${resume.profile.lastName}</h4>
+                                        <h4><#if (resume.profile.firstName)??>${resume.profile.firstName}</#if> <#if (resume.profile.lastName)??>${resume.profile.lastName}</#if></h4>
                                         <p class="text-secondary mb-1">Дата рождения:</p>
-                                        <p class="text-muted font-size-sm">${resume.profile.dateOfBirth}</p>
+                                        <p class="text-muted font-size-sm"><#if (resume.profile.dateOfBirth)??>${resume.profile.dateOfBirth}</#if></p>
                                     <a class="btn btn-success" href="/auth/edit/${user.email}">Редактировать профиль</a>
                                     </div>
                                 </div>

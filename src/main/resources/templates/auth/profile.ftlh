@@ -25,8 +25,8 @@
             </div>
             <!-- add resume button-->
             <div class="col-xl-3 d-flex align-items-center justify-content-center">
-                <div class="card-body text-center">
-                    <div>
+                <div class="card-body text-center d-flex ">
+                    <div class="mx-3">
                         <#if user.userType=="applicant">
                             <div class="text-center">
                                 <a href="/resume/add" class="btn btn-warning p-3">
@@ -42,8 +42,8 @@
                         </#if>
                     </div>
                     <div>
-                        <a href="/apply/messages" class="btn btn-warning p-4">
-                            Отклики <span class="badge bg-danger"> ${new_message_number} </span> <br>
+                        <a href="/apply/messages" class="btn btn-warning px-3 pb-4 pt-3">
+                            Отклики <span class="badge bg-danger pb-2"> ${new_message_number} </span>
                         </a>
                     </div>
                 </div>
@@ -63,18 +63,22 @@
                     <div>
                         <div class="mb-3">
                             <label class="small mb-1" for="inputUsername">Имя пользователя </label>
-                            <p class="form-control" id="inputUsername" type="text">${user.userName}</p>
+                            <p class="form-control" id="inputUsername" type="text">
+                                <#if (user.userName)??> ${user.userName} <#else> не указано </#if>
+                            </p>
                         </div>
                         <!-- Form Row        -->
                         <div class="mb-3">
                             <label class="small mb-1" for="inputPhone">Номер телефона</label>
-                            <p class="form-control" id="inputPhone" type="text">${user.phoneNumber}</p>
+                            <p class="form-control" id="inputPhone" type="text">
+                                <#if (user.phoneNumber)??>${user.phoneNumber}<#else >  не указано</#if>
+                                </p>
                         </div>
                         <!-- Form Row-->
                         <#if user.userType=="applicant">
-                            <#assign variable1 = applicantProfile.firstName!"Имя не указано">
-                            <#assign variable2 = applicantProfile.lastName!"Фамилия не указана">
-                            <#assign variable3 = applicantProfile.dateOfBirth!"Дата рождения не указана">
+                            <#assign variable1 = (applicantProfile.firstName)!"Имя не указано">
+                            <#assign variable2 = (applicantProfile.lastName)!"Фамилия не указана">
+                            <#assign variable3 = (applicantProfile.dateOfBirth)!"Дата рождения не указана">
                             <div class="row gx-3 mb-3">
                                 <div class="col-md-6">
                                     <label class="small mb-1" for="inputFirstName">Имя</label>

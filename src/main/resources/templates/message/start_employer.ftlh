@@ -66,6 +66,10 @@
                                 <small>Текст сообщения:</small>
                                 <input class="form-control" type="text" placeholder="текст сообщения"
                                        name="messageText">
+
+                               <p class="my-3"> Создайте вакансию, чтобы предложить её соискателю или выберите из списка ниже: </p>
+                                <a href="/vacancy/add" class="btn btn-info mb-3">Создать вакансию</a>
+
                                 <small>Предложенная вакансия</small>
 
                                 <#if (vacancies)??>
@@ -73,16 +77,13 @@
                                             aria-label="Default select example" name="vacancyId">
 
                                     <#list vacancies as vacancy>
-                                        Выберите вакансию из списка:
-                                            <option value="${vacancy.id}" class="form-brd-radius col-6">
+                                        <option selected>Выберите вакансию из списка: </option>
+                                        <option value="${vacancy.id}" class="form-brd-radius col-6">
                                                 ${vacancy.vacancyName}</option>
                                     </#list>
                                     </select>
 
-                                <#else>
-                                    Создайте вакансию, чтобы предложить её соискателю:
-                                    <a href="vacancy/add" class="btn btn-info">Создать вакансию</a>
-                                </#if>
+                                       </#if>
 
                                 <button type="submit" class="btn btn-primary"> Отправить </button>
                             </form>

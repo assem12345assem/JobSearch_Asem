@@ -1,8 +1,9 @@
 package com.example.jobsearch.service;
 
-import com.example.demo.dao.*;
-import com.example.demo.dto.*;
-import com.example.demo.entity.*;
+
+import com.example.jobsearch.dao.*;
+import com.example.jobsearch.dto.*;
+import com.example.jobsearch.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -85,7 +86,7 @@ private void cleanEmptyTemplate(Resume r) {
                 .collect(Collectors.toList());
         var contactInfoVar = contactInfoDao.findByResumeId(resume.getId());
         ContactInfo contactInfo;
-        ContactInfoDto  c;
+        ContactInfoDto c;
         if(contactInfoVar.isEmpty()) c = null;
         else {
             contactInfo = contactInfoVar.get();

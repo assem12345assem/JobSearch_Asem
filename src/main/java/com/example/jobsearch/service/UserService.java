@@ -1,16 +1,17 @@
 package com.example.jobsearch.service;
 
-import com.example.demo.dao.ApplicantDao;
-import com.example.demo.dao.AuthorityDao;
-import com.example.demo.dao.EmployerDao;
-import com.example.demo.dao.UserDao;
-import com.example.demo.dto.ApplicantDto;
-import com.example.demo.dto.EditProfileDto;
-import com.example.demo.dto.EmployerDto;
-import com.example.demo.dto.UserDto;
-import com.example.demo.entity.Applicant;
-import com.example.demo.entity.Employer;
-import com.example.demo.entity.User;
+
+import com.example.jobsearch.dao.ApplicantDao;
+import com.example.jobsearch.dao.AuthorityDao;
+import com.example.jobsearch.dao.EmployerDao;
+import com.example.jobsearch.dao.UserDao;
+import com.example.jobsearch.dto.ApplicantDto;
+import com.example.jobsearch.dto.EditProfileDto;
+import com.example.jobsearch.dto.EmployerDto;
+import com.example.jobsearch.dto.UserDto;
+import com.example.jobsearch.model.Applicant;
+import com.example.jobsearch.model.Employer;
+import com.example.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.example.jobsearch.dao;
 
-import com.example.demo.entity.Education;
+import com.example.jobsearch.model.Education;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

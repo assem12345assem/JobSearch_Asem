@@ -62,27 +62,26 @@
                             <form action="/apply/forjob/${vacancy.id}" method="post">
                                 <input type="hidden" name="vacancyId" value="${vacancy.id}">
                                 <small>Текст сообщения:</small>
-                                <input class="form-control" type="text" placeholder="текст сообщения"
+                                <input class="form-control mb-2" type="text" placeholder="текст сообщения"
                                        name="messageText">
-                                <small>Резюме</small>
-
-                                <#if (resumes)??>
+                                <p class="mb-3">Создайте резюме, чтобы откликнуться на вакансию или выберите из списка:</p>
+                                <a href="/resume/add" class="btn btn-info my-3">Создать резюме</a>
+                                <#if (resumes)?? >
                                     <select class="form-select border-dark"
                                             aria-label="Default select example" name="resumeId">
 
                                     <#list resumes as resume>
-                                        Выберите резюме из списка:
+                                        <small>Резюме</small>
+                                        <option selected> Выберите резюме из списка:</option>
                                             <option value="${resume.id}" class="form-brd-radius col-6">
                                                 ${resume.resumeTitle}</option>
                                     </#list>
                                     </select>
 
-                                <#else>
-                                    Создайте резюме, чтобы откликнуться на вакансию:
-                                    <a href="resume/add" class="btn btn-info">Создать резюме</a>
+
                                 </#if>
 
-                                <button type="submit" class="btn btn-primary"> Отправить </button>
+                                <button type="submit" class="btn btn-primary my-3"> Отправить </button>
                             </form>
                         </div>
                     </div>

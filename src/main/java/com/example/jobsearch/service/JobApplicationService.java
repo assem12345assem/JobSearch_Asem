@@ -1,11 +1,12 @@
 package com.example.jobsearch.service;
 
-import com.example.demo.dao.JobApplicationDao;
-import com.example.demo.dao.MessageDao;
-import com.example.demo.dto.*;
-import com.example.demo.entity.JobApplication;
-import com.example.demo.entity.Message;
-import com.example.demo.entity.Vacancy;
+
+import com.example.jobsearch.dao.JobApplicationDao;
+import com.example.jobsearch.dao.MessageDao;
+import com.example.jobsearch.dto.*;
+import com.example.jobsearch.model.JobApplication;
+import com.example.jobsearch.model.Message;
+import com.example.jobsearch.model.Vacancy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

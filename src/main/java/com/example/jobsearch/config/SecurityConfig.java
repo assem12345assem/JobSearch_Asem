@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.jobsearch.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

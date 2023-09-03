@@ -1,10 +1,10 @@
-package com.example.demo.controller;
+package com.example.jobsearch.controller;
 
-import com.example.demo.dto.UserDto;
-import com.example.demo.dto.VacancyDto;
-import com.example.demo.service.AuthService;
-import com.example.demo.service.UserService;
-import com.example.demo.service.VacancyService;
+import com.example.jobsearch.dto.UserDto;
+import com.example.jobsearch.dto.VacancyDto;
+import com.example.jobsearch.service.AuthService;
+import com.example.jobsearch.service.UserService;
+import com.example.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;

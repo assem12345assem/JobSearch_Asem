@@ -1,7 +1,7 @@
 package com.example.jobsearch.service;
 
-import com.example.demo.dao.UserDao;
-import com.example.demo.dto.UserDto;
+import com.example.jobsearch.dao.UserDao;
+import com.example.jobsearch.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -18,17 +18,10 @@ public class AuthService {
 
     public UserDto getAuthor(Authentication auth) {
         User user = (User) auth.getPrincipal();
-        com.example.demo.entity.User fromDao = userDao.find(user.getUsername()).orElseThrow(() -> {
+        com.example.jobsearch.model.User fromDao = userDao.find(user.getUsername()).orElseThrow(() -> {
             log.warn("User not found: {}", user.getUsername());
             return new NoSuchElementException("User not found.");
         });
-        return UserDto.builder()
-                .email(fromDao.getEmail())
-                .phoneNumber(fromDao.getPhoneNumber())
-                .userName(fromDao.getUserName())
-                .userType(fromDao.getUserType())
-                .password(fromDao.getPassword())
-                .photo(fromDao.getPhoto())
-                .build();
+        return UserDto.builder().email(fromDao.getEmail()).phoneNumber(fromDao.getPhoneNumber()).userName(fromDao.getUserName()).userType(fromDao.getUserType()).password(fromDao.getPassword()).photo(fromDao.getPhoto()).build();
     }
 }

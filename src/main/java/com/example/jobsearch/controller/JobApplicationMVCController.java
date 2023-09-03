@@ -1,5 +1,11 @@
 package com.example.jobsearch.controller;
 
+import com.example.jobsearch.dto.FirstJobApplicationDto;
+import com.example.jobsearch.dto.MessageDto;
+import com.example.jobsearch.service.AuthService;
+import com.example.jobsearch.service.JobApplicationService;
+import com.example.jobsearch.service.ResumeService;
+import com.example.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;

@@ -1,10 +1,11 @@
-package com.example.demo.controller;
+package com.example.jobsearch.controller;
 
-import com.example.demo.dto.ApplicantDto;
-import com.example.demo.dto.EditProfileDto;
-import com.example.demo.dto.EmployerDto;
-import com.example.demo.dto.UserDto;
-import com.example.demo.service.*;
+import com.example.jobsearch.dto.ApplicantDto;
+import com.example.jobsearch.dto.EditProfileDto;
+import com.example.jobsearch.dto.EmployerDto;
+import com.example.jobsearch.dto.UserDto;
+import com.example.jobsearch.service.*;
+import com.example.jobsearch.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -52,12 +53,12 @@ public class UserMVCController {
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             Object responseBody = responseEntity.getBody();
             if (responseBody instanceof ApplicantDto) {
-                model.addAttribute("applicantProfile", (ApplicantDto) responseBody);
+                model.addAttribute("applicantProfile", responseBody);
                 Long applicantId = ((ApplicantDto) responseBody).getId();
                 model.addAttribute("myList", resumeService.findSummaryByApplicantId(applicantId));
             }
             if (responseBody instanceof EmployerDto) {
-                model.addAttribute("employerProfile", (EmployerDto) responseBody);
+                model.addAttribute("employerProfile", responseBody);
                 Long employerId = ((EmployerDto) responseBody).getId();
                 model.addAttribute("myList", vacancyService.findSummaryByEmployerId(employerId));
             }
@@ -75,10 +76,10 @@ public class UserMVCController {
             Object responseBody = responseEntity.getBody();
 
             if (responseBody instanceof ApplicantDto) {
-                model.addAttribute("applicantProfile", (ApplicantDto) responseBody);
+                model.addAttribute("applicantProfile", responseBody);
             }
             if (responseBody instanceof EmployerDto) {
-                model.addAttribute("employerProfile", (EmployerDto) responseBody);
+                model.addAttribute("employerProfile", responseBody);
             }
         }        return "auth/edit";
     }
