@@ -5,7 +5,6 @@ import com.example.jobsearch.dto.EditProfileDto;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.service.*;
-import com.example.jobsearch.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -46,7 +45,6 @@ public class UserMVCController {
 
     @GetMapping("/profile/{username}")
     public String profile(@PathVariable String username, Model model, Authentication auth) {
-        UserDto u = authService.getAuthor(auth);
         model.addAttribute("user", userService.getUserDtoLocalStorage(username));
         ResponseEntity<?> responseEntity = userService.getProfileLocalStorage(username);
 

@@ -1,7 +1,7 @@
 package com.example.jobsearch.service;
 
-import com.example.jobsearch.dao.UserDao;
 import com.example.jobsearch.dto.UserDto;
+import com.example.jobsearch.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -14,11 +14,11 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
     public UserDto getAuthor(Authentication auth) {
         User user = (User) auth.getPrincipal();
-        com.example.jobsearch.model.User fromDao = userDao.find(user.getUsername()).orElseThrow(() -> {
+        com.example.jobsearch.entity.User fromDao = userRepository.findById(user.getUsername()).orElseThrow(() -> {
             log.warn("User not found: {}", user.getUsername());
             return new NoSuchElementException("User not found.");
         });

@@ -1,16 +1,18 @@
 package com.example.jobsearch.service;
 
-import com.example.jobsearch.dao.ApplicantDao;
-import com.example.jobsearch.dao.AuthorityDao;
-import com.example.jobsearch.dao.EmployerDao;
-import com.example.jobsearch.dao.UserDao;
+
 import com.example.jobsearch.dto.ApplicantDto;
 import com.example.jobsearch.dto.EditProfileDto;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.dto.UserDto;
-import com.example.jobsearch.model.Applicant;
-import com.example.jobsearch.model.Employer;
-import com.example.jobsearch.model.User;
+import com.example.jobsearch.entity.Applicant;
+import com.example.jobsearch.entity.Authority;
+import com.example.jobsearch.entity.Employer;
+import com.example.jobsearch.entity.User;
+import com.example.jobsearch.repository.ApplicantRepository;
+import com.example.jobsearch.repository.AuthorityRepository;
+import com.example.jobsearch.repository.EmployerRepository;
+import com.example.jobsearch.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,17 +30,16 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserDao userDao;
     private final PasswordEncoder encoder;
-    private final AuthorityDao authorityDao;
-    private final EmployerDao employerDao;
-    private final ApplicantDao applicantDao;
+    private final UserRepository userRepository;
     private final FileService fileService;
+    private final AuthorityRepository authorityRepository;
+    private final ApplicantRepository applicantRepository;
+    private final EmployerRepository employerRepository;
 
-    public void register(UserDto userDto) throws Exception {
-        var u = userDao.find(userDto.getEmail());
-        if (u.isEmpty()) {
-            userDao.saveUser(User.builder()
+    public void register(UserDto userDto) {
+        User u = userRepository.findById(userDto.getEmail()).orElseThrow(() -> new NoSuchElementException("User not found"));
+            userRepository.save(User.builder()
                     .email(userDto.getEmail())
                     .phoneNumber(userDto.getPhoneNumber())
                     .userName(userDto.getUserName())
@@ -47,28 +48,32 @@ public class UserService {
                     .photo(userDto.getPhoto())
                     .enabled(Boolean.TRUE)
                     .build());
-            authorityDao.save(userDto.getUserType().toUpperCase(), userDto.getEmail());
+            authorityRepository.save(Authority.builder()
+                    .authority(userDto.getUserType().toUpperCase())
+                    .user(u).build());
             if (userDto.getUserType().equalsIgnoreCase("applicant")) {
-                applicantDao.createAtRegister(userDto.getEmail());
+                applicantRepository.save(Applicant.builder()
+                                .user(u)
+                        .build());
             }
             if (userDto.getUserType().equalsIgnoreCase("employer")) {
-                employerDao.createAtRegister(userDto.getEmail());
+                employerRepository.save(Employer.builder()
+                                .user(u)
+                        .build());
             }
-        } else {
-            throw new Exception("User already exists");
-        }
+
     }
     public UserDto getUserDto(Authentication auth) {
         org.springframework.security.core.userdetails.User userAuth = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
-        User user = userDao.find(userAuth.getUsername()).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userRepository.findById(userAuth.getUsername()).orElseThrow(() -> new NoSuchElementException("User not found"));
         return makeDtoFromUser(user);
     }
     public UserDto getUserDtoLocalStorage(String email) {
-        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
         return makeDtoFromUser(user);
     }
     public UserDto getUserDtoTest(String email) {
-        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
         return makeDtoFromUser(user);
     }
     private ApplicantDto makeDtoFromApplicant(Applicant a) {
@@ -80,7 +85,7 @@ public class UserService {
                 .build();
     }
     private Applicant getApplicantByEmail (String email) {
-        return applicantDao.findByEmail(email).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+        return applicantRepository.findByUserEmail(email).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
     }
     public ResponseEntity<?> getProfile (Authentication auth) {
         UserDto u = getUserDto(auth);
@@ -88,7 +93,7 @@ public class UserService {
             Applicant a = getApplicantByEmail(u.getEmail());
             return new ResponseEntity<>(makeDtoFromApplicant(a), HttpStatus.OK);
         } else {
-            Employer e = employerDao.findByEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+            Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
         return new ResponseEntity<>(EmployerDto.builder().id(e.getId())
                 .companyName(e.getCompanyName()).build(), HttpStatus.OK);
         }
@@ -110,13 +115,13 @@ public class UserService {
             Applicant a = getApplicantByEmail(u.getEmail());
             return new ResponseEntity<>(makeDtoFromApplicant(a), HttpStatus.OK);
         } else {
-            Employer e = employerDao.findByEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+            Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
             return new ResponseEntity<>(EmployerDto.builder().id(e.getId())
                     .companyName(e.getCompanyName()).build(), HttpStatus.OK);
         }
     }
     public ResponseEntity<?> getPhoto(String email) {
-        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
         if(!((user.getPhoto() == null) && !user.getPhoto().isEmpty())){
             String extension = getFileExtension(user.getPhoto());
             if (extension != null && extension.equalsIgnoreCase("png")) {
@@ -138,13 +143,14 @@ public class UserService {
     }
 
     public void uploadUserPhoto(String email, MultipartFile file) {
-        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
         String fileName = fileService.saveUploadedFile(file, "images");
-        userDao.savePhoto(email, fileName);
+        user.setPhoto(fileName);
+        userRepository.save(user);
     }
 
     public void editProfile(String email, EditProfileDto editProfileDto) {
-        User user = userDao.find(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
         if (!(editProfileDto.getPhoneNumber().isEmpty() || editProfileDto.getPhoneNumber() == null)) {
             user.setPhoneNumber(editProfileDto.getPhoneNumber());
         }
@@ -153,9 +159,9 @@ public class UserService {
             user.setUserName(editProfileDto.getUserName());
         }
 
-        userDao.update(user);
+        userRepository.save(user);
         if(user.getUserType().equalsIgnoreCase("applicant")) {
-            Applicant a = applicantDao.findByEmail(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+            Applicant a = applicantRepository.findByUserEmail(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
             if (!editProfileDto.getFirstName().isEmpty() && editProfileDto.getFirstName() != null) {
                 a.setFirstName(editProfileDto.getFirstName());
             }
@@ -169,13 +175,13 @@ public class UserService {
                 a.setDateOfBirth(dateOfBirth);
             }
 
-            applicantDao.update(a);
+            applicantRepository.save(a);
         } else{
-            Employer e = employerDao.findByEmail(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+            Employer e = employerRepository.findByUserEmail(user.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
             if (!editProfileDto.getCompanyName().isEmpty() && editProfileDto.getCompanyName() != null) {
                 e.setCompanyName(editProfileDto.getCompanyName());
             }
-employerDao.update(e);
+employerRepository.save(e);
         }
     }
 }

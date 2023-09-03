@@ -189,7 +189,7 @@ databaseChangeLog:
                   type: varchar(50)
               - column:
                   name: responsibilities
-                  type: text
+                  type: varchar(255)
         - createTable:
             tableName: contact_info
             columns:

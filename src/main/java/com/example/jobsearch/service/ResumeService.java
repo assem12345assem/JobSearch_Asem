@@ -1,9 +1,9 @@
 package com.example.jobsearch.service;
 
 
-import com.example.jobsearch.dao.*;
 import com.example.jobsearch.dto.*;
-import com.example.jobsearch.model.*;
+import com.example.jobsearch.entity.*;
+import com.example.jobsearch.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -20,28 +20,28 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ResumeService {
-    private final ResumeDao resumeDao;
-    private final WorkExperienceDao workExperienceDao;
-    private final EducationDao educationDao;
-    private final ContactInfoDao contactInfoDao;
-    private final ApplicantDao applicantDao;
+    private final ResumeRepository resumeRepository;
+    private final WorkExperienceRepository workExperienceRepository;
+    private final EducationRepository educationRepository;
+    private final ContactInfoRepository contactInfoRepository;
+    private final ApplicantRepository applicantRepository;
     private final UserService userService;
     private final AuthService authService;
 
     private Resume findById(Long resumeId) {
-        return resumeDao.find(resumeId).orElseThrow(() -> {
+        return resumeRepository.findById(resumeId).orElseThrow(() -> {
             log.warn("Resume not found: {}", resumeId);
             return new NoSuchElementException("Resume not found");
         });
     }
 
     public List<SummaryDto> findSummaryByApplicantId(Long applicantId) {
-        List<Resume> applicantResumes = resumeDao.findByApplicantId(applicantId);
+        List<Resume> applicantResumes = resumeRepository.findByApplicantId(applicantId);
         List<SummaryDto> list = new ArrayList<>();
-        for(Resume r: applicantResumes) {
+        for (Resume r : applicantResumes) {
             cleanEmptyTemplate(r);
         }
-        List<Resume> applicantResumes2 = resumeDao.findByApplicantId(applicantId);
+        List<Resume> applicantResumes2 = resumeRepository.findByApplicantId(applicantId);
 
         for (Resume r :
                 applicantResumes2) {
@@ -54,18 +54,20 @@ public class ResumeService {
         }
         return list;
     }
-private void cleanEmptyTemplate(Resume r) {
-    if (r.getResumeTitle() == null) {
-        if (r.getExpectedSalary() == null) {
-            if (r.getCategory() == null) {
-                resumeDao.delete(r.getId());
+
+    private void cleanEmptyTemplate(Resume r) {
+        if (r.getResumeTitle() == null) {
+            if (r.getExpectedSalary() == null) {
+                if (r.getCategory() == null) {
+                    resumeRepository.delete(r);
+                }
             }
         }
+
     }
 
-}
     private ResumeDto makeDtoFromResume(Resume resume) {
-        List<WorkExperienceDto> w = workExperienceDao.findByResumeId(resume.getId()).stream()
+        List<WorkExperienceDto> w = workExperienceRepository.findByResumeId(resume.getId()).stream()
                 .map(e -> WorkExperienceDto.builder()
                         .id(e.getId())
                         .dateStart(e.getDateStart())
@@ -75,7 +77,7 @@ private void cleanEmptyTemplate(Resume r) {
                         .responsibilities(e.getResponsibilities())
                         .build())
                 .collect(Collectors.toList());
-        List<EducationDto> e = educationDao.findByResumeId(resume.getId()).stream()
+        List<EducationDto> e = educationRepository.findByResumeId(resume.getId()).stream()
                 .map(education -> EducationDto.builder()
                         .id(education.getId())
                         .education(education.getEducation())
@@ -84,13 +86,13 @@ private void cleanEmptyTemplate(Resume r) {
                         .graduationDate(education.getGraduationDate())
                         .build())
                 .collect(Collectors.toList());
-        var contactInfoVar = contactInfoDao.findByResumeId(resume.getId());
+        var contactInfoVar = contactInfoRepository.findByResumeId(resume.getId());
         ContactInfo contactInfo;
         ContactInfoDto c;
-        if(contactInfoVar.isEmpty()) c = null;
+        if (contactInfoVar.isEmpty()) c = null;
         else {
             contactInfo = contactInfoVar.get();
-              c = ContactInfoDto.builder()
+            c = ContactInfoDto.builder()
                     .telegram(contactInfo.getTelegram())
                     .email(contactInfo.getEmail())
                     .phoneNumber(contactInfo.getPhoneNumber())
@@ -98,7 +100,7 @@ private void cleanEmptyTemplate(Resume r) {
                     .linkedIn(contactInfo.getLinkedIn())
                     .build();
         }
-        Applicant a = applicantDao.find(resume.getApplicantId()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+        Applicant a = applicantRepository.findById(resume.getApplicant().getId()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         ApplicantDto applicantDto = ApplicantDto.builder()
                 .firstName(a.getFirstName())
                 .lastName(a.getLastName())
@@ -108,7 +110,7 @@ private void cleanEmptyTemplate(Resume r) {
                 .id(resume.getId())
                 .profile(applicantDto)
                 .resumeTitle(resume.getResumeTitle())
-                .category(resume.getCategory())
+                .category(resume.getCategory().getCategory())
                 .expectedSalary(resume.getExpectedSalary())
                 .isActive(Boolean.TRUE)
                 .isPublished(Boolean.TRUE)
@@ -127,23 +129,22 @@ private void cleanEmptyTemplate(Resume r) {
 
     public void edit(Long id, ResumeDto resumeDto, Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Applicant a = applicantDao.findByEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+        Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         Resume r = findById(id);
-        resumeDao.update(Resume.builder()
+        Resume updatedResume = resumeRepository.save(Resume.builder()
                 .id(r.getId())
-                .applicantId(a.getId())
+                .applicant(a)
                 .resumeTitle(resumeDto.getResumeTitle())
-                .category(resumeDto.getCategory())
+                .category(Category.builder().category(resumeDto.getCategory()).build())
                 .expectedSalary(resumeDto.getExpectedSalary())
                 .isActive(Boolean.TRUE)
                 .isPublished(Boolean.TRUE)
                 .dateTime(LocalDateTime.now())
                 .build());
-        var contactInfoVar = contactInfoDao.findByResumeId(r.getId());
-        Long c_id;
-        if(contactInfoVar.isEmpty()) {
-            c_id = contactInfoDao.save(ContactInfo.builder()
-                            .resumeId(id)
+        var contactInfoVar = contactInfoRepository.findByResumeId(r.getId());
+        if (contactInfoVar.isEmpty()) {
+            contactInfoRepository.save(ContactInfo.builder()
+                    .resume(updatedResume)
                     .telegram(null)
                     .email(null)
                     .phoneNumber(null)
@@ -152,12 +153,10 @@ private void cleanEmptyTemplate(Resume r) {
                     .build());
 
         }
-        else {
-           c_id = contactInfoVar.get().getId();
-        }
-        contactInfoDao.update(ContactInfo.builder()
-                .id(c_id)
-                .resumeId(id)
+
+        contactInfoRepository.save(ContactInfo.builder()
+                .id(contactInfoVar.get().getId())
+                .resume(updatedResume)
                 .telegram(resumeDto.getContact().getTelegram())
                 .email(resumeDto.getContact().getEmail())
                 .phoneNumber(resumeDto.getContact().getPhoneNumber())
@@ -168,8 +167,8 @@ private void cleanEmptyTemplate(Resume r) {
 
     public void addOneWork(Long resumeId, WorkExperienceDto workExperienceDto) {
         Resume r = findById(resumeId);
-        workExperienceDao.save(WorkExperience.builder()
-                .resumeId(r.getId())
+        workExperienceRepository.save(WorkExperience.builder()
+                .resume(r)
                 .dateStart(workExperienceDto.getDateStart())
                 .dateEnd(workExperienceDto.getDateEnd())
                 .companyName(workExperienceDto.getCompanyName())
@@ -180,8 +179,8 @@ private void cleanEmptyTemplate(Resume r) {
 
     public void addOneEducation(Long resumeId, EducationDto educationDto) {
         Resume r = findById(resumeId);
-        educationDao.save(Education.builder()
-                .resumeId(r.getId())
+        educationRepository.save(Education.builder()
+                .resume(r)
                 .education(educationDto.getEducation())
                 .schoolName(educationDto.getSchoolName())
                 .startDate(educationDto.getStartDate())
@@ -190,35 +189,35 @@ private void cleanEmptyTemplate(Resume r) {
     }
 
     public Long deleteOneWork(Long workExperienceId) {
-        WorkExperience w = workExperienceDao.find(workExperienceId).orElseThrow(() -> {
+        WorkExperience w = workExperienceRepository.findById(workExperienceId).orElseThrow(() -> {
             log.warn("Work experience not found: {}", workExperienceId);
             return new NoSuchElementException("Work experience not found");
         });
-        workExperienceDao.delete(w.getId());
-        return w.getResumeId();
+        workExperienceRepository.delete(w);
+        return w.getResume().getId();
     }
 
     public Long deleteOneEducation(Long educationId) {
-        Education e = educationDao.find(educationId).orElseThrow(() -> {
+        Education e = educationRepository.findById(educationId).orElseThrow(() -> {
             log.warn("Education not found: {}", educationId);
             return new NoSuchElementException("Education not found");
         });
-        educationDao.delete(e.getId());
-        return e.getResumeId();
+        educationRepository.delete(e);
+        return e.getResume().getId();
     }
 
     public ResumeDto newResume(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Applicant a = applicantDao.findByEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+        Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         ApplicantDto applicantDto = ApplicantDto.builder()
                 .firstName(a.getFirstName())
                 .lastName(a.getLastName())
                 .dateOfBirth(a.getDateOfBirth())
                 .build();
-        Long newResumeId = resumeDao.save(Resume.builder()
-                .applicantId(a.getId())
+        Resume newResume = resumeRepository.save(Resume.builder()
+                .applicant(a)
                 .resumeTitle(null)
-                .category("Other")
+                .category(Category.builder().category("Other").build())
                 .expectedSalary(0)
                 .isActive(false)
                 .isPublished(false)
@@ -226,12 +225,12 @@ private void cleanEmptyTemplate(Resume r) {
                 .build());
 
 
-        Resume r = findById(newResumeId);
+        Resume r = findById(newResume.getId());
         return ResumeDto.builder()
-                .id(newResumeId)
+                .id(r.getId())
                 .profile(applicantDto)
                 .resumeTitle(r.getResumeTitle())
-                .category(r.getCategory())
+                .category(r.getCategory().getCategory())
                 .expectedSalary(r.getExpectedSalary())
                 .isActive(Boolean.TRUE)
                 .isPublished(Boolean.TRUE)
@@ -244,9 +243,9 @@ private void cleanEmptyTemplate(Resume r) {
 
     public void dateFix(Long id) {
         Resume r = findById(id);
-        resumeDao.update(Resume.builder()
+        resumeRepository.save(Resume.builder()
                 .id(r.getId())
-                .applicantId(r.getApplicantId())
+                .applicant(r.getApplicant())
                 .resumeTitle(r.getResumeTitle())
                 .category(r.getCategory())
                 .expectedSalary(r.getExpectedSalary())
@@ -258,23 +257,25 @@ private void cleanEmptyTemplate(Resume r) {
 
     public UserDto getResumeOwner(Long id) {
         Resume r = findById(id);
-        Applicant a = applicantDao.find(r.getApplicantId()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
-        return userService.getUserDtoLocalStorage(a.getUserId());
+        Applicant a = r.getApplicant();
+        return userService.getUserDtoLocalStorage(a.getUser().getEmail());
     }
 
     public List<ResumeDto> findAllByApplicant(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Applicant a = applicantDao.findByEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
-        List<Resume> list = resumeDao.findByApplicantId(a.getId());
+        Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+        List<Resume> list = resumeRepository.findByApplicantId(a.getId());
         return list.stream().map(this::makeDtoFromResume).toList();
     }
 
     public void delete(Long id) {
-        resumeDao.delete(id);
+        resumeRepository.delete(resumeRepository.findById(id).orElseThrow(() ->
+            new NoSuchElementException("Resume does not exist")));
+
     }
 
     public List<ResumeDto> getAll() {
-        List<Resume> resumes = resumeDao.getAll();
+        List<Resume> resumes = resumeRepository.findAll();
         return resumes.stream().map(this::makeDtoFromResume).toList();
     }
 
@@ -282,15 +283,15 @@ private void cleanEmptyTemplate(Resume r) {
         List<ResumeDto> r = getAll();
         String search = searchWord.toLowerCase();
         List<ResumeDto> searchResult = new ArrayList<>();
-        for (ResumeDto resume:
-               r) {
-            if(resume.getResumeTitle() !=null) {
-                if(resume.getResumeTitle().toLowerCase().contains(search)) {
+        for (ResumeDto resume :
+                r) {
+            if (resume.getResumeTitle() != null) {
+                if (resume.getResumeTitle().toLowerCase().contains(search)) {
                     searchResult.add(resume);
                 }
             }
-            if(resume.getExpectedSalary() != null) {
-                if(resume.getExpectedSalary().toString().contains(search)) {
+            if (resume.getExpectedSalary() != null) {
+                if (resume.getExpectedSalary().toString().contains(search)) {
                     searchResult.add(resume);
                 }
             }
@@ -302,9 +303,9 @@ private void cleanEmptyTemplate(Resume r) {
         List<ResumeDto> r = getAll();
         List<ResumeDto> notEmptyField = new ArrayList<>();
         List<ResumeDto> emptyField = new ArrayList<>();
-        for (ResumeDto resume:
+        for (ResumeDto resume :
                 r) {
-            if(resume.getDateTime() == null) {
+            if (resume.getDateTime() == null) {
                 emptyField.add(resume);
             } else {
                 notEmptyField.add(resume);
@@ -320,10 +321,10 @@ private void cleanEmptyTemplate(Resume r) {
     public List<ResumeDto> filterByCategory(String category) {
         List<ResumeDto> r = getAll();
         List<ResumeDto> r2 = new ArrayList<>();
-        for (ResumeDto resume:
-                r ) {
-            if(resume.getCategory() != null) {
-                if(resume.getCategory().equalsIgnoreCase(category)) {
+        for (ResumeDto resume :
+                r) {
+            if (resume.getCategory() != null) {
+                if (resume.getCategory().equalsIgnoreCase(category)) {
                     r2.add(resume);
                 }
             }
@@ -337,7 +338,7 @@ private void cleanEmptyTemplate(Resume r) {
         List<SummaryDto> summaryDtos = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             summaryDtos.add(SummaryDto.builder()
-                    .id((long)i)
+                    .id((long) i)
                     .title(l.get(i).getResumeTitle())
                     .dateTime(l.get(i).getDateTime())
                     .build());
