@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/vacancy")
 @RequiredArgsConstructor
@@ -64,38 +66,63 @@ public class VacancyMVCController {
         return "redirect:/auth/profile/" + u.getEmail();
     }
     @GetMapping("/all/view")
-    public String viewAll(Model model) {
-        model.addAttribute("vacancies", vacancyService.getAll());
+    public String viewAll(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
+                          @RequestParam(name = "sort", defaultValue = "id") String sort,
+                          @RequestParam(name = "category", defaultValue = "default") String category,
+                          Model model) {
+        int pageSize = 6; // Number of vacancies per page
+        String sortCriteria = sort;
+        int totalVacancies = vacancyService.getTotalVacanciesCount();
+        int totalPages = (int) Math.ceil((double) totalVacancies / pageSize); // Calculate total pages
+        model.addAttribute("vacancies", vacancyService.getAll(sort, pageNumber, pageSize, category));
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("sortCriteria", sortCriteria);
+        model.addAttribute("category", category);
         return "vacancy/all";
     }
 
-    @GetMapping("/all/by_date")
-    public String viewAllByDate(Model model) {
-        model.addAttribute("vacancies", vacancyService.getAllByDate());
-        return "vacancy/all";
-    }
+
+//    @GetMapping("/all/by_date")
+//    public String viewAllByDate(Model model) {
+//        model.addAttribute("vacancies", vacancyService.getAllByDate());
+//        return "vacancy/all";
+//    }
+//    @GetMapping("/all/by_date_reversed")
+//    public String viewAllByDateReversed(Model model) {
+//        model.addAttribute("vacancies", vacancyService.getAllByDateReversed());
+//        return "vacancy/all";
+//    }
+
     @GetMapping("/all/by_date_reversed")
-    public String viewAllByDateReversed(Model model) {
-        model.addAttribute("vacancies", vacancyService.getAllByDateReversed());
-        return "vacancy/all";
-    }
-    @GetMapping("/all/by_salary")
-    public String viewAllBySalary(Model model) {
-        model.addAttribute("vacancies", vacancyService.getAllBySalary());
-        return "vacancy/all";
-    }
-    @PostMapping("/all/search")
-    public String searchVacancy(@RequestParam(name="search") String search, Model model ) {
-        model.addAttribute("vacancies", vacancyService.searchResult(search));
-        return "vacancy/all";
+    public String viewAllByDateReversed(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber, Model model) {
+        int pageSize = 6; // Number of vacancies per page
 
-    }
+        int totalVacancies = vacancyService.getTotalVacanciesCount();
+        int totalPages = (int) Math.ceil((double) totalVacancies / pageSize); // Calculate total pages
 
-
-    @GetMapping("/all/by_category")
-    public String filterByCategory(@RequestParam(name="category") String category, Model model ){
-        model.addAttribute("vacancies", vacancyService.filterByCategory(category));
+        model.addAttribute("vacancies", vacancyService.getAllByDateReversed("dateTime", pageNumber, pageSize));
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", totalPages);
         return "vacancy/all";
     }
+//    @GetMapping("/all/by_salary")
+//    public String viewAllBySalary(Model model) {
+//        model.addAttribute("vacancies", vacancyService.getAllBySalary());
+//        return "vacancy/all";
+//    }
+//    @PostMapping("/all/search")
+//    public String searchVacancy(@RequestParam(name="search") String search, Model model ) {
+//        model.addAttribute("vacancies", vacancyService.searchResult(search));
+//        return "vacancy/all";
+//
+//    }
+//
+//
+//    @GetMapping("/all/by_category")
+//    public String filterByCategory(@RequestParam(name="category") String category, Model model ){
+//        model.addAttribute("vacancies", vacancyService.filterByCategory(category));
+//        return "vacancy/all";
+//    }
 
 }

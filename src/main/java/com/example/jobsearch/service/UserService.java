@@ -38,8 +38,9 @@ public class UserService {
     private final EmployerRepository employerRepository;
 
     public void register(UserDto userDto) {
-        User u = userRepository.findById(userDto.getEmail()).orElseThrow(() -> new NoSuchElementException("User not found"));
-            userRepository.save(User.builder()
+        var u = userRepository.findById(userDto.getEmail());
+        if(u.isEmpty()) {
+         User user =   userRepository.save(User.builder()
                     .email(userDto.getEmail())
                     .phoneNumber(userDto.getPhoneNumber())
                     .userName(userDto.getUserName())
@@ -50,17 +51,20 @@ public class UserService {
                     .build());
             authorityRepository.save(Authority.builder()
                     .authority(userDto.getUserType().toUpperCase())
-                    .user(u).build());
+                    .user(user).build());
             if (userDto.getUserType().equalsIgnoreCase("applicant")) {
                 applicantRepository.save(Applicant.builder()
-                                .user(u)
+                        .user(user)
                         .build());
             }
             if (userDto.getUserType().equalsIgnoreCase("employer")) {
                 employerRepository.save(Employer.builder()
-                                .user(u)
+                        .user(user)
                         .build());
             }
+        } else {
+            throw new IllegalArgumentException("User already exists");
+        }
 
     }
     public UserDto getUserDto(Authentication auth) {

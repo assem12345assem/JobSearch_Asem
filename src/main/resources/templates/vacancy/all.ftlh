@@ -1,5 +1,6 @@
 <#import '../layout.ftlh' as main>
 <@main.layout>
+    <script type="text/javascript" src="/static/scripts/searchForm.js"></script>
     <div class="container">
         <h1 class="my-3 text-center">Вакансии</h1>
         <form class="d-flex m-5" method="post" action="/vacancy/all/search">
@@ -9,12 +10,12 @@
         <div class="m-3">
             <h3> Сортировать</h3>
             <div class="d-flex">
-                <a href="/vacancy/all/by_date_reversed" class="btn btn-info" id="toggleLink">по дате</a>
-                <a href="/vacancy/all/by_salary" class="mx-5 btn btn-info">по зарплате</a>
+                <a href="/vacancy/all/view?pageNumber=0&sort=dateTime&category=${category}" class="btn btn-info" id="toggleLink">по дате</a>
+                <a href="/vacancy/all/view?pageNumber=0&sort=salary&category=${category}" class="mx-5 btn btn-info">по зарплате</a>
 
 
-                <form class="row" action="/vacancy/all/by_category" action="post">
-                    <div class="col-5">выбрать по категории:</div>
+                <form class="row" id="categoryForm">
+                <div class="col-5">выбрать по категории:</div>
                     <select class="form-select border-dark col" aria-label="выбрать категорию"
                             name="category" id="category">
                         <option selected>выбрать категорию"</option>
@@ -45,9 +46,13 @@
                 </form>
             </div>
         </div>
-        <div class="row row-cols-4 row-cols-lg-3 g-2 g-lg-3">
+        <div class="row row-cols-4 row-cols-lg-3 g-2 g-lg-3 mb-4">
             <#if vacancies??>
-                <#list vacancies as item>
+
+
+                <#list vacancies.content as item>
+                                <#if (item)??>
+
                     <div class="col">
                         <div class="p-3 border bg-light">
                             <#if (item.vacancyName)??>
@@ -66,13 +71,46 @@
 
                         </div>
                     </div>
+                                <#else >
+                                    <p> Нет данных по заданному поиску. </p>
+
+                                </#if>
                 </#list>
+
             <#else>
                 Нет данных.
             </#if>
         </div>
+        <!-- Pagination controls -->
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="/vacancy/all/view?pageNumber=0&sort=${sortCriteria}&category=${category}">First</a>
+            </li>
+            <li class="page-item">
+                <#if (pageNumber > 0)>
+                    <a class="page-link" href="/vacancy/all/view?pageNumber=${pageNumber - 1}&sort=${sortCriteria}&category=${category}">&laquo; Previous</a>
+                </#if>
+            </li>
+            <#list 1..totalPages as pageNo>
+                <li class="page-item">
+                    <a class="page-link" href="/vacancy/all/view?pageNumber=${pageNo - 1}&sort=${sortCriteria}&category=${category}"<#if pageNumber == pageNo> class="active"</#if>>${pageNo}</a>
+                </li>
+            </#list>
+            <li class="page-item">
+                <#if (pageNumber < totalPages-1)>
+                    <a class="page-link" href="/vacancy/all/view?pageNumber=${pageNumber + 1}&sort=${sortCriteria}&category=${category}">Next &raquo;</a>
+                </#if>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="/vacancy/all/view?pageNumber=${totalPages-1}&sort=${sortCriteria}&category=${category}">Last</a>
+            </li>
+        </ul>
+
+
+
 
 
     </div>
+
 
 </@main.layout>
