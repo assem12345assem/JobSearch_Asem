@@ -5,7 +5,7 @@
         <h1 class="my-3 text-center">Вакансии</h1>
         <form class="d-flex m-5" id="searchForm">
             <input class="form-control me-2" type="search"
-                   placeholder="Поиск вакансии по названию, описанию или зарплате" aria-label="Search" name="searchWord" id="searchWord">
+                   placeholder="Поиск вакансии по названию, описанию, категории или зарплате" aria-label="Search" name="searchWord" id="searchWord">
             <button class="btn btn-outline-success" type="submit">Поиск</button>
         </form>
         <div class="m-3">
@@ -124,7 +124,7 @@
                 <li class="page-item">
                     <a class="page-link"
                        href="/vacancy/all/view?pageNumber=${pageNo - 1}&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}&searchWord=${searchWord}">
-                        <#if pageNumber == pageNo> class="active"</#if>${pageNo}</a>
+                        <#if pageNumber == pageNo></#if>${pageNo}</a>
                 </li>
             </#list>
             <li class="page-item">

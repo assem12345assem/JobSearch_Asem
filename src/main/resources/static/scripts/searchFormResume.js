@@ -5,34 +5,12 @@ document.getElementById("categoryForm").addEventListener("submit", function (eve
     const pageNumber = 0;
     const sort = "id";
 
-    const url = `/resume/all/view?pageNumber=0&sort=id&category=${selectedCategory}`;
+    const url = `/resume/all/view?pageNumber=0&sort=id&category=${selectedCategory}&searchWord=default`;
 
     window.location.href = url;
 })
 
-document.getElementById("dateForm").addEventListener("submit", function (event) {
-    event.preventDefault();
 
-    const selectedDate = document.getElementById("date").value;
-    const pageNumber = 0;
-    const sort = "id";
-
-    const url = `/resume/all/view?pageNumber=0&sort=id&category=default&date=${selectedDate}`;
-
-    window.location.href = url;
-})
-
-document.getElementById("applicationsForm").addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const selectedApplications = document.getElementById("applications").value;
-    const pageNumber = 0;
-    const sort = "id";
-
-    const url = `/resume/all/view?pageNumber=0&sort=id&category=default&date=default&application=${selectedApplications}`;
-
-    window.location.href = url;
-})
 
 document.getElementById("searchForm").addEventListener("submit", function (event) {
     event.preventDefault();
@@ -41,7 +19,7 @@ document.getElementById("searchForm").addEventListener("submit", function (event
     const pageNumber = 0;
     const sort = "id";
 
-    const url = `/resume/all/view?pageNumber=0&sort=id&category=default&date=default&application=default&searchWord=${searchWord}`;
+    const url = `/resume/all/view?pageNumber=0&sort=id&category=default&searchWord=${searchWord}`;
 
     window.location.href = url;
 })

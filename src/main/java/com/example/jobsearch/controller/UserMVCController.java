@@ -56,12 +56,17 @@ public class UserMVCController {
             if (responseBody instanceof ApplicantDto) {
                 model.addAttribute("applicantProfile", responseBody);
                 Long applicantId = ((ApplicantDto) responseBody).getId();
-                model.addAttribute("myList", resumeService.findSummaryByApplicantId(applicantId));
+                var list = resumeService.findSummaryByApplicantId(applicantId, pageNumber, pageSize);
+                model.addAttribute("myList", list);
+                int totalResumes = resumeService.findAllByApplicant(auth).size();
+                int totalPages = (int) Math.ceil((double) totalResumes / pageSize);
+                model.addAttribute("totalPages", totalPages);
             }
             if (responseBody instanceof EmployerDto) {
                 model.addAttribute("employerProfile", responseBody);
                 Long employerId = ((EmployerDto) responseBody).getId();
-                model.addAttribute("myList", vacancyService.findSummaryByEmployerId(employerId, pageNumber, pageSize));
+                var list = vacancyService.findSummaryByEmployerId(employerId, pageNumber, pageSize);
+                model.addAttribute("myList", list);
                 int totalVacancies = vacancyService.listByEmployer(employerId).size();
                 int totalPages = (int) Math.ceil((double) totalVacancies / pageSize);
                 model.addAttribute("totalPages", totalPages);

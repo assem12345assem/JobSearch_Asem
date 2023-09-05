@@ -79,10 +79,11 @@ public class VacancyMVCController {
                           Model model) {
         int pageSize = 6; // Number of vacancies per page
         String sortCriteria = sort;
-        int totalVacancies = vacancyService.getTotalVacanciesCount();
-        int totalPages = (int) Math.ceil((double) totalVacancies / pageSize);
+        var totalVacancies = vacancyService.getAll(sort, pageNumber, pageSize, category, date, application, searchWord);
+       int total = vacancyService.getTotalVacanciesCount();
+        int totalPages = (int) Math.ceil((double) total / pageSize);
 
-        model.addAttribute("vacancies", vacancyService.getAll(sort, pageNumber, pageSize, category, date, application, searchWord));
+        model.addAttribute("vacancies", totalVacancies);
         model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("sortCriteria", sortCriteria);

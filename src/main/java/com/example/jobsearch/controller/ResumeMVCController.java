@@ -85,28 +85,43 @@ public class ResumeMVCController {
     }
 
     @GetMapping("/all/view")
-    public String viewAll(Model model) {
-        model.addAttribute("resumes", resumeService.getAll());
+    public String viewAll(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
+                          @RequestParam(name = "sort", defaultValue = "id") String sort,
+                          @RequestParam(name = "category", defaultValue = "default") String category,
+                          @RequestParam(name = "searchWord", defaultValue = "default") String searchWord,
+                          Model model) {
+        int pageSize = 6; // Number of vacancies per page
+        String sortCriteria = sort;
+        var totalResumes = resumeService.getAll(sort, pageNumber, pageSize, category, searchWord);
+        int total = resumeService.getTotalResumesCount();
+        int totalPages = (int) Math.ceil((double) total / pageSize);
+
+        model.addAttribute("resumes", totalResumes);
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("sortCriteria", sortCriteria);
+        model.addAttribute("category", category);
+        model.addAttribute("searchWord", searchWord);
         return "resume/all";
     }
-    @PostMapping("/all/search")
-    public String searchResume(@RequestParam(name="search") String search, Model model ) {
-        model.addAttribute("resumes", resumeService.searchResult(search));
-        return "resume/all";
-
-    }
-    @GetMapping("/all/by_date_reversed")
-    public String viewAllByDateReversed(Model model) {
-        model.addAttribute("resumes", resumeService.getAllByDateReversed());
-        return "resume/all";
-    }
-
-
+//    @PostMapping("/all/search")
+//    public String searchResume(@RequestParam(name="search") String search, Model model ) {
+//        model.addAttribute("resumes", resumeService.searchResult(search));
+//        return "resume/all";
+//
+//    }
+//    @GetMapping("/all/by_date_reversed")
+//    public String viewAllByDateReversed(Model model) {
+//        model.addAttribute("resumes", resumeService.getAllByDateReversed());
+//        return "resume/all";
+//    }
 
 
-    @GetMapping("/all/by_category")
-    public String filterByCategory(@RequestParam(name="category") String category, Model model ){
-        model.addAttribute("resumes", resumeService.filterByCategory(category));
-        return "resume/all";
-    }
+
+//
+//    @GetMapping("/all/by_category")
+//    public String filterByCategory(@RequestParam(name="category") String category, Model model ){
+//        model.addAttribute("resumes", resumeService.filterByCategory(category));
+//        return "resume/all";
+//    }
 }

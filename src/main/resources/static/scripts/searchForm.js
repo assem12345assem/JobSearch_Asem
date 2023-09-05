@@ -5,8 +5,7 @@ document.getElementById("categoryForm").addEventListener("submit", function (eve
     const pageNumber = 0;
     const sort = "id";
 
-    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=${selectedCategory}`;
-
+    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=${selectedCategory}&date=default&application=default&searchWord=default`;
     window.location.href = url;
 })
 
@@ -17,7 +16,7 @@ document.getElementById("dateForm").addEventListener("submit", function (event) 
     const pageNumber = 0;
     const sort = "id";
 
-    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=${selectedDate}`;
+    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=${selectedDate}application=default&searchWord=default`;
 
     window.location.href = url;
 })
@@ -29,7 +28,7 @@ document.getElementById("applicationsForm").addEventListener("submit", function 
     const pageNumber = 0;
     const sort = "id";
 
-    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=default&application=${selectedApplications}`;
+    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=default&application=${selectedApplications}&searchWord=default`;
 
     window.location.href = url;
 })
