@@ -153,4 +153,12 @@ public class JobApplicationService {
         JobApplication j = findById(jobApplicationId);
         return resumeService.findDtoById(j.getResume().getId());
     }
+
+    public List<Integer> getCountByVacancy() {
+        var j = jobApplicationRepository.getCountByVacancy();
+        if(j.isEmpty()) {
+            j.add(0);
+        }
+        return j;
+    }
 }

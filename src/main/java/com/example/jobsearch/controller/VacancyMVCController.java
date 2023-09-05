@@ -3,6 +3,7 @@ package com.example.jobsearch.controller;
 import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.dto.VacancyDto;
 import com.example.jobsearch.service.AuthService;
+import com.example.jobsearch.service.JobApplicationService;
 import com.example.jobsearch.service.UserService;
 import com.example.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -20,6 +22,7 @@ public class VacancyMVCController {
     private final VacancyService vacancyService;
     private final UserService userService;
     private final AuthService authService;
+    private final JobApplicationService jobApplicationService;
 
     @GetMapping("/{id}")
     public String vacancyInfo(@PathVariable Long id, Model model, Authentication auth) {
@@ -69,16 +72,23 @@ public class VacancyMVCController {
     public String viewAll(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
                           @RequestParam(name = "sort", defaultValue = "id") String sort,
                           @RequestParam(name = "category", defaultValue = "default") String category,
+                          @RequestParam(name = "date", defaultValue = "default") String date,
+                          @RequestParam(name = "application", defaultValue = "default") String application,
                           Model model) {
         int pageSize = 6; // Number of vacancies per page
         String sortCriteria = sort;
         int totalVacancies = vacancyService.getTotalVacanciesCount();
         int totalPages = (int) Math.ceil((double) totalVacancies / pageSize); // Calculate total pages
-        model.addAttribute("vacancies", vacancyService.getAll(sort, pageNumber, pageSize, category));
+
+        model.addAttribute("vacancies", vacancyService.getAll(sort, pageNumber, pageSize, category, date, application));
         model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("sortCriteria", sortCriteria);
         model.addAttribute("category", category);
+        model.addAttribute("dates", vacancyService.getDates());
+        model.addAttribute("date", date);
+        model.addAttribute("applications", jobApplicationService.getCountByVacancy());
+        model.addAttribute("application", application);
         return "vacancy/all";
     }
 

@@ -13,16 +13,13 @@ import com.example.jobsearch.repository.EmployerRepository;
 import com.example.jobsearch.repository.VacancyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -291,27 +288,32 @@ public class VacancyService {
 //        return summaryDtos;
 //    }
 
-    public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String category) {
+    public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String category, String date, String application) {
         List<Vacancy> vlist;
-        if(category.equalsIgnoreCase("default")) {
+        if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application)) {
             vlist = vacancyRepository.findAll(Sort.by(sortCriteria));
-        } else {
-
+        } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application)) {
             vlist = vacancyRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
+        } else {
+            vlist = vacancyRepository.findByCategoryAndDateAndApplication(
+                    "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
+                    "default".equalsIgnoreCase(date) ? null : LocalDate.parse(date),
+                    "default".equalsIgnoreCase(application) ? null : Integer.parseInt(application),
+                    Sort.by(sortCriteria)
+            );
         }
         return toPage(vlist, PageRequest.of(page, size, Sort.by(sortCriteria)));
-
     }
+
+
     private Page<VacancyDto> toPage(List<Vacancy> list, Pageable pageable) {
         var v = list.stream().map(this::makeDtoFromVacancy).toList();
-        if(pageable.getOffset() >= v.size()) {
+        if (pageable.getOffset() >= v.size()) {
             return Page.empty();
         }
-        System.out.println(pageable.getSort());
         int startIndex = (int) pageable.getOffset();
         int endIndex = Math.min((int) (startIndex + pageable.getPageSize()), v.size());
         List<VacancyDto> subList = v.subList(startIndex, endIndex);
-        System.out.println(subList);
         return new PageImpl<>(subList, pageable, v.size());
     }
 
@@ -324,4 +326,16 @@ public class VacancyService {
         var vlist = vacancyRepository.findAll();
         return toPage(vlist, PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortCriteria)));
     }
+
+    public List<LocalDate> getDates() {
+        List<Vacancy> list = vacancyRepository.findAll();
+        list.sort(Comparator.comparing(Vacancy::getDateTime));
+        Set<LocalDate> uniqueDates = new HashSet<>();
+        for (Vacancy v :
+                list) {
+            uniqueDates.add(v.getDateTime().toLocalDate());
+        }
+        return new ArrayList<>(uniqueDates);
+    }
+
 }
