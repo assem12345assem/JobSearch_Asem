@@ -44,7 +44,10 @@ public class UserMVCController {
     }
 
     @GetMapping("/profile/{username}")
-    public String profile(@PathVariable String username, Model model, Authentication auth) {
+    public String profile(@PathVariable String username, @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
+                          Model model, Authentication auth) {
+        int pageSize = 3; // Number of vacancies per page
+
         model.addAttribute("user", userService.getUserDtoLocalStorage(username));
         ResponseEntity<?> responseEntity = userService.getProfileLocalStorage(username);
 
@@ -58,10 +61,17 @@ public class UserMVCController {
             if (responseBody instanceof EmployerDto) {
                 model.addAttribute("employerProfile", responseBody);
                 Long employerId = ((EmployerDto) responseBody).getId();
-                model.addAttribute("myList", vacancyService.findSummaryByEmployerId(employerId));
+                model.addAttribute("myList", vacancyService.findSummaryByEmployerId(employerId, pageNumber, pageSize));
+                int totalVacancies = vacancyService.listByEmployer(employerId).size();
+                int totalPages = (int) Math.ceil((double) totalVacancies / pageSize);
+                model.addAttribute("totalPages", totalPages);
             }
         }
+
+
         model.addAttribute("new_message_number", jobApplicationService.getNew(auth));
+        model.addAttribute("pageNumber", pageNumber);
+
         return "auth/profile";
     }
 

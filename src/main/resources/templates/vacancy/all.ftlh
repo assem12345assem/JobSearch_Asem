@@ -11,8 +11,8 @@
         <div class="m-3">
             <h3> Сортировать</h3>
             <div class="d-flex">
-                <a href="/vacancy/all/view?pageNumber=0&sort=dateTime&category=${category}&date=default&application=default&searchWord=default" class="btn btn-info">по дате</a>
-                <a href="/vacancy/all/view?pageNumber=0&sort=salary&category=${category}&date=default&application=default&searchWord=default" class="mx-3 btn btn-info">по
+                <a href="/vacancy/all/view?pageNumber=0&sort=dateTime&category=default&date=default&application=default&searchWord=default" class="btn btn-info">по дате</a>
+                <a href="/vacancy/all/view?pageNumber=0&sort=salary&category=default&date=default&application=default&searchWord=default" class="mx-3 btn btn-info">по
                     зарплате</a>
 
 

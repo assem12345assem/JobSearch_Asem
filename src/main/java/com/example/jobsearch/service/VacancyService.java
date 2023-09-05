@@ -131,8 +131,11 @@ public class VacancyService {
         Employer e = employerRepository.findById(v.getEmployer().getId()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
         return userService.getUserDtoTest(e.getUser().getEmail());
     }
+    public List<Vacancy> listByEmployer(Long employerId) {
+        return vacancyRepository.findByEmployerId(employerId);
+    }
 
-    public List<SummaryDto> findSummaryByEmployerId(Long employerId) {
+    public Page<SummaryDto> findSummaryByEmployerId(Long employerId, int page, int size) {
         List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(employerId);
         List<SummaryDto> list = new ArrayList<>();
         for (Vacancy v : employerVacancies) {
@@ -147,12 +150,22 @@ public class VacancyService {
                     .dateTime(v.getDateTime())
                     .build());
         }
-        return list;
+        return toPageSummary(list, PageRequest.of(page, size));
+    }
+    private Page<SummaryDto> toPageSummary(List<SummaryDto> v, Pageable pageable) {
+        if (pageable.getOffset() >= v.size()) {
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = Math.min((int) (startIndex + pageable.getPageSize()), v.size());
+        List<SummaryDto> subList = v.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, v.size());
     }
 
     public List<Vacancy> findAllByEmployer(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
         Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+
         return vacancyRepository.findByEmployerId(e.getId());
     }
 
