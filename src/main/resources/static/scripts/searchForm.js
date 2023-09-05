@@ -33,3 +33,15 @@ document.getElementById("applicationsForm").addEventListener("submit", function 
 
     window.location.href = url;
 })
+
+document.getElementById("searchForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const searchWord = document.getElementById("searchWord").value;
+    const pageNumber = 0;
+    const sort = "id";
+
+    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=default&application=default&searchWord=${searchWord}`;
+
+    window.location.href = url;
+})

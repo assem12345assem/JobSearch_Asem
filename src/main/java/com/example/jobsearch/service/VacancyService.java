@@ -173,137 +173,37 @@ public class VacancyService {
         vacancyRepository.delete(vacancyRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Vacancy does not exist.")));
     }
 
-//    public List<VacancyDto> getAll() {
-//        List<Vacancy> v = vacancyRepository.findAll();
-//        return v.stream().map(this::makeDtoFromVacancy).toList();
-//    }
-
-//    public List<VacancyDto> getAllByDate() {
-//        List<VacancyDto> v = getAll();
-//        List<VacancyDto> notEmptyField = new ArrayList<>();
-//        List<VacancyDto> emptyField = new ArrayList<>();
-//        for (VacancyDto vacancy :
-//                v) {
-//            if (vacancy.getDateTime() == null) {
-//                emptyField.add(vacancy);
-//            } else {
-//                notEmptyField.add(vacancy);
-//            }
-//        }
-//
-//        notEmptyField.sort(Comparator.comparing(VacancyDto::getDateTime));
-//
-//        notEmptyField.addAll(emptyField);
-//        return notEmptyField;
-//    }
-
-//    public List<VacancyDto> getAllByDateReversed() {
-//        List<VacancyDto> v = getAll();
-//        List<VacancyDto> notEmptyField = new ArrayList<>();
-//        List<VacancyDto> emptyField = new ArrayList<>();
-//        for (VacancyDto vacancy :
-//                v) {
-//            if (vacancy.getDateTime() == null) {
-//                emptyField.add(vacancy);
-//            } else {
-//                notEmptyField.add(vacancy);
-//            }
-//        }
-//
-//        notEmptyField.sort(Comparator.comparing(VacancyDto::getDateTime).reversed());
-//
-//        notEmptyField.addAll(emptyField);
-//        return notEmptyField;
-//    }
-
-//    public List<VacancyDto> getAllBySalary() {
-//        List<VacancyDto> v = getAll();
-//        List<VacancyDto> notEmptyField = new ArrayList<>();
-//        List<VacancyDto> emptyField = new ArrayList<>();
-//        for (VacancyDto vacancy :
-//                v) {
-//            if (vacancy.getSalary() == null) {
-//                emptyField.add(vacancy);
-//            } else {
-//                notEmptyField.add(vacancy);
-//            }
-//        }
-//
-//        notEmptyField.sort(Comparator.comparing(VacancyDto::getSalary).reversed());
-//
-//        notEmptyField.addAll(emptyField);
-//        return notEmptyField;
-//    }
-
-//    public List<VacancyDto> filterByCategory(String category) {
-//        List<VacancyDto> v = getAll();
-//        List<VacancyDto> v2 = new ArrayList<>();
-//        for (VacancyDto vacancy :
-//                v) {
-//            if (vacancy.getCategory() != null) {
-//                if (vacancy.getCategory().equalsIgnoreCase(category)) {
-//                    v2.add(vacancy);
-//                }
-//            }
-//
-//        }
-//        return v2;
-//    }
-
-//    public List<VacancyDto> searchResult(String searchWord) {
-//        String search = searchWord.toLowerCase();
-//        List<VacancyDto> v = getAll();
-//        List<VacancyDto> searchResult = new ArrayList<>();
-//        for (VacancyDto vacancy :
-//                v) {
-//            if (vacancy.getVacancyName() != null) {
-//                if (vacancy.getVacancyName().toLowerCase().contains(search)) {
-//                    searchResult.add(vacancy);
-//                }
-//            }
-//            if (vacancy.getSalary() != null) {
-//                if (vacancy.getSalary().toString().contains(search)) {
-//                    searchResult.add(vacancy);
-//                }
-//            }
-//            if (vacancy.getDescription() != null) {
-//                if (vacancy.getDescription().toLowerCase().contains(search)) {
-//                    searchResult.add(vacancy);
-//                }
-//            }
-//        }
-//        return searchResult;
-//    }
-
-//    public List<SummaryDto> findSummaryForMain() {
-//        List<VacancyDto> l = getAllByDateReversed();
-//        List<SummaryDto> summaryDtos = new ArrayList<>();
-//        for (int i = 0; i < 3; i++) {
-//            summaryDtos.add(SummaryDto.builder()
-//                    .id((long) i)
-//                    .title(l.get(i).getVacancyName())
-//                    .dateTime(l.get(i).getDateTime())
-//                    .build());
-//        }
-//        return summaryDtos;
-//    }
-
-    public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String category, String date, String application) {
-        List<Vacancy> vlist;
-        if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application)) {
-            vlist = vacancyRepository.findAll(Sort.by(sortCriteria));
-        } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application)) {
-            vlist = vacancyRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
-        } else {
-            vlist = vacancyRepository.findByCategoryAndDateAndApplication(
-                    "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
-                    "default".equalsIgnoreCase(date) ? null : LocalDate.parse(date),
-                    "default".equalsIgnoreCase(application) ? null : Integer.parseInt(application),
-                    Sort.by(sortCriteria)
-            );
+    public List<SummaryDto> findSummaryForMain() {
+        Sort sort = Sort.by(Sort.Direction.DESC, "dateTime");
+        List<Vacancy> l = vacancyRepository.findAll(sort);
+        List<SummaryDto> summaryDtos = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            summaryDtos.add(SummaryDto.builder()
+                    .id((long) i)
+                    .title(l.get(i).getVacancyName())
+                    .dateTime(l.get(i).getDateTime())
+                    .build());
         }
-        return toPage(vlist, PageRequest.of(page, size, Sort.by(sortCriteria)));
+        return summaryDtos;
     }
+
+public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String category, String date, String application, String searchWord) {
+    List<Vacancy> vlist;
+    if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
+        vlist = vacancyRepository.findAll(Sort.by(sortCriteria));
+    } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
+        vlist = vacancyRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
+    } else {
+        vlist = vacancyRepository.findByCategoryAndDateAndApplicationAndSearchWord(
+                "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
+                "default".equalsIgnoreCase(date) ? null : LocalDate.parse(date),
+                "default".equalsIgnoreCase(application) ? null : Integer.parseInt(application),
+                "default".equalsIgnoreCase(searchWord) ? null : searchWord,
+                Sort.by(sortCriteria)
+        );
+    }
+    return toPage(vlist, PageRequest.of(page, size, Sort.by(sortCriteria)));
+}
 
 
     private Page<VacancyDto> toPage(List<Vacancy> list, Pageable pageable) {

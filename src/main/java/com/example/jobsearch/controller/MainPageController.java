@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainPageController {
     private final VacancyService vacancyService;
     private final ResumeService resumeService;
-//    @GetMapping
-//    public String getMain(Model model) {
-//        model.addAttribute("vacancies", vacancyService.findSummaryForMain());
-//        model.addAttribute("resumes", resumeService.findSummaryForMain());
-//        return "index";
-//    }
+    @GetMapping
+    public String getMain(Model model) {
+        model.addAttribute("vacancies", vacancyService.findSummaryForMain());
+        model.addAttribute("resumes", resumeService.findSummaryForMain());
+        return "index";
+    }
 }

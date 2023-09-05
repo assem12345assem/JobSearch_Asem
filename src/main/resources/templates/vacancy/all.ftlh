@@ -3,16 +3,16 @@
     <script type="text/javascript" src="/static/scripts/searchForm.js"></script>
     <div class="container">
         <h1 class="my-3 text-center">Вакансии</h1>
-        <form class="d-flex m-5" method="post" action="/vacancy/all/search">
+        <form class="d-flex m-5" id="searchForm">
             <input class="form-control me-2" type="search"
-                   placeholder="Поиск вакансии по названию, описанию или зарплате" aria-label="Search" name="search">
+                   placeholder="Поиск вакансии по названию, описанию или зарплате" aria-label="Search" name="searchWord" id="searchWord">
             <button class="btn btn-outline-success" type="submit">Поиск</button>
         </form>
         <div class="m-3">
             <h3> Сортировать</h3>
             <div class="d-flex">
-                <a href="/vacancy/all/view?pageNumber=0&sort=dateTime&category=${category}&date=default&application=default" class="btn btn-info">по дате</a>
-                <a href="/vacancy/all/view?pageNumber=0&sort=salary&category=${category}&date=default&application=default" class="mx-3 btn btn-info">по
+                <a href="/vacancy/all/view?pageNumber=0&sort=dateTime&category=${category}&date=default&application=default&searchWord=default" class="btn btn-info">по дате</a>
+                <a href="/vacancy/all/view?pageNumber=0&sort=salary&category=${category}&date=default&application=default&searchWord=default" class="mx-3 btn btn-info">по
                     зарплате</a>
 
 
@@ -111,32 +111,32 @@
         <ul class="pagination">
             <li class="page-item">
                 <a class="page-link"
-                   href="/vacancy/all/view?pageNumber=0&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}">First</a>
+                   href="/vacancy/all/view?pageNumber=0&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}&searchWord=${searchWord}">First</a>
             </li>
             <li class="page-item">
                 <#if (pageNumber > 0)>
                     <a class="page-link"
-                       href="/vacancy/all/view?pageNumber=${pageNumber - 1}&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}">&laquo;
+                       href="/vacancy/all/view?pageNumber=${pageNumber - 1}&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}&searchWord=${searchWord}">&laquo;
                         Previous</a>
                 </#if>
             </li>
             <#list 1..totalPages as pageNo>
                 <li class="page-item">
                     <a class="page-link"
-                       href="/vacancy/all/view?pageNumber=${pageNo - 1}&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}">
+                       href="/vacancy/all/view?pageNumber=${pageNo - 1}&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}&searchWord=${searchWord}">
                         <#if pageNumber == pageNo> class="active"</#if>${pageNo}</a>
                 </li>
             </#list>
             <li class="page-item">
                 <#if pageNumber < (totalPages-1)>
                     <a class="page-link"
-                       href="/vacancy/all/view?pageNumber=${pageNumber + 1}&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}">Next
+                       href="/vacancy/all/view?pageNumber=${pageNumber + 1}&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}&searchWord=${searchWord}">Next
                         &raquo;</a>
                 </#if>
             </li>
             <li class="page-item">
                 <a class="page-link"
-                   href="/vacancy/all/view?pageNumber=${totalPages-1}&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}">Last</a>
+                   href="/vacancy/all/view?pageNumber=${totalPages-1}&sort=${sortCriteria}&category=${category}&date=${date}&application=${application}&searchWord=${searchWord}">Last</a>
             </li>
         </ul>
 
