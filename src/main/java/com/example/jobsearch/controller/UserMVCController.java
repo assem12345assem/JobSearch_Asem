@@ -25,6 +25,7 @@ public class UserMVCController {
     private final VacancyService vacancyService;
     private final JobApplicationService jobApplicationService;
     private final AuthService authService;
+    private final UtilService utilService;
 
     @GetMapping("/register")
     public String register() {
@@ -33,7 +34,7 @@ public class UserMVCController {
 
     @PostMapping("/register")
     @ResponseStatus(code = HttpStatus.SEE_OTHER)
-    public String register(@Valid @ModelAttribute UserDto userDto) throws Exception {
+    public String register(@Valid @ModelAttribute UserDto userDto) {
         userService.register(userDto);
         return "redirect:/";
     }
@@ -42,7 +43,15 @@ public class UserMVCController {
     public String login() {
         return "/auth/login";
     }
-
+@GetMapping("/profile/company/{email}")
+public String companyProfile(@PathVariable String email, @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber, Model model) {
+    int pageSize = 3; // Number of vacancies per page
+    model.addAttribute("company", vacancyService.getCompanyDto(email));
+    model.addAttribute("myList", vacancyService.findSummaryByEmployerEmail(email, pageNumber, pageSize));
+    model.addAttribute("totalPages", utilService.totalPagesCounter(vacancyService.getEmployerVacancyCount(email), pageSize));
+    model.addAttribute("pageNumber", pageNumber);
+    return "vacancy/profile";
+}
     @GetMapping("/profile/{username}")
     public String profile(@PathVariable String username, @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
                           Model model, Authentication auth) {
@@ -56,24 +65,16 @@ public class UserMVCController {
             if (responseBody instanceof ApplicantDto) {
                 model.addAttribute("applicantProfile", responseBody);
                 Long applicantId = ((ApplicantDto) responseBody).getId();
-                var list = resumeService.findSummaryByApplicantId(applicantId, pageNumber, pageSize);
-                model.addAttribute("myList", list);
-                int totalResumes = resumeService.findAllByApplicant(auth).size();
-                int totalPages = (int) Math.ceil((double) totalResumes / pageSize);
-                model.addAttribute("totalPages", totalPages);
+                model.addAttribute("myList", resumeService.findSummaryByApplicantId(applicantId, pageNumber, pageSize));
+                model.addAttribute("totalPages", utilService.totalPagesCounter(resumeService.findAllByApplicant(auth).size(), pageSize));
             }
             if (responseBody instanceof EmployerDto) {
                 model.addAttribute("employerProfile", responseBody);
                 Long employerId = ((EmployerDto) responseBody).getId();
-                var list = vacancyService.findSummaryByEmployerId(employerId, pageNumber, pageSize);
-                model.addAttribute("myList", list);
-                int totalVacancies = vacancyService.listByEmployer(employerId).size();
-                int totalPages = (int) Math.ceil((double) totalVacancies / pageSize);
-                model.addAttribute("totalPages", totalPages);
+                model.addAttribute("myList", vacancyService.findSummaryByEmployerId(employerId, pageNumber, pageSize));
+                model.addAttribute("totalPages", utilService.totalPagesCounter(vacancyService.getEmployerVacancyCount(employerId), pageSize));
             }
         }
-
-
         model.addAttribute("new_message_number", jobApplicationService.getNew(auth));
         model.addAttribute("pageNumber", pageNumber);
 

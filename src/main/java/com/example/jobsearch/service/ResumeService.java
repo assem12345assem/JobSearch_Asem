@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -61,7 +62,7 @@ public class ResumeService {
             return Page.empty();
         }
         int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min((int) (startIndex + pageable.getPageSize()), v.size());
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
         List<SummaryDto> subList = v.subList(startIndex, endIndex);
         return new PageImpl<>(subList, pageable, v.size());
     }
@@ -140,6 +141,7 @@ public class ResumeService {
     }
 
     public void edit(Long id, ResumeDto resumeDto, Authentication auth) {
+        System.out.println("Edit method");
         UserDto u = authService.getAuthor(auth);
         Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         Resume r = findById(id);
@@ -164,17 +166,17 @@ public class ResumeService {
                     .linkedIn(null)
                     .build());
 
+        } else {
+            contactInfoRepository.save(ContactInfo.builder()
+                    .id(contactInfoVar.get().getId())
+                    .resume(updatedResume)
+                    .telegram(resumeDto.getContact().getTelegram())
+                    .email(resumeDto.getContact().getEmail())
+                    .phoneNumber(resumeDto.getContact().getPhoneNumber())
+                    .facebook(resumeDto.getContact().getFacebook())
+                    .linkedIn(resumeDto.getContact().getLinkedIn())
+                    .build());
         }
-
-        contactInfoRepository.save(ContactInfo.builder()
-                .id(contactInfoVar.get().getId())
-                .resume(updatedResume)
-                .telegram(resumeDto.getContact().getTelegram())
-                .email(resumeDto.getContact().getEmail())
-                .phoneNumber(resumeDto.getContact().getPhoneNumber())
-                .facebook(resumeDto.getContact().getFacebook())
-                .linkedIn(resumeDto.getContact().getLinkedIn())
-                .build());
     }
 
     public void addOneWork(Long resumeId, WorkExperienceDto workExperienceDto) {
@@ -220,37 +222,43 @@ public class ResumeService {
 
     public ResumeDto newResume(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
-        ApplicantDto applicantDto = ApplicantDto.builder()
-                .firstName(a.getFirstName())
-                .lastName(a.getLastName())
-                .dateOfBirth(a.getDateOfBirth())
-                .build();
-        Resume newResume = resumeRepository.save(Resume.builder()
-                .applicant(a)
-                .resumeTitle(null)
-                .category(Category.builder().category("Other").build())
-                .expectedSalary(0)
-                .isActive(false)
-                .isPublished(false)
-                .dateTime(LocalDateTime.now())
-                .build());
+        Optional<Applicant> applicant = applicantRepository.findByUserEmail(u.getEmail());
+        if(applicant.isPresent()) {
+            Applicant a = applicant.get();
+            ApplicantDto applicantDto = ApplicantDto.builder()
+                    .firstName(a.getFirstName())
+                    .lastName(a.getLastName())
+                    .dateOfBirth(a.getDateOfBirth())
+                    .build();
+            Resume newResume = resumeRepository.save(Resume.builder()
+                    .applicant(a)
+                    .resumeTitle("new resume")
+                    .category(Category.builder().category("Other").build())
+                    .expectedSalary(0)
+                    .isActive(false)
+                    .isPublished(false)
+                    .dateTime(LocalDateTime.now())
+                    .build());
 
 
-        Resume r = findById(newResume.getId());
-        return ResumeDto.builder()
-                .id(r.getId())
-                .profile(applicantDto)
-                .resumeTitle(r.getResumeTitle())
-                .category(r.getCategory().getCategory())
-                .expectedSalary(r.getExpectedSalary())
-                .isActive(Boolean.TRUE)
-                .isPublished(Boolean.TRUE)
-                .eduList(null)
-                .workList(null)
-                .contact(null)
-                .dateTime(r.getDateTime())
-                .build();
+            Resume r = findById(newResume.getId());
+            return ResumeDto.builder()
+                    .id(r.getId())
+                    .profile(applicantDto)
+                    .resumeTitle(r.getResumeTitle())
+                    .category(r.getCategory().getCategory())
+                    .expectedSalary(r.getExpectedSalary())
+                    .isActive(Boolean.TRUE)
+                    .isPublished(Boolean.TRUE)
+                    .eduList(null)
+                    .workList(null)
+                    .contact(null)
+                    .dateTime(r.getDateTime())
+                    .build();
+        } else {
+            throw new NoSuchElementException("Applicant does not exist. Please sign up as applicant");
+        }
+
     }
 
     public void dateFix(Long id) {
@@ -308,7 +316,7 @@ public class ResumeService {
             return Page.empty();
         }
         int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min((int) (startIndex + pageable.getPageSize()), v.size());
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
         List<ResumeDto> subList = v.subList(startIndex, endIndex);
         return new PageImpl<>(subList, pageable, v.size());
     }

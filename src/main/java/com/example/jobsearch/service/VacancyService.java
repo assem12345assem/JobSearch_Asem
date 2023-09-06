@@ -1,10 +1,7 @@
 package com.example.jobsearch.service;
 
 
-import com.example.jobsearch.dto.EmployerDto;
-import com.example.jobsearch.dto.SummaryDto;
-import com.example.jobsearch.dto.UserDto;
-import com.example.jobsearch.dto.VacancyDto;
+import com.example.jobsearch.dto.*;
 import com.example.jobsearch.entity.Category;
 import com.example.jobsearch.entity.Employer;
 import com.example.jobsearch.entity.Vacancy;
@@ -157,7 +154,7 @@ public class VacancyService {
             return Page.empty();
         }
         int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min((int) (startIndex + pageable.getPageSize()), v.size());
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
         List<SummaryDto> subList = v.subList(startIndex, endIndex);
         return new PageImpl<>(subList, pageable, v.size());
     }
@@ -225,7 +222,7 @@ public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String c
             return Page.empty();
         }
         int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min((int) (startIndex + pageable.getPageSize()), v.size());
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
         List<VacancyDto> subList = v.subList(startIndex, endIndex);
         return new PageImpl<>(subList, pageable, v.size());
     }
@@ -251,4 +248,78 @@ public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String c
         return new ArrayList<>(uniqueDates);
     }
 
+    public Page<CompanyDto> makeCompanyDtos(int pageNumber, int pageSize) {
+        List<Employer> elist = employerRepository.findAll();
+        List<CompanyDto> clist = new ArrayList<>();
+        for (Employer e:
+             elist) {
+            UserDto u = userService.getUserDtoTest(e.getUser().getEmail());
+            clist.add(CompanyDto.builder()
+                            .photo(u.getPhoto())
+                            .name(e.getCompanyName())
+                            .phoneNumber(u.getPhoneNumber())
+                            .email(u.getEmail())
+                    .build());
+        }
+        System.out.println("cList" + clist.size());
+
+        return toPageEmployers(clist, PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "email")));
+
+    }
+
+    private Page<CompanyDto> toPageEmployers(List<CompanyDto> clist, Pageable pageable) {
+        if (pageable.getOffset() >= clist.size()) {
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), clist.size());
+        List<CompanyDto> subList = clist.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, clist.size());
+    }
+
+    public CompanyDto getCompanyDto(String email) {
+        UserDto u = userService.getUserDtoTest(email);
+        Employer e = employerRepository.findByUserEmail(email).orElseThrow(() -> {throw new NoSuchElementException("Employer does not exist");});
+        return CompanyDto.builder()
+                .photo(u.getPhoto())
+                .name(e.getCompanyName())
+                .phoneNumber(u.getPhoneNumber())
+                .email(u.getEmail())
+                .build();
+    }
+
+    public Page<SummaryDto> findSummaryByEmployerEmail(String email, int page, int size) {
+        Employer e = employerRepository.findByUserEmail(email).orElseThrow(() -> {throw new NoSuchElementException("Employer does  not exist");});
+        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
+        List<SummaryDto> list = new ArrayList<>();
+        for (Vacancy v : employerVacancies) {
+            cleanEmptyTemplate(v);
+        }
+        List<Vacancy> employerVacancies2 = vacancyRepository.findByEmployerId(e.getId());
+
+        for (Vacancy v : employerVacancies2) {
+            list.add(SummaryDto.builder()
+                    .id(v.getId())
+                    .title(v.getVacancyName())
+                    .dateTime(v.getDateTime())
+                    .build());
+        }
+        return toPageSummary(list, PageRequest.of(page, size));
+    }
+
+    public int getCompanyDtoSize() {
+        var e = employerRepository.findAll();
+        return e.size();
+    }
+
+    public int getEmployerVacancyCount(String email) {
+        Employer e = employerRepository.findByUserEmail(email).orElseThrow(() -> {throw new NoSuchElementException("Employer does  not exist");});
+        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
+        return employerVacancies.size();
+    }
+    public int getEmployerVacancyCount(Long id) {
+        Employer e = employerRepository.findById(id).orElseThrow(() -> {throw new NoSuchElementException("Employer does  not exist");});
+        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
+        return employerVacancies.size();
+    }
 }
