@@ -18,7 +18,6 @@ public class ContactInfo {
     @OneToOne
     @JoinColumn(name = "resume_id")
     private Resume resume;
-
     private String telegram;
     private String email;
     private String phoneNumber;

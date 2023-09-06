@@ -2,9 +2,7 @@ package com.example.jobsearch.controller;
 
 import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.dto.VacancyDto;
-import com.example.jobsearch.service.AuthService;
-import com.example.jobsearch.service.UserService;
-import com.example.jobsearch.service.VacancyService;
+import com.example.jobsearch.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -18,6 +16,8 @@ public class VacancyMVCController {
     private final VacancyService vacancyService;
     private final UserService userService;
     private final AuthService authService;
+    private final JobApplicationService jobApplicationService;
+    private final UtilService utilService;
 
     @GetMapping("/{id}")
     public String vacancyInfo(@PathVariable Long id, Model model, Authentication auth) {
@@ -63,39 +63,42 @@ public class VacancyMVCController {
         UserDto u = authService.getAuthor(auth);
         return "redirect:/auth/profile/" + u.getEmail();
     }
+
     @GetMapping("/all/view")
-    public String viewAll(Model model) {
-        model.addAttribute("vacancies", vacancyService.getAll());
-        return "vacancy/all";
-    }
+    public String viewAll(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
+                          @RequestParam(name = "sort", defaultValue = "id") String sort,
+                          @RequestParam(name = "category", defaultValue = "default") String category,
+                          @RequestParam(name = "date", defaultValue = "default") String date,
+                          @RequestParam(name = "application", defaultValue = "default") String application,
+                          @RequestParam(name = "searchWord", defaultValue = "default") String searchWord,
+                          Model model) {
+        int pageSize = 6; // Number of vacancies per page
+        var totalVacancies = vacancyService.getAll(sort, pageNumber, pageSize, category, date, application, searchWord);
+       int total = vacancyService.getTotalVacanciesCount();
+        int totalPages = utilService.totalPagesCounter(total, pageSize);
 
-    @GetMapping("/all/by_date")
-    public String viewAllByDate(Model model) {
-        model.addAttribute("vacancies", vacancyService.getAllByDate());
+        model.addAttribute("vacancies", totalVacancies);
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("sortCriteria", sort);
+        model.addAttribute("category", category);
+        model.addAttribute("dates", vacancyService.getDates());
+        model.addAttribute("date", date);
+        model.addAttribute("applications", jobApplicationService.getCountByVacancy());
+        model.addAttribute("application", application);
+        model.addAttribute("searchWord", searchWord);
         return "vacancy/all";
     }
-    @GetMapping("/all/by_date_reversed")
-    public String viewAllByDateReversed(Model model) {
-        model.addAttribute("vacancies", vacancyService.getAllByDateReversed());
-        return "vacancy/all";
-    }
-    @GetMapping("/all/by_salary")
-    public String viewAllBySalary(Model model) {
-        model.addAttribute("vacancies", vacancyService.getAllBySalary());
-        return "vacancy/all";
-    }
-    @PostMapping("/all/search")
-    public String searchVacancy(@RequestParam(name="search") String search, Model model ) {
-        model.addAttribute("vacancies", vacancyService.searchResult(search));
-        return "vacancy/all";
+    @GetMapping("/all/companies")
+    public String companies(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
+                            Model model) {
+        int pageSize = 3; //companies per page
+
+       int total = utilService.totalPagesCounter(vacancyService.getCompanyDtoSize(), pageSize);
+        model.addAttribute("companies", vacancyService.makeCompanyDtos(pageNumber, pageSize));
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", total);
+        return "vacancy/companies";
 
     }
-
-
-    @GetMapping("/all/by_category")
-    public String filterByCategory(@RequestParam(name="category") String category, Model model ){
-        model.addAttribute("vacancies", vacancyService.filterByCategory(category));
-        return "vacancy/all";
-    }
-
 }

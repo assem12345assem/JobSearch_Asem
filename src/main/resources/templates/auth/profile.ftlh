@@ -117,7 +117,7 @@
             <h3>Резюме соискателя</h3>
         </#if>
         <#if (myList)??>
-            <#list myList as item>
+            <#list myList.content as item>
                 <#if item?index == 0 || item?index % 3 == 0>
                     <div class="row my-3">
                 </#if>
@@ -151,6 +151,39 @@
             Ещё не созданы
         </#if>
     </div>
+
+    <!-- Pagination controls -->
+    <ul class="pagination">
+        <li class="page-item">
+            <a class="page-link"
+               href="/auth/profile/${user.email}?pageNumber=0">First</a>
+        </li>
+        <li class="page-item">
+            <#if (pageNumber > 0)>
+                <a class="page-link"
+                   href="/auth/profile/${user.email}?pageNumber=${pageNumber - 1}">&laquo;
+                    Previous</a>
+            </#if>
+        </li>
+        <#list 1..totalPages as pageNo>
+            <li class="page-item">
+                <a class="page-link"
+                   href="/auth/profile/${user.email}?pageNumber=${pageNo - 1}">
+                    <#if pageNumber == pageNo> </#if>${pageNo}</a>
+            </li>
+        </#list>
+        <li class="page-item">
+            <#if pageNumber < (totalPages-1)>
+                <a class="page-link"
+                   href="/auth/profile/${user.email}?pageNumber=${pageNumber + 1}">Next
+                    &raquo;</a>
+            </#if>
+        </li>
+        <li class="page-item">
+            <a class="page-link"
+               href="/auth/profile/${user.email}?pageNumber=${totalPages-1}">Last</a>
+        </li>
+    </ul>
 </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

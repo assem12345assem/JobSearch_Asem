@@ -1,25 +1,22 @@
 package com.example.jobsearch.service;
 
 
-import com.example.jobsearch.dto.EmployerDto;
-import com.example.jobsearch.dto.SummaryDto;
-import com.example.jobsearch.dto.UserDto;
-import com.example.jobsearch.dto.VacancyDto;
+import com.example.jobsearch.dto.*;
 import com.example.jobsearch.entity.Category;
 import com.example.jobsearch.entity.Employer;
 import com.example.jobsearch.entity.Vacancy;
+import com.example.jobsearch.repository.CategoryRepository;
 import com.example.jobsearch.repository.EmployerRepository;
 import com.example.jobsearch.repository.VacancyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -29,6 +26,7 @@ public class VacancyService {
     private final EmployerRepository employerRepository;
     private final UserService userService;
     private final AuthService authService;
+    private final CategoryRepository categoryRepository;
 
     private Vacancy getById(Long id) {
         return vacancyRepository.findById(id).orElseThrow(() -> {
@@ -130,8 +128,11 @@ public class VacancyService {
         Employer e = employerRepository.findById(v.getEmployer().getId()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
         return userService.getUserDtoTest(e.getUser().getEmail());
     }
+    public List<Vacancy> listByEmployer(Long employerId) {
+        return vacancyRepository.findByEmployerId(employerId);
+    }
 
-    public List<SummaryDto> findSummaryByEmployerId(Long employerId) {
+    public Page<SummaryDto> findSummaryByEmployerId(Long employerId, int page, int size) {
         List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(employerId);
         List<SummaryDto> list = new ArrayList<>();
         for (Vacancy v : employerVacancies) {
@@ -146,12 +147,22 @@ public class VacancyService {
                     .dateTime(v.getDateTime())
                     .build());
         }
-        return list;
+        return toPageSummary(list, PageRequest.of(page, size));
+    }
+    private Page<SummaryDto> toPageSummary(List<SummaryDto> v, Pageable pageable) {
+        if (pageable.getOffset() >= v.size()) {
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
+        List<SummaryDto> subList = v.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, v.size());
     }
 
     public List<Vacancy> findAllByEmployer(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
         Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+
         return vacancyRepository.findByEmployerId(e.getId());
     }
 
@@ -172,110 +183,9 @@ public class VacancyService {
         vacancyRepository.delete(vacancyRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Vacancy does not exist.")));
     }
 
-    public List<VacancyDto> getAll() {
-        List<Vacancy> v = vacancyRepository.findAll();
-        return v.stream().map(this::makeDtoFromVacancy).toList();
-    }
-
-    public List<VacancyDto> getAllByDate() {
-        List<VacancyDto> v = getAll();
-        List<VacancyDto> notEmptyField = new ArrayList<>();
-        List<VacancyDto> emptyField = new ArrayList<>();
-        for (VacancyDto vacancy :
-                v) {
-            if (vacancy.getDateTime() == null) {
-                emptyField.add(vacancy);
-            } else {
-                notEmptyField.add(vacancy);
-            }
-        }
-
-        notEmptyField.sort(Comparator.comparing(VacancyDto::getDateTime));
-
-        notEmptyField.addAll(emptyField);
-        return notEmptyField;
-    }
-
-    public List<VacancyDto> getAllByDateReversed() {
-        List<VacancyDto> v = getAll();
-        List<VacancyDto> notEmptyField = new ArrayList<>();
-        List<VacancyDto> emptyField = new ArrayList<>();
-        for (VacancyDto vacancy :
-                v) {
-            if (vacancy.getDateTime() == null) {
-                emptyField.add(vacancy);
-            } else {
-                notEmptyField.add(vacancy);
-            }
-        }
-
-        notEmptyField.sort(Comparator.comparing(VacancyDto::getDateTime).reversed());
-
-        notEmptyField.addAll(emptyField);
-        return notEmptyField;
-    }
-
-    public List<VacancyDto> getAllBySalary() {
-        List<VacancyDto> v = getAll();
-        List<VacancyDto> notEmptyField = new ArrayList<>();
-        List<VacancyDto> emptyField = new ArrayList<>();
-        for (VacancyDto vacancy :
-                v) {
-            if (vacancy.getSalary() == null) {
-                emptyField.add(vacancy);
-            } else {
-                notEmptyField.add(vacancy);
-            }
-        }
-
-        notEmptyField.sort(Comparator.comparing(VacancyDto::getSalary).reversed());
-
-        notEmptyField.addAll(emptyField);
-        return notEmptyField;
-    }
-
-    public List<VacancyDto> filterByCategory(String category) {
-        List<VacancyDto> v = getAll();
-        List<VacancyDto> v2 = new ArrayList<>();
-        for (VacancyDto vacancy :
-                v) {
-            if (vacancy.getCategory() != null) {
-                if (vacancy.getCategory().equalsIgnoreCase(category)) {
-                    v2.add(vacancy);
-                }
-            }
-
-        }
-        return v2;
-    }
-
-    public List<VacancyDto> searchResult(String searchWord) {
-        String search = searchWord.toLowerCase();
-        List<VacancyDto> v = getAll();
-        List<VacancyDto> searchResult = new ArrayList<>();
-        for (VacancyDto vacancy :
-                v) {
-            if (vacancy.getVacancyName() != null) {
-                if (vacancy.getVacancyName().toLowerCase().contains(search)) {
-                    searchResult.add(vacancy);
-                }
-            }
-            if (vacancy.getSalary() != null) {
-                if (vacancy.getSalary().toString().contains(search)) {
-                    searchResult.add(vacancy);
-                }
-            }
-            if (vacancy.getDescription() != null) {
-                if (vacancy.getDescription().toLowerCase().contains(search)) {
-                    searchResult.add(vacancy);
-                }
-            }
-        }
-        return searchResult;
-    }
-
     public List<SummaryDto> findSummaryForMain() {
-        List<VacancyDto> l = getAllByDateReversed();
+        Sort sort = Sort.by(Sort.Direction.DESC, "dateTime");
+        List<Vacancy> l = vacancyRepository.findAll(sort);
         List<SummaryDto> summaryDtos = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             summaryDtos.add(SummaryDto.builder()
@@ -285,5 +195,131 @@ public class VacancyService {
                     .build());
         }
         return summaryDtos;
+    }
+
+public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String category, String date, String application, String searchWord) {
+    List<Vacancy> vlist;
+    if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
+        vlist = vacancyRepository.findAll(Sort.by(sortCriteria));
+    } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
+        vlist = vacancyRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
+    } else {
+        vlist = vacancyRepository.findByCategoryAndDateAndApplicationAndSearchWord(
+                "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
+                "default".equalsIgnoreCase(date) ? null : LocalDate.parse(date),
+                "default".equalsIgnoreCase(application) ? null : Integer.parseInt(application),
+                "default".equalsIgnoreCase(searchWord) ? null : searchWord,
+                Sort.by(sortCriteria)
+        );
+    }
+    return toPage(vlist, PageRequest.of(page, size, Sort.by(sortCriteria)));
+}
+
+
+    private Page<VacancyDto> toPage(List<Vacancy> list, Pageable pageable) {
+        var v = list.stream().map(this::makeDtoFromVacancy).toList();
+        if (pageable.getOffset() >= v.size()) {
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
+        List<VacancyDto> subList = v.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, v.size());
+    }
+
+    public int getTotalVacanciesCount() {
+        List<Vacancy> list = vacancyRepository.findAll();
+        return list.size();
+    }
+
+    public Page<VacancyDto> getAllByDateReversed(String sortCriteria, int pageNumber, int pageSize) {
+        var vlist = vacancyRepository.findAll();
+        return toPage(vlist, PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortCriteria)));
+    }
+
+    public List<LocalDate> getDates() {
+        List<Vacancy> list = vacancyRepository.findAll();
+        list.sort(Comparator.comparing(Vacancy::getDateTime));
+        Set<LocalDate> uniqueDates = new HashSet<>();
+        for (Vacancy v :
+                list) {
+            uniqueDates.add(v.getDateTime().toLocalDate());
+        }
+        return new ArrayList<>(uniqueDates);
+    }
+
+    public Page<CompanyDto> makeCompanyDtos(int pageNumber, int pageSize) {
+        List<Employer> elist = employerRepository.findAll();
+        List<CompanyDto> clist = new ArrayList<>();
+        for (Employer e:
+             elist) {
+            UserDto u = userService.getUserDtoTest(e.getUser().getEmail());
+            clist.add(CompanyDto.builder()
+                            .photo(u.getPhoto())
+                            .name(e.getCompanyName())
+                            .phoneNumber(u.getPhoneNumber())
+                            .email(u.getEmail())
+                    .build());
+        }
+        System.out.println("cList" + clist.size());
+
+        return toPageEmployers(clist, PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "email")));
+
+    }
+
+    private Page<CompanyDto> toPageEmployers(List<CompanyDto> clist, Pageable pageable) {
+        if (pageable.getOffset() >= clist.size()) {
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), clist.size());
+        List<CompanyDto> subList = clist.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, clist.size());
+    }
+
+    public CompanyDto getCompanyDto(String email) {
+        UserDto u = userService.getUserDtoTest(email);
+        Employer e = employerRepository.findByUserEmail(email).orElseThrow(() -> {throw new NoSuchElementException("Employer does not exist");});
+        return CompanyDto.builder()
+                .photo(u.getPhoto())
+                .name(e.getCompanyName())
+                .phoneNumber(u.getPhoneNumber())
+                .email(u.getEmail())
+                .build();
+    }
+
+    public Page<SummaryDto> findSummaryByEmployerEmail(String email, int page, int size) {
+        Employer e = employerRepository.findByUserEmail(email).orElseThrow(() -> {throw new NoSuchElementException("Employer does  not exist");});
+        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
+        List<SummaryDto> list = new ArrayList<>();
+        for (Vacancy v : employerVacancies) {
+            cleanEmptyTemplate(v);
+        }
+        List<Vacancy> employerVacancies2 = vacancyRepository.findByEmployerId(e.getId());
+
+        for (Vacancy v : employerVacancies2) {
+            list.add(SummaryDto.builder()
+                    .id(v.getId())
+                    .title(v.getVacancyName())
+                    .dateTime(v.getDateTime())
+                    .build());
+        }
+        return toPageSummary(list, PageRequest.of(page, size));
+    }
+
+    public int getCompanyDtoSize() {
+        var e = employerRepository.findAll();
+        return e.size();
+    }
+
+    public int getEmployerVacancyCount(String email) {
+        Employer e = employerRepository.findByUserEmail(email).orElseThrow(() -> {throw new NoSuchElementException("Employer does  not exist");});
+        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
+        return employerVacancies.size();
+    }
+    public int getEmployerVacancyCount(Long id) {
+        Employer e = employerRepository.findById(id).orElseThrow(() -> {throw new NoSuchElementException("Employer does  not exist");});
+        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
+        return employerVacancies.size();
     }
 }

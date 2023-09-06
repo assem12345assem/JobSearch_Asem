@@ -1,19 +1,20 @@
 <#import '../layout.ftlh' as main>
 <@main.layout>
+    <script type="text/javascript" src="/static/scripts/searchFormResume.js"></script>
+
     <div class="container">
         <h1 class="my-3 text-center">Резюме</h1>
-        <form class="d-flex m-5" method="post" action="/resume/all/search">
-            <input class="form-control me-2" type="search" placeholder="Поиск резюме по названию или ожидаемой зарплате"
-                   aria-label="Search" name="search">
+        <form class="d-flex m-5" id="searchForm">
+            <input class="form-control me-2" type="search" placeholder="Поиск резюме по названию, категории или ожидаемой зарплате"
+                   aria-label="Search" name="searchWord" id="searchWord">
             <button class="btn btn-outline-success" type="submit">Поиск</button>
         </form>
         <div class="m-3">
             <h3> Сортировать</h3>
             <div class="d-flex">
-                <a href="/resume/all/by_date_reversed" class="btn btn-info " id="toggleLink">по дате</a>
+                <a href="/resume/all/view?pageNumber=0&sort=dateTime&category=default&searchWord=default" class="btn btn-info">по дате</a>
 
-
-                <form class="row mx-3" action="/resume/all/by_category" action="post">
+                <form class="row mx-1" id="categoryForm">
                     <div class="col-5">выбрать по категории:</div>
                     <select class="form-select border-dark col" aria-label="выбрать категорию"
                             name="category" id="category">
@@ -48,7 +49,7 @@
         </div>
         <div class="row row-cols-4 row-cols-lg-3 g-2 g-lg-3">
             <#if resumes??>
-                <#list resumes as item>
+                <#list resumes.content as item>
                     <div class="col">
                         <div class="p-3 border bg-light">
 
@@ -72,7 +73,38 @@
                 Нет данных.
             </#if>
         </div>
-
+        <!-- Pagination controls -->
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link"
+                   href="/resume/all/view?pageNumber=0&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">First</a>
+            </li>
+            <li class="page-item">
+                <#if (pageNumber > 0)>
+                    <a class="page-link"
+                       href="/resume/all/view?pageNumber=${pageNumber - 1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">&laquo;
+                        Previous</a>
+                </#if>
+            </li>
+            <#list 1..totalPages as pageNo>
+                <li class="page-item">
+                    <a class="page-link"
+                       href="/resume/all/view?pageNumber=${pageNo - 1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">
+                        <#if pageNumber == pageNo> </#if>${pageNo}</a>
+                </li>
+            </#list>
+            <li class="page-item">
+                <#if pageNumber < (totalPages-1)>
+                    <a class="page-link"
+                       href="/resume/all/view?pageNumber=${pageNumber + 1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">Next
+                        &raquo;</a>
+                </#if>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                   href="/resume/all/view?pageNumber=${totalPages-1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">Last</a>
+            </li>
+        </ul>
 
     </div>
 

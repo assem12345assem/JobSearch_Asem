@@ -7,6 +7,7 @@ import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.service.AuthService;
 import com.example.jobsearch.service.ResumeService;
 import com.example.jobsearch.service.UserService;
+import com.example.jobsearch.service.UtilService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ public class ResumeMVCController {
     private final ResumeService resumeService;
     private final UserService userService;
     private final AuthService authService;
+    private final UtilService utilService;
 
     @GetMapping("/{id}")
     public String resumeInfo(@PathVariable Long id, Model model, Authentication auth) {
@@ -27,6 +29,14 @@ public class ResumeMVCController {
         model.addAttribute("user", resumeService.getResumeOwner(id));
         model.addAttribute("viewer", authService.getAuthor(auth));
         return "resume/info";
+    }
+    @GetMapping("/add")
+    public String addResume(Model model, Authentication auth) {
+        model.addAttribute("user", authService.getAuthor(auth));
+        ResumeDto r = resumeService.newResume(auth);
+        model.addAttribute("resume", r);
+
+        return "redirect:/resume/edit/" + r.getId();
     }
     @GetMapping("/edit/{id}")
     public String resumeEdit (@PathVariable Long id, Model model, Authentication auth) {
@@ -39,6 +49,8 @@ public class ResumeMVCController {
         resumeService.edit(id, resumeDto, auth);
         return "redirect:/resume/" + id;
     }
+
+
     @GetMapping("/datefix/{id}")
     public String resumeDateFix(@PathVariable Long id) {
         resumeService.dateFix(id);
@@ -64,19 +76,7 @@ public class ResumeMVCController {
         Long resumeId = resumeService.deleteOneEducation(educationId);
         return "redirect:/resume/edit/" + resumeId;
     }
-    @GetMapping("/add")
-    public String addResume(Model model, Authentication auth) {
-        model.addAttribute("user", authService.getAuthor(auth));
 
-        model.addAttribute("resume", resumeService.newResume(auth));
-
-        return "resume/edit";
-    }
-    @PostMapping("/add")
-    public String addResume(@ModelAttribute ResumeDto resumeDto, Authentication auth) {
-        resumeService.edit(resumeDto.getId(), resumeDto, auth);
-        return "redirect:/resume/" + resumeDto.getId();
-    }
     @GetMapping("/delete/{id}")
     public String deleteResume(@PathVariable Long id, Authentication auth) {
         UserDto u = authService.getAuthor(auth);
@@ -85,28 +85,20 @@ public class ResumeMVCController {
     }
 
     @GetMapping("/all/view")
-    public String viewAll(Model model) {
-        model.addAttribute("resumes", resumeService.getAll());
+    public String viewAll(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
+                          @RequestParam(name = "sort", defaultValue = "id") String sort,
+                          @RequestParam(name = "category", defaultValue = "default") String category,
+                          @RequestParam(name = "searchWord", defaultValue = "default") String searchWord,
+                          Model model) {
+        int pageSize = 6; // Number of vacancies per page
+
+        model.addAttribute("resumes", resumeService.getAll(sort, pageNumber, pageSize, category, searchWord));
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("totalPages", utilService.totalPagesCounter(resumeService.getTotalResumesCount(), pageSize));
+        model.addAttribute("sortCriteria", sort);
+        model.addAttribute("category", category);
+        model.addAttribute("searchWord", searchWord);
         return "resume/all";
     }
-    @PostMapping("/all/search")
-    public String searchResume(@RequestParam(name="search") String search, Model model ) {
-        model.addAttribute("resumes", resumeService.searchResult(search));
-        return "resume/all";
 
-    }
-    @GetMapping("/all/by_date_reversed")
-    public String viewAllByDateReversed(Model model) {
-        model.addAttribute("resumes", resumeService.getAllByDateReversed());
-        return "resume/all";
-    }
-
-
-
-
-    @GetMapping("/all/by_category")
-    public String filterByCategory(@RequestParam(name="category") String category, Model model ){
-        model.addAttribute("resumes", resumeService.filterByCategory(category));
-        return "resume/all";
-    }
 }

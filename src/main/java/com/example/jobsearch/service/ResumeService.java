@@ -6,14 +6,15 @@ import com.example.jobsearch.entity.*;
 import com.example.jobsearch.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,6 +28,7 @@ public class ResumeService {
     private final ApplicantRepository applicantRepository;
     private final UserService userService;
     private final AuthService authService;
+    private final CategoryRepository categoryRepository;
 
     private Resume findById(Long resumeId) {
         return resumeRepository.findById(resumeId).orElseThrow(() -> {
@@ -35,7 +37,7 @@ public class ResumeService {
         });
     }
 
-    public List<SummaryDto> findSummaryByApplicantId(Long applicantId) {
+    public Page<SummaryDto> findSummaryByApplicantId(Long applicantId, int page, int size) {
         List<Resume> applicantResumes = resumeRepository.findByApplicantId(applicantId);
         List<SummaryDto> list = new ArrayList<>();
         for (Resume r : applicantResumes) {
@@ -52,8 +54,19 @@ public class ResumeService {
                     .build()
             );
         }
-        return list;
+        return toPageSummary(list, PageRequest.of(page, size));
     }
+
+    private Page<SummaryDto> toPageSummary(List<SummaryDto> v, Pageable pageable) {
+        if (pageable.getOffset() >= v.size()) {
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
+        List<SummaryDto> subList = v.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, v.size());
+    }
+
 
     private void cleanEmptyTemplate(Resume r) {
         if (r.getResumeTitle() == null) {
@@ -128,6 +141,7 @@ public class ResumeService {
     }
 
     public void edit(Long id, ResumeDto resumeDto, Authentication auth) {
+        System.out.println("Edit method");
         UserDto u = authService.getAuthor(auth);
         Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         Resume r = findById(id);
@@ -152,17 +166,17 @@ public class ResumeService {
                     .linkedIn(null)
                     .build());
 
+        } else {
+            contactInfoRepository.save(ContactInfo.builder()
+                    .id(contactInfoVar.get().getId())
+                    .resume(updatedResume)
+                    .telegram(resumeDto.getContact().getTelegram())
+                    .email(resumeDto.getContact().getEmail())
+                    .phoneNumber(resumeDto.getContact().getPhoneNumber())
+                    .facebook(resumeDto.getContact().getFacebook())
+                    .linkedIn(resumeDto.getContact().getLinkedIn())
+                    .build());
         }
-
-        contactInfoRepository.save(ContactInfo.builder()
-                .id(contactInfoVar.get().getId())
-                .resume(updatedResume)
-                .telegram(resumeDto.getContact().getTelegram())
-                .email(resumeDto.getContact().getEmail())
-                .phoneNumber(resumeDto.getContact().getPhoneNumber())
-                .facebook(resumeDto.getContact().getFacebook())
-                .linkedIn(resumeDto.getContact().getLinkedIn())
-                .build());
     }
 
     public void addOneWork(Long resumeId, WorkExperienceDto workExperienceDto) {
@@ -208,37 +222,43 @@ public class ResumeService {
 
     public ResumeDto newResume(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
-        ApplicantDto applicantDto = ApplicantDto.builder()
-                .firstName(a.getFirstName())
-                .lastName(a.getLastName())
-                .dateOfBirth(a.getDateOfBirth())
-                .build();
-        Resume newResume = resumeRepository.save(Resume.builder()
-                .applicant(a)
-                .resumeTitle(null)
-                .category(Category.builder().category("Other").build())
-                .expectedSalary(0)
-                .isActive(false)
-                .isPublished(false)
-                .dateTime(LocalDateTime.now())
-                .build());
+        Optional<Applicant> applicant = applicantRepository.findByUserEmail(u.getEmail());
+        if(applicant.isPresent()) {
+            Applicant a = applicant.get();
+            ApplicantDto applicantDto = ApplicantDto.builder()
+                    .firstName(a.getFirstName())
+                    .lastName(a.getLastName())
+                    .dateOfBirth(a.getDateOfBirth())
+                    .build();
+            Resume newResume = resumeRepository.save(Resume.builder()
+                    .applicant(a)
+                    .resumeTitle("new resume")
+                    .category(Category.builder().category("Other").build())
+                    .expectedSalary(0)
+                    .isActive(false)
+                    .isPublished(false)
+                    .dateTime(LocalDateTime.now())
+                    .build());
 
 
-        Resume r = findById(newResume.getId());
-        return ResumeDto.builder()
-                .id(r.getId())
-                .profile(applicantDto)
-                .resumeTitle(r.getResumeTitle())
-                .category(r.getCategory().getCategory())
-                .expectedSalary(r.getExpectedSalary())
-                .isActive(Boolean.TRUE)
-                .isPublished(Boolean.TRUE)
-                .eduList(null)
-                .workList(null)
-                .contact(null)
-                .dateTime(r.getDateTime())
-                .build();
+            Resume r = findById(newResume.getId());
+            return ResumeDto.builder()
+                    .id(r.getId())
+                    .profile(applicantDto)
+                    .resumeTitle(r.getResumeTitle())
+                    .category(r.getCategory().getCategory())
+                    .expectedSalary(r.getExpectedSalary())
+                    .isActive(Boolean.TRUE)
+                    .isPublished(Boolean.TRUE)
+                    .eduList(null)
+                    .workList(null)
+                    .contact(null)
+                    .dateTime(r.getDateTime())
+                    .build();
+        } else {
+            throw new NoSuchElementException("Applicant does not exist. Please sign up as applicant");
+        }
+
     }
 
     public void dateFix(Long id) {
@@ -270,71 +290,41 @@ public class ResumeService {
 
     public void delete(Long id) {
         resumeRepository.delete(resumeRepository.findById(id).orElseThrow(() ->
-            new NoSuchElementException("Resume does not exist")));
+                new NoSuchElementException("Resume does not exist")));
 
     }
 
-    public List<ResumeDto> getAll() {
-        List<Resume> resumes = resumeRepository.findAll();
-        return resumes.stream().map(this::makeDtoFromResume).toList();
-    }
-
-    public List<ResumeDto> searchResult(String searchWord) {
-        List<ResumeDto> r = getAll();
-        String search = searchWord.toLowerCase();
-        List<ResumeDto> searchResult = new ArrayList<>();
-        for (ResumeDto resume :
-                r) {
-            if (resume.getResumeTitle() != null) {
-                if (resume.getResumeTitle().toLowerCase().contains(search)) {
-                    searchResult.add(resume);
-                }
-            }
-            if (resume.getExpectedSalary() != null) {
-                if (resume.getExpectedSalary().toString().contains(search)) {
-                    searchResult.add(resume);
-                }
-            }
+    public Page<ResumeDto> getAll(String sortCriteria, int page, int size, String category, String searchWord) {
+        List<Resume> vlist;
+        if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(searchWord)) {
+            vlist = resumeRepository.findAll(Sort.by(sortCriteria));
+        } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(searchWord)) {
+            vlist = resumeRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
+        } else {
+            vlist = resumeRepository.findByCategoryAndSearchWord(
+                    "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
+                    "default".equalsIgnoreCase(searchWord) ? null : searchWord,
+                    Sort.by(sortCriteria)
+            );
         }
-        return searchResult;
+        return toPage(vlist, PageRequest.of(page, size, Sort.by(sortCriteria)));
     }
 
-    public List<ResumeDto> getAllByDateReversed() {
-        List<ResumeDto> r = getAll();
-        List<ResumeDto> notEmptyField = new ArrayList<>();
-        List<ResumeDto> emptyField = new ArrayList<>();
-        for (ResumeDto resume :
-                r) {
-            if (resume.getDateTime() == null) {
-                emptyField.add(resume);
-            } else {
-                notEmptyField.add(resume);
-            }
+    private Page<ResumeDto> toPage(List<Resume> list, Pageable pageable) {
+        var v = list.stream().map(this::makeDtoFromResume).toList();
+        if (pageable.getOffset() >= v.size()) {
+            return Page.empty();
         }
-
-        notEmptyField.sort(Comparator.comparing(ResumeDto::getDateTime).reversed());
-
-        notEmptyField.addAll(emptyField);
-        return notEmptyField;
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
+        List<ResumeDto> subList = v.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, v.size());
     }
 
-    public List<ResumeDto> filterByCategory(String category) {
-        List<ResumeDto> r = getAll();
-        List<ResumeDto> r2 = new ArrayList<>();
-        for (ResumeDto resume :
-                r) {
-            if (resume.getCategory() != null) {
-                if (resume.getCategory().equalsIgnoreCase(category)) {
-                    r2.add(resume);
-                }
-            }
-
-        }
-        return r2;
-    }
 
     public List<SummaryDto> findSummaryForMain() {
-        List<ResumeDto> l = getAllByDateReversed();
+        Sort sort = Sort.by(Sort.Direction.DESC, "dateTime");
+        List<Resume> l = resumeRepository.findAll(sort);
         List<SummaryDto> summaryDtos = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             summaryDtos.add(SummaryDto.builder()
@@ -344,6 +334,11 @@ public class ResumeService {
                     .build());
         }
         return summaryDtos;
+    }
+
+    public int getTotalResumesCount() {
+        List<Resume> list = resumeRepository.findAll();
+        return list.size();
     }
 }
 
