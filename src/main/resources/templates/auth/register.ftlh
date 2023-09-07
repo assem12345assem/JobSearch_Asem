@@ -12,7 +12,10 @@
                                     <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Регистрация пользователя</p>
 
                                     <form class="mx-1 mx-md-4" action="/auth/register" method="post">
-
+                                        <#if _csrf??>
+                                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                   value="${(_csrf.token)!'csrf-token'}"/>
+                                        </#if>
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">

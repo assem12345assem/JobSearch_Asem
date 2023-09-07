@@ -16,8 +16,8 @@ public class Authority {
     private Long id;
     private String authority;
 
-    @OneToOne
-    @JoinColumn(name="email")
-    private User user;
+//    @OneToOne
+//    @JoinColumn(name="email")
+//    private User user;
 }
 

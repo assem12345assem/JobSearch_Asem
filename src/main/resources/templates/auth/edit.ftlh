@@ -26,6 +26,10 @@
                     <!-- Profile picture upload button-->
                     <div class="my-3 text-center">
                         <form class="text-center my-3" action="/auth/images/upload/${user.email}" method="post" enctype="multipart/form-data">
+                            <#if _csrf??>
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                       value="${(_csrf.token)!'csrf-token'}"/>
+                            </#if>
                             <input type="file" name="file" id="image_input" required><br><br>
                             <button class="btn btn-warning" type="submit">Загрузить</button>
                         </form>
@@ -49,6 +53,10 @@
                 </div>
                 <div class="card-body">
                     <form method="post" action="/auth/edit/${user.email}" id="edit_profile">
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                   value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
                         <input type="hidden" value="${user.email}" name="email" />
 
                         <!-- Form Group (username)-->

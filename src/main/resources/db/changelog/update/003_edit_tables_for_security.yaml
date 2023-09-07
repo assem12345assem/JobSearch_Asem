@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: edit tables for security
+      author: Asem
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(100)
+        - dropForeignKeyConstraint:
+            baseTableName: authorities
+            constraintName: pk_authorities
+        - dropColumn:
+            tableName: authorities
+            columnName: email
+        - createTable:
+            tableName: roles_authorities
+            columns:
+              - column:
+                  name: role_id
+                  type: long
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    foreignKeyName: fk_role_id
+                    references: roles(id)
+              - column:
+                  name: authority_id
+                  type: long
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    foreignKeyName: fk_authority_id
+                    references: authorities(id)
+        - createTable:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_email
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    foreignKeyName: fk_user_email_id
+                    references: user_table(email)
+              - column:
+                  name: role_id
+                  type: long
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    foreignKeyName: fk_role_id_to_user
+                    references: roles(id)

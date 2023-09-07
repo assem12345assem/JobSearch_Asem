@@ -49,9 +49,9 @@ public class UserService {
                     .photo(userDto.getPhoto())
                     .enabled(Boolean.TRUE)
                     .build());
-            authorityRepository.save(Authority.builder()
-                    .authority(userDto.getUserType().toUpperCase())
-                    .user(user).build());
+//            authorityRepository.save(Authority.builder()
+//                    .authority(userDto.getUserType().toUpperCase())
+//                    .user(user).build());
             if (userDto.getUserType().equalsIgnoreCase("applicant")) {
                 applicantRepository.save(Applicant.builder()
                         .user(user)
@@ -68,7 +68,7 @@ public class UserService {
 
     }
     public UserDto getUserDto(Authentication auth) {
-        org.springframework.security.core.userdetails.User userAuth = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
+        User userAuth = (User) auth.getPrincipal();
         User user = userRepository.findById(userAuth.getUsername()).orElseThrow(() -> new NoSuchElementException("User not found"));
         return makeDtoFromUser(user);
     }

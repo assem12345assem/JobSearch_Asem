@@ -20,32 +20,9 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String FETCH_USERS_QUERY = """
-            select email, password, enabled
-            from user_table
-            where email = ?;
-            """;
-
-    private static final String FETCH_AUTHORITIES_QUERY = """
-            select email, authority
-             from authorities
-             where email = ?
-            """;
-
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    private final DataSource dataSource;
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery(FETCH_USERS_QUERY)
-                .authoritiesByUsernameQuery(FETCH_AUTHORITIES_QUERY)
-                .passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Bean
@@ -63,13 +40,13 @@ public class SecurityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .permitAll())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/apply/forjob/**")).hasAuthority("APPLICANT")
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/apply/offerjob/**")).hasAuthority("EMPLOYER")
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/apply/**")).fullyAuthenticated()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/all/**")).permitAll()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/resume/**")).fullyAuthenticated()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/vacancy/all/**")).permitAll()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/vacancy/**")).fullyAuthenticated()
+                        .requestMatchers("/apply/forjob/**").hasAuthority("APPLICANT")
+                        .requestMatchers("/apply/offerjob/**").hasAuthority("EMPLOYER")
+                        .requestMatchers("/apply/**").fullyAuthenticated()
+                        .requestMatchers("/resume/all/**").permitAll()
+                        .requestMatchers("/resume/**").fullyAuthenticated()
+                        .requestMatchers("/vacancy/all/**").permitAll()
+                        .requestMatchers("/vacancy/**").fullyAuthenticated()
 
                         .anyRequest().permitAll()
                 );
