@@ -5,6 +5,10 @@
     <div class="container">
         <h1 class="my-3 text-center">Резюме</h1>
         <form class="d-flex m-5" id="searchForm">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <input class="form-control me-2" type="search" placeholder="Поиск резюме по названию, категории или ожидаемой зарплате"
                    aria-label="Search" name="searchWord" id="searchWord">
             <button class="btn btn-outline-success" type="submit">Поиск</button>
@@ -15,6 +19,10 @@
                 <a href="/resume/all/view?pageNumber=0&sort=dateTime&category=default&searchWord=default" class="btn btn-info">по дате</a>
 
                 <form class="row mx-1" id="categoryForm">
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                               value="${(_csrf.token)!'csrf-token'}"/>
+                    </#if>
                     <div class="col-5">выбрать по категории:</div>
                     <select class="form-select border-dark col" aria-label="выбрать категорию"
                             name="category" id="category">

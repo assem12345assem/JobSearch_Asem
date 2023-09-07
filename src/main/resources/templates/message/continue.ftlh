@@ -116,6 +116,10 @@
                             </div>
                             <div id="message_block">
                                 <form id="message_form" action="/apply/send_message" type="post">
+                                    <#if _csrf??>
+                                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                               value="${(_csrf.token)!'csrf-token'}"/>
+                                    </#if>
                                     <small>Сообщение</small>
                                     <input type="hidden" name="jobApplicationId"
                                            value="${firstMessage.jobApplicationId}">

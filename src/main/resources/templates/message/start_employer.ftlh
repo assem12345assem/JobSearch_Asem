@@ -62,6 +62,10 @@
 <h3>Ваша вакансия:</h3>
                             </div>
                             <form action="/apply/offerjob/${resume.id}" method="post">
+                                <#if _csrf??>
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                           value="${(_csrf.token)!'csrf-token'}"/>
+                                </#if>
                                 <input type="hidden" name="resumeId" value="${resume.id}">
                                 <small>Текст сообщения:</small>
                                 <input class="form-control" type="text" placeholder="текст сообщения"
