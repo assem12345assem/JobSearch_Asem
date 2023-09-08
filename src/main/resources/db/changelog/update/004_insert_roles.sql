@@ -1,0 +1,5 @@
+INSERT INTO ROLES (ROLE)
+VALUES
+    ('APPLICANT'),
+    ('EMPLOYER'),
+    ('GUEST');

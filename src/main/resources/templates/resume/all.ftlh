@@ -72,7 +72,7 @@
                             <#if (item.dateTime)?has_content>
                                 <p>${item.dateTime}</p>
                             </#if>
-                            <a href="/resume/${item.id}"
+                            <a href="/resume/info/${item.id}"
                                class="btn btn-success d-flex justify-content-center">Подробно</a>
                         </div>
                     </div>

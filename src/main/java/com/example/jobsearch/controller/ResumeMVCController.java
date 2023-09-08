@@ -23,7 +23,7 @@ public class ResumeMVCController {
     private final AuthService authService;
     private final UtilService utilService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/info/{id}")
     public String resumeInfo(@PathVariable Long id, Model model, Authentication auth) {
         model.addAttribute("resume", resumeService.findDtoById(id));
         model.addAttribute("user", resumeService.getResumeOwner(id));
@@ -47,37 +47,37 @@ public class ResumeMVCController {
     @PostMapping("/edit/{id}")
     public String resumeEdit (@PathVariable Long id, @ModelAttribute ResumeDto resumeDto, Authentication auth) {
         resumeService.edit(id, resumeDto, auth);
-        return "redirect:/resume/" + id;
+        return "redirect:/resume/info/" + id;
     }
 
 
-    @GetMapping("/datefix/{id}")
+    @GetMapping("/edit/datefix/{id}")
     public String resumeDateFix(@PathVariable Long id) {
         resumeService.dateFix(id);
-        return "redirect:/resume/" + id;
+        return "redirect:/resume/info/" + id;
     }
-    @PostMapping("/add_one_work/{resumeId}")
+    @PostMapping("/edit/add_one_work/{resumeId}")
     public String addOneWork(@PathVariable Long resumeId, @ModelAttribute WorkExperienceDto workExperienceDto) {
         resumeService.addOneWork(resumeId, workExperienceDto);
         return "redirect:/resume/edit/" + resumeId;
     }
-    @PostMapping("/add_one_edu/{resumeId}")
+    @PostMapping("/edit/add_one_edu/{resumeId}")
     public String addOneEducation(@PathVariable Long resumeId, @ModelAttribute EducationDto educationDto) {
         resumeService.addOneEducation(resumeId, educationDto);
         return "redirect:/resume/edit/" + resumeId;
     }
-    @GetMapping("/delete_work/{workExperienceId}")
+    @GetMapping("/edit/delete_work/{workExperienceId}")
     public String deleteOneWork(@PathVariable Long workExperienceId) {
         Long resumeId = resumeService.deleteOneWork(workExperienceId);
         return "redirect:/resume/edit/" + resumeId;
     }
-    @GetMapping("/delete_education/{educationId}")
+    @GetMapping("/edit/delete_education/{educationId}")
     public String deleteOneEducation(@PathVariable Long educationId) {
         Long resumeId = resumeService.deleteOneEducation(educationId);
         return "redirect:/resume/edit/" + resumeId;
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/edit/delete/{id}")
     public String deleteResume(@PathVariable Long id, Authentication auth) {
         UserDto u = authService.getAuthor(auth);
         resumeService.delete(id);

@@ -40,14 +40,10 @@ public class SecurityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .permitAll())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/apply/forjob/**").hasAuthority("APPLICANT")
-                        .requestMatchers("/apply/offerjob/**").hasAuthority("EMPLOYER")
-                        .requestMatchers("/apply/**").fullyAuthenticated()
-                        .requestMatchers("/resume/all/**").permitAll()
-                        .requestMatchers("/resume/**").fullyAuthenticated()
-                        .requestMatchers("/vacancy/all/**").permitAll()
-                        .requestMatchers("/vacancy/**").fullyAuthenticated()
-
+                        .requestMatchers("/apply/offerjob/**", "/vacancy/edit/**", "/vacancy/add", "/resume/all/view", "/resume/info/**").hasRole("EMPLOYER")
+                        .requestMatchers("/apply/forjob/**",  "/resume/**", "/resume/info/**", "/vacancy/all/companies").hasRole("APPLICANT")
+                        .requestMatchers("/apply/all/**",  "/auth/profile/**", "/auth/edit/**", "/auth/images/upload/**").fullyAuthenticated()
+                        .requestMatchers("/vacancy/**", "/auth/images/**").permitAll()
                         .anyRequest().permitAll()
                 );
         return http.build();

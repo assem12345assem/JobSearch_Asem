@@ -277,7 +277,7 @@
                                             <#list resume.workList as item>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <button class="btn btn-info rounded-circle px-3 mb-2">${item_index + 1}</button>
-                                                    <a class="btn btn-danger" href="/resume/delete_work/${item.id}">Удалить</a>
+                                                    <a class="btn btn-danger" href="/resume/edit/delete_work/${item.id}">Удалить</a>
                                                 </div>
 
 
@@ -379,7 +379,7 @@
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <button class="btn btn-info rounded-circle px-3 mb-2">${item_index + 1}</button>
                                                     <a class="btn btn-danger"
-                                                       href="/resume/delete_education/${item.id}">Удалить</a>
+                                                       href="/resume/edit/delete_education/${item.id}">Удалить</a>
                                                 </div>
 
                                                 <small>Образование</small>
@@ -462,7 +462,7 @@
                     <h5 class="modal-title" id="workModalLabel">Опыт работы</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                    <form method="post" action="/resume/add_one_work/${resume.id}">
+                    <form method="post" action="/resume/edit/add_one_work/${resume.id}">
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                    value="${(_csrf.token)!'csrf-token'}"/>
@@ -502,7 +502,7 @@
                     <h5 class="modal-title" id="eduModalLabel">Образование</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                    <form method="post" action="/resume/add_one_edu/${resume.id}">
+                    <form method="post" action="/resume/edit/add_one_edu/${resume.id}">
                         <#if _csrf??>
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                    value="${(_csrf.token)!'csrf-token'}"/>

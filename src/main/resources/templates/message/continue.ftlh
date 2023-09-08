@@ -115,7 +115,7 @@
                                 </#if>
                             </div>
                             <div id="message_block">
-                                <form id="message_form" action="/apply/send_message" type="post">
+                                <form id="message_form" action="/apply/all/send_message" type="post">
                                     <#if _csrf??>
                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                                value="${(_csrf.token)!'csrf-token'}"/>
@@ -154,7 +154,7 @@
             const jsonData = JSON.stringify(formDataObject);
 
             try {
-                const response = await fetch(baseUrl + '/apply/send_message', {
+                const response = await fetch(baseUrl + '/apply/all/send_message', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

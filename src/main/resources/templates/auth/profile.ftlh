@@ -128,17 +128,17 @@
                         <div class="d-flex">
                             <#if user.userType=="employer">
                                 <a href="/vacancy/edit/${item.id}" class="btn btn-primary me-3">Редактировать</a>
-                                <a href="/vacancy/datefix/${item.id}" class="btn btn-success">Обнов.дату</a>
+                                <a href="/vacancy/edit/datefix/${item.id}" class="btn btn-success">Обнов.дату</a>
                             <#else>
                                 <a href="/resume/edit/${item.id}" class="btn btn-primary me-3">Редактировать</a>
-                                <a href="/resume/datefix/${item.id}" class="btn btn-success">Обнов.дату</a>
+                                <a href="/resume/edit/datefix/${item.id}" class="btn btn-success">Обнов.дату</a>
                             </#if>
                         </div>
                         <div class="text-center my-2">
                             <#if user.userType=="employer">
-                                <a href="/vacancy/delete/${item.id}" class="btn btn-danger">Удалить</a>
+                                <a href="/vacancy/edit/delete/${item.id}" class="btn btn-danger">Удалить</a>
                             <#else>
-                                <a href="/resume/delete/${item.id}" class="btn btn-danger">Удалить</a>
+                                <a href="/resume/edit/delete/${item.id}" class="btn btn-danger">Удалить</a>
                             </#if>
                         </div>
                     </div>
