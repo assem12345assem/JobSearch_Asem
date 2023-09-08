@@ -31,7 +31,7 @@ public class JobApplicationMVCController {
     @PostMapping("/forjob/{vacancyId}")
     public String apply(@PathVariable Long vacancyId, @ModelAttribute FirstJobApplicationDto firstJobApplicationDto, Authentication auth) {
         Long jobApplicationId = jobApplicationService.save(firstJobApplicationDto, auth, "/resume/info/");
-        return "redirect:/apply/chat/" + jobApplicationId;
+        return "redirect:/apply/all/chat/" + jobApplicationId;
     }
     @GetMapping("/offerjob/{resumeId}")
     public String offerJob(@PathVariable Long resumeId, Model model, Authentication auth) {
@@ -43,7 +43,7 @@ public class JobApplicationMVCController {
     @PostMapping("/offerjob/{resumeId}")
     public String offerJob(@PathVariable Long resumeId, @ModelAttribute FirstJobApplicationDto firstJobApplicationDto, Authentication auth) {
         Long jobApplicationId = jobApplicationService.save(firstJobApplicationDto, auth, "/vacancy/");
-        return "redirect:/apply/chat/" + jobApplicationId;
+        return "redirect:/apply/all/chat/" + jobApplicationId;
     }
     @GetMapping("/all/chat/{jobApplicationId}")
     public String chat(@PathVariable Long jobApplicationId, Model model, Authentication auth) {
@@ -61,6 +61,6 @@ public class JobApplicationMVCController {
     @PostMapping("/all/send_message")
     public String sendMessage(@RequestBody MessageDto messageDto, Authentication auth) {
         jobApplicationService.sendMessage(messageDto, auth);
-        return "redirect:/apply/chat/" + messageDto.getJobApplicationId();
+        return "redirect:/apply/all/chat/" + messageDto.getJobApplicationId();
     }
 }

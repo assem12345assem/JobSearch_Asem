@@ -30,8 +30,9 @@ public class ResumeMVCController {
         model.addAttribute("viewer", authService.getAuthor(auth));
         return "resume/info";
     }
-    @GetMapping("/add")
+    @PostMapping("/add")
     public String addResume(Model model, Authentication auth) {
+        System.out.println("addResume");
         model.addAttribute("user", authService.getAuthor(auth));
         ResumeDto r = resumeService.newResume(auth);
         model.addAttribute("resume", r);

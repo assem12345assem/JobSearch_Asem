@@ -69,7 +69,12 @@
                                 <input class="form-control mb-2" type="text" placeholder="текст сообщения"
                                        name="messageText">
                                 <p class="mb-3">Создайте резюме, чтобы откликнуться на вакансию или выберите из списка:</p>
-                                <a href="/resume/add" class="btn btn-info my-3">Создать резюме</a>
+                                <#if _csrf??>
+                                <form action="/resume/add" method="post">
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                            value="${(_csrf.token)!'--no-token--'}"/>
+                                    <button type="submit" class="btn btn-warning p-3">Создать резюме</button>
+                                </form>
                                 <#if (resumes)?? >
                                     <select class="form-select border-dark"
                                             aria-label="Default select example" name="resumeId">

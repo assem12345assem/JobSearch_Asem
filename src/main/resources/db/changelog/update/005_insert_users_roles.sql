@@ -4,6 +4,6 @@ SELECT
     R.ID
 FROM USER_TABLE U
          JOIN ROLES R ON
-        (U.USER_TYPE = 'employer' AND R.ROLE = 'EMPLOYER') OR
-        (U.USER_TYPE = 'applicant' AND R.ROLE = 'APPLICANT')
+        (U.USER_TYPE = 'employer' AND R.ROLE = 'ROLE_EMPLOYER') OR
+        (U.USER_TYPE = 'applicant' AND R.ROLE = 'ROLE_APPLICANT')
 WHERE U.USER_TYPE IN ('employer', 'applicant');

@@ -128,9 +128,6 @@ public class VacancyService {
         Employer e = employerRepository.findById(v.getEmployer().getId()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
         return userService.getUserDtoTest(e.getUser().getEmail());
     }
-    public List<Vacancy> listByEmployer(Long employerId) {
-        return vacancyRepository.findByEmployerId(employerId);
-    }
 
     public Page<SummaryDto> findSummaryByEmployerId(Long employerId, int page, int size) {
         List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(employerId);
@@ -230,11 +227,6 @@ public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String c
     public int getTotalVacanciesCount() {
         List<Vacancy> list = vacancyRepository.findAll();
         return list.size();
-    }
-
-    public Page<VacancyDto> getAllByDateReversed(String sortCriteria, int pageNumber, int pageSize) {
-        var vlist = vacancyRepository.findAll();
-        return toPage(vlist, PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, sortCriteria)));
     }
 
     public List<LocalDate> getDates() {

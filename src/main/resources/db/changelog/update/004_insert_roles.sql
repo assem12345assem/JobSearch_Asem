@@ -1,5 +1,5 @@
 INSERT INTO ROLES (ROLE)
 VALUES
-    ('APPLICANT'),
-    ('EMPLOYER'),
-    ('GUEST');
+    ('ROLE_APPLICANT'),
+    ('ROLE_EMPLOYER'),
+    ('ROLE_GUEST');
