@@ -63,7 +63,6 @@ public class JobApplicationService {
     }
 
     public List<MessageDto> getMessages(Long jobApplicationId, Authentication auth) {
-        UserDto u = authService.getAuthor(auth);
         List<Message> list = messageRepository.findAllByJobApplicationId(jobApplicationId);
 
         return list.stream().map(this::makeDtoFromMessage).toList();

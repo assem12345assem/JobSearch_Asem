@@ -6,13 +6,14 @@ import com.example.jobsearch.dto.EditProfileDto;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.entity.Applicant;
-import com.example.jobsearch.entity.Authority;
 import com.example.jobsearch.entity.Employer;
+import com.example.jobsearch.entity.Role;
 import com.example.jobsearch.entity.User;
 import com.example.jobsearch.repository.ApplicantRepository;
-import com.example.jobsearch.repository.AuthorityRepository;
 import com.example.jobsearch.repository.EmployerRepository;
+import com.example.jobsearch.repository.RoleRepository;
 import com.example.jobsearch.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,10 +34,10 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final FileService fileService;
-    private final AuthorityRepository authorityRepository;
     private final ApplicantRepository applicantRepository;
     private final EmployerRepository employerRepository;
-
+    private final RoleRepository roleRepository;
+@Transactional
     public void register(UserDto userDto) {
         var u = userRepository.findById(userDto.getEmail());
         if(u.isEmpty()) {
@@ -49,9 +50,8 @@ public class UserService {
                     .photo(userDto.getPhoto())
                     .enabled(Boolean.TRUE)
                     .build());
-            authorityRepository.save(Authority.builder()
-                    .authority(userDto.getUserType().toUpperCase())
-                    .user(user).build());
+Role role = roleRepository.findByRole("ROLE_" + user.getUserType().toUpperCase());
+userRepository.assignRoleToUser(user.getEmail(), role.getId());
             if (userDto.getUserType().equalsIgnoreCase("applicant")) {
                 applicantRepository.save(Applicant.builder()
                         .user(user)
@@ -68,7 +68,7 @@ public class UserService {
 
     }
     public UserDto getUserDto(Authentication auth) {
-        org.springframework.security.core.userdetails.User userAuth = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
+        User userAuth = (User) auth.getPrincipal();
         User user = userRepository.findById(userAuth.getUsername()).orElseThrow(() -> new NoSuchElementException("User not found"));
         return makeDtoFromUser(user);
     }

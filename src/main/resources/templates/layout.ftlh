@@ -59,7 +59,15 @@
                         name = user.getUsername()
                         >
                         <a href="/auth/profile/${name}" class="text-light m-2 m-sm-0" id="profile_page">Hi, ${name}</a>
-                        <a href="/logout" class="btn btn-outline-info m-2" id="logout">Logout</a>
+                        <#if _csrf??>
+                            <form action="/logout" method="post">
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                       value="${(_csrf.token)!'--no-token--'}"/>
+                                <button type="submit" class="btn btn-outline-info m-2" id="logout">Logout</button>
+                            </form>
+                        <#else>
+                            <a href="/logout" class="btn btn-outline-info m-2" id="logout">Logout</a>
+                        </#if>
                     <#else>
                         <a href="/auth/login" class="btn btn-outline-info m-2">SignIn</a>
                         <a href="/auth/register" class="btn btn-outline-info m-2">SignUp</a>

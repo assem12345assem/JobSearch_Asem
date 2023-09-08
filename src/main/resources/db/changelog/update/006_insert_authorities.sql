@@ -1,0 +1,15 @@
+insert into AUTHORITIES (AUTHORITY) values
+                                        ( 'RESUME_CREATE' ),
+                                        ( 'RESUME_DELETE' ),
+                                        ( 'RESUME_UPDATE' ),
+                                        ( 'VACANCY_CREATE' ),
+                                        ( 'VACANCY_DELETE' ),
+                                        ( 'VACANCY_UPDATE' ),
+                                        ('VACANCY_VIEW_ALL'),
+                                        ( 'JOB_APPLY' ),
+                                        ( 'JOB_OFFER' ),
+                                        ( 'MESSAGE_CREATE' ),
+                                        ('COMPANY_VIEW_ALL'),
+                                        ('USER_UPDATE'),
+                                        ('USER_CREATE'),
+                                        ('RESUME_VIEW_ALL');

@@ -38,7 +38,7 @@ public class VacancyMVCController {
         vacancyService.edit(id, vacancyDto, auth);
         return "redirect:/vacancy/" + id;
     }
-    @GetMapping("/datefix/{id}")
+    @GetMapping("/edit/datefix/{id}")
     public String vacancyDateFix(@PathVariable Long id) {
         vacancyService.dateFix(id);
         return "redirect:/vacancy/" + id;
@@ -57,7 +57,7 @@ public class VacancyMVCController {
         vacancyService.edit(vacancyDto.getId(), vacancyDto, auth);
         return "redirect:/vacancy/" + vacancyDto.getId();
     }
-    @GetMapping("/delete/{id}")
+    @GetMapping("/edit/delete/{id}")
     public String deleteVacancy(@PathVariable Long id, Authentication auth) {
         vacancyService.delete(id);
         UserDto u = authService.getAuthor(auth);

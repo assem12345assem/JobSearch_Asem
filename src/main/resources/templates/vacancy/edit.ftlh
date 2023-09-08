@@ -5,7 +5,10 @@
         <div class="main-body">
             <h2 class="text-primary fs-2 text-center"> Вакансия пользователя:</h2>
             <form action="/vacancy/edit/${vacancy.id}" method="post">
-
+                <#if _csrf??>
+                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                           value="${(_csrf.token)!'csrf-token'}"/>
+                </#if>
                 <div class="d-grid gap-2 fixed-button-container">
                     <button class="btn btn-success mt-3 bottom-button" type="submit" id="submitResume">Сохранить
                     </button>

@@ -1,0 +1,89 @@
+databaseChangeLog:
+  - changeSet:
+      id: edit tables for security
+      author: Asem
+      changes:
+        - dropTable:
+            tableName: authorities
+        - createTable:
+            tableName: authorities
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: authority
+                  type: varchar(100)
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(100)
+        - createTable:
+            tableName: roles_authorities
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: long
+              - column:
+                  name: authority_id
+                  type: long
+        - createTable:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: user_email
+                  type: varchar(50)
+              - column:
+                  name: role_id
+                  type: long
+        - addForeignKeyConstraint:
+            baseTableName: users_roles
+            baseColumnNames: role_id
+            constraintName: fk_role_id_users_roles
+            referencedTableName: roles
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: users_roles
+            baseColumnNames: user_email
+            constraintName: fk_user_email_users_roles
+            referencedTableName: user_table
+            referencedColumnNames: email
+        - addForeignKeyConstraint:
+            baseTableName: roles_authorities
+            baseColumnNames: role_id
+            constraintName: fk_role_id_roles_authorities
+            referencedTableName: roles
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: roles_authorities
+            baseColumnNames: authority_id
+            constraintName: fk_authority_id_roles_authorities
+            referencedTableName: authorities
+            referencedColumnNames: id

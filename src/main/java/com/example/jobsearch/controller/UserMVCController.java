@@ -36,7 +36,7 @@ public class UserMVCController {
     @ResponseStatus(code = HttpStatus.SEE_OTHER)
     public String register(@Valid @ModelAttribute UserDto userDto) {
         userService.register(userDto);
-        return "redirect:/";
+        return "redirect:/auth/login";
     }
 
     @GetMapping("/login")

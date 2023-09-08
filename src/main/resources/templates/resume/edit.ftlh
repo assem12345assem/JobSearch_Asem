@@ -4,7 +4,10 @@
         <div class="main-body">
             <h2 class="text-primary fs-2 text-center"> Резюме пользователя:</h2>
             <form action="/resume/edit/${resume.id}" method="post">
-
+                <#if _csrf??>
+                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                           value="${(_csrf.token)!'csrf-token'}"/>
+                </#if>
                 <div class="d-grid gap-2 fixed-button-container">
                     <button class="btn btn-success mt-3 bottom-button" type="submit" id="submitResume">Сохранить
                     </button>
@@ -274,7 +277,7 @@
                                             <#list resume.workList as item>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <button class="btn btn-info rounded-circle px-3 mb-2">${item_index + 1}</button>
-                                                    <a class="btn btn-danger" href="/resume/delete_work/${item.id}">Удалить</a>
+                                                    <a class="btn btn-danger" href="/resume/edit/delete_work/${item.id}">Удалить</a>
                                                 </div>
 
 
@@ -376,7 +379,7 @@
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <button class="btn btn-info rounded-circle px-3 mb-2">${item_index + 1}</button>
                                                     <a class="btn btn-danger"
-                                                       href="/resume/delete_education/${item.id}">Удалить</a>
+                                                       href="/resume/edit/delete_education/${item.id}">Удалить</a>
                                                 </div>
 
                                                 <small>Образование</small>
@@ -459,7 +462,11 @@
                     <h5 class="modal-title" id="workModalLabel">Опыт работы</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                    <form method="post" action="/resume/add_one_work/${resume.id}">
+                    <form method="post" action="/resume/edit/add_one_work/${resume.id}">
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                   value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
                         <div class="modal-body">
 
                         <small>Название компании</small>
@@ -495,7 +502,11 @@
                     <h5 class="modal-title" id="eduModalLabel">Образование</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                    <form method="post" action="/resume/add_one_edu/${resume.id}">
+                    <form method="post" action="/resume/edit/add_one_edu/${resume.id}">
+                        <#if _csrf??>
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                   value="${(_csrf.token)!'csrf-token'}"/>
+                        </#if>
                         <div class="modal-body">
                         <small>Образование</small>
                         <input class="form-control" type="text" placeholder="Образование"

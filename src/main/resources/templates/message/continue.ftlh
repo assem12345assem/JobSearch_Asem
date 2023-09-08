@@ -115,7 +115,10 @@
                                 </#if>
                             </div>
                             <div id="message_block">
-                                <form id="message_form" action="/apply/send_message" type="post">
+                                <form id="message_form" action="/apply/all/send_message" type="post">
+                                    <#if _csrf??>
+                                        <input type="hidden" name="_csrf" value="${(_csrf.token)!'csrf-token'}"/>
+                                    </#if>
                                     <small>Сообщение</small>
                                     <input type="hidden" name="jobApplicationId"
                                            value="${firstMessage.jobApplicationId}">
@@ -150,10 +153,13 @@
             const jsonData = JSON.stringify(formDataObject);
 
             try {
-                const response = await fetch(baseUrl + '/apply/send_message', {
+                const csrfToken = document.querySelector('input[name="_csrf"]').value;
+                const response = await fetch(baseUrl + '/apply/all/send_message', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+
                     },
                     body: jsonData,
                 });

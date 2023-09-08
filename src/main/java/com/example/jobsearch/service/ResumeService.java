@@ -4,6 +4,7 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.dto.*;
 import com.example.jobsearch.entity.*;
 import com.example.jobsearch.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -29,6 +30,7 @@ public class ResumeService {
     private final UserService userService;
     private final AuthService authService;
     private final CategoryRepository categoryRepository;
+    private final AuthUserDetailsService authUserDetailsService;
 
     private Resume findById(Long resumeId) {
         return resumeRepository.findById(resumeId).orElseThrow(() -> {
@@ -141,7 +143,6 @@ public class ResumeService {
     }
 
     public void edit(Long id, ResumeDto resumeDto, Authentication auth) {
-        System.out.println("Edit method");
         UserDto u = authService.getAuthor(auth);
         Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         Resume r = findById(id);
@@ -220,44 +221,47 @@ public class ResumeService {
         return e.getResume().getId();
     }
 
-    public ResumeDto newResume(Authentication auth) {
+
+@Transactional
+    public ResumeDto newResume(Authentication auth)  {
+        System.out.println("newResume");
         UserDto u = authService.getAuthor(auth);
-        Optional<Applicant> applicant = applicantRepository.findByUserEmail(u.getEmail());
-        if(applicant.isPresent()) {
-            Applicant a = applicant.get();
-            ApplicantDto applicantDto = ApplicantDto.builder()
-                    .firstName(a.getFirstName())
-                    .lastName(a.getLastName())
-                    .dateOfBirth(a.getDateOfBirth())
-                    .build();
-            Resume newResume = resumeRepository.save(Resume.builder()
-                    .applicant(a)
-                    .resumeTitle("new resume")
-                    .category(Category.builder().category("Other").build())
-                    .expectedSalary(0)
-                    .isActive(false)
-                    .isPublished(false)
-                    .dateTime(LocalDateTime.now())
-                    .build());
+            Optional<Applicant> applicant = applicantRepository.findByUserEmail(u.getEmail());
+            if(applicant.isPresent()) {
+                Applicant a = applicant.get();
+                ApplicantDto applicantDto = ApplicantDto.builder()
+                        .firstName(a.getFirstName())
+                        .lastName(a.getLastName())
+                        .dateOfBirth(a.getDateOfBirth())
+                        .build();
+                Resume newResume = resumeRepository.save(Resume.builder()
+                        .applicant(a)
+                        .resumeTitle("new resume")
+                        .category(Category.builder().category("Other").build())
+                        .expectedSalary(0)
+                        .isActive(false)
+                        .isPublished(false)
+                        .dateTime(LocalDateTime.now())
+                        .build());
 
+                Resume r = findById(newResume.getId());
+                return ResumeDto.builder()
+                        .id(r.getId())
+                        .profile(applicantDto)
+                        .resumeTitle(r.getResumeTitle())
+                        .category(r.getCategory().getCategory())
+                        .expectedSalary(r.getExpectedSalary())
+                        .isActive(Boolean.TRUE)
+                        .isPublished(Boolean.TRUE)
+                        .eduList(null)
+                        .workList(null)
+                        .contact(null)
+                        .dateTime(r.getDateTime())
+                        .build();
+            } else {
+                throw new NoSuchElementException("Applicant does not exist. Please sign up as applicant");
+            }
 
-            Resume r = findById(newResume.getId());
-            return ResumeDto.builder()
-                    .id(r.getId())
-                    .profile(applicantDto)
-                    .resumeTitle(r.getResumeTitle())
-                    .category(r.getCategory().getCategory())
-                    .expectedSalary(r.getExpectedSalary())
-                    .isActive(Boolean.TRUE)
-                    .isPublished(Boolean.TRUE)
-                    .eduList(null)
-                    .workList(null)
-                    .contact(null)
-                    .dateTime(r.getDateTime())
-                    .build();
-        } else {
-            throw new NoSuchElementException("Applicant does not exist. Please sign up as applicant");
-        }
 
     }
 
@@ -283,7 +287,7 @@ public class ResumeService {
 
     public List<ResumeDto> findAllByApplicant(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
+Applicant a = applicantRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Applicant not found"));
         List<Resume> list = resumeRepository.findByApplicantId(a.getId());
         return list.stream().map(this::makeDtoFromResume).toList();
     }

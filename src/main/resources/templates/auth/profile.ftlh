@@ -29,9 +29,16 @@
                     <div class="mx-3">
                         <#if user.userType=="applicant">
                             <div class="text-center">
-                                <a href="/resume/add" class="btn btn-warning p-3">
-                                    +<br> Создать <br>резюме
-                                </a>
+                                <#if _csrf??>
+                                <form action="/resume/add" method="post">
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                            value="${(_csrf.token)!'--no-token--'}"/>
+                                    <button type="submit" class="btn btn-warning p-3">+<br> Создать <br>резюме</button>
+                                </form>
+                                </#if>
+<#--                                <a href="/resume/add" >-->
+<#--                                    -->
+<#--                                </a>-->
                             </div>
                         <#else>
                             <div class="text-center">
@@ -42,7 +49,7 @@
                         </#if>
                     </div>
                     <div>
-                        <a href="/apply/messages" class="btn btn-warning px-3 pb-4 pt-3">
+                        <a href="/apply/all/messages" class="btn btn-warning px-3 pb-4 pt-3">
                             Отклики <span class="badge bg-danger pb-2"> ${new_message_number} </span>
                         </a>
                     </div>
@@ -128,17 +135,17 @@
                         <div class="d-flex">
                             <#if user.userType=="employer">
                                 <a href="/vacancy/edit/${item.id}" class="btn btn-primary me-3">Редактировать</a>
-                                <a href="/vacancy/datefix/${item.id}" class="btn btn-success">Обнов.дату</a>
+                                <a href="/vacancy/edit/datefix/${item.id}" class="btn btn-success">Обнов.дату</a>
                             <#else>
                                 <a href="/resume/edit/${item.id}" class="btn btn-primary me-3">Редактировать</a>
-                                <a href="/resume/datefix/${item.id}" class="btn btn-success">Обнов.дату</a>
+                                <a href="/resume/edit/datefix/${item.id}" class="btn btn-success">Обнов.дату</a>
                             </#if>
                         </div>
                         <div class="text-center my-2">
                             <#if user.userType=="employer">
-                                <a href="/vacancy/delete/${item.id}" class="btn btn-danger">Удалить</a>
+                                <a href="/vacancy/edit/delete/${item.id}" class="btn btn-danger">Удалить</a>
                             <#else>
-                                <a href="/resume/delete/${item.id}" class="btn btn-danger">Удалить</a>
+                                <a href="/resume/edit/delete/${item.id}" class="btn btn-danger">Удалить</a>
                             </#if>
                         </div>
                     </div>
@@ -165,6 +172,7 @@
                     Previous</a>
             </#if>
         </li>
+        <#if (totalPages > 0)>
         <#list 1..totalPages as pageNo>
             <li class="page-item">
                 <a class="page-link"
@@ -183,6 +191,7 @@
             <a class="page-link"
                href="/auth/profile/${user.email}?pageNumber=${totalPages-1}">Last</a>
         </li>
+        </#if>
     </ul>
 </div>
     <script>

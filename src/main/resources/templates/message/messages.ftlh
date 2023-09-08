@@ -20,7 +20,7 @@
                     <td>${item.vacancyName}</td>
                     <td>${item.publisher}</td>
                     <td>${item.applicant}</td>
-                    <td><a href="/apply/chat/${item.jobApplicationId}">${item.newMessage} </a></td>
+                    <td><a href="/apply/all/chat/${item.jobApplicationId}">${item.newMessage} </a></td>
             </tr>
             </#list>
 

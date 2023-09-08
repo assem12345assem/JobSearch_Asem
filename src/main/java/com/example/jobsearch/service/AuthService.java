@@ -16,12 +16,14 @@ import java.util.NoSuchElementException;
 public class AuthService {
     private final UserRepository userRepository;
 
+
     public UserDto getAuthor(Authentication auth) {
-        User user = (User) auth.getPrincipal();
-        com.example.jobsearch.entity.User fromDao = userRepository.findById(user.getUsername()).orElseThrow(() -> {
-            log.warn("User not found: {}", user.getUsername());
+        User u = (User) auth.getPrincipal();
+        String email = u.getUsername();
+        com.example.jobsearch.entity.User fromDao = userRepository.findById(email).orElseThrow(() -> {
+            log.warn("User not found: {}", email);
             return new NoSuchElementException("User not found.");
         });
-        return UserDto.builder().email(fromDao.getEmail()).phoneNumber(fromDao.getPhoneNumber()).userName(fromDao.getUserName()).userType(fromDao.getUserType()).password(fromDao.getPassword()).photo(fromDao.getPhoto()).build();
+        return UserDto.builder().email(fromDao.getEmail()).phoneNumber(fromDao.getPhoneNumber()).userName(fromDao.getEmail()).userType(fromDao.getUserType()).password(fromDao.getPassword()).photo(fromDao.getPhoto()).build();
     }
 }
