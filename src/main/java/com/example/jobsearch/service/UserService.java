@@ -6,11 +6,9 @@ import com.example.jobsearch.dto.EditProfileDto;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.entity.Applicant;
-import com.example.jobsearch.entity.Authority;
 import com.example.jobsearch.entity.Employer;
 import com.example.jobsearch.entity.User;
 import com.example.jobsearch.repository.ApplicantRepository;
-import com.example.jobsearch.repository.AuthorityRepository;
 import com.example.jobsearch.repository.EmployerRepository;
 import com.example.jobsearch.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +31,6 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final FileService fileService;
-    private final AuthorityRepository authorityRepository;
     private final ApplicantRepository applicantRepository;
     private final EmployerRepository employerRepository;
 

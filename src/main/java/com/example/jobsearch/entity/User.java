@@ -59,6 +59,7 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-//    private Authority authority;
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users")
+    private Collection<Role> roles;
 }
