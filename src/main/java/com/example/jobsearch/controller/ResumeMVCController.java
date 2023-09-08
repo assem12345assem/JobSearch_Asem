@@ -30,6 +30,13 @@ public class ResumeMVCController {
         model.addAttribute("viewer", authService.getAuthor(auth));
         return "resume/info";
     }
+    @GetMapping("/view/by_employer/{id}")
+    public String resumeByEmployer(@PathVariable Long id, Model model, Authentication auth) {
+        model.addAttribute("resume", resumeService.findDtoById(id));
+        model.addAttribute("user", resumeService.getResumeOwner(id));
+        model.addAttribute("viewer", authService.getAuthor(auth));
+        return "resume/info";
+    }
     @PostMapping("/add")
     public String addResume(Model model, Authentication auth) {
         System.out.println("addResume");
