@@ -17,9 +17,9 @@ public class CustomSimpleAuthenticationSuccessHandler implements AuthenticationS
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) throws IOException {
             Set<String> roles = AuthorityUtils.authorityListToSet(auth.getAuthorities());
 
-            if (roles.contains("APPLICANT")) {
+            if (roles.contains("ROLE_APPLICANT")) {
                 response.sendRedirect("/vacancy/all/view");
-            } else if (roles.contains("EMPLOYER")) {
+            } else if (roles.contains("ROLE_EMPLOYER")) {
                 response.sendRedirect("/resume/all/view");
             } else {
                 response.sendRedirect("/");
