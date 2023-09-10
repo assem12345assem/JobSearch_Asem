@@ -1,4 +1,5 @@
 <#import "../layout.ftlh" as main>
+<#import '/spring.ftl' as spring>
 <@main.layout>
     <section class="vh-100" style="background-color: #eee;">
         <div class="container h-100">
@@ -9,7 +10,8 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Регистрация пользователя</p>
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Регистрация
+                                        пользователя</p>
 
                                     <form class="mx-1 mx-md-4" action="/auth/register" method="post">
                                         <#if _csrf??>
@@ -19,7 +21,8 @@
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <input type="email" name="email" id="form3Example1c" class="form-control" placeholder="examle@mail.com" required>
+                                                <input type="email" name="email" id="form3Example1c"
+                                                       class="form-control" placeholder="examle@mail.com" required>
                                                 <label class="form-label" for="form3Example1c">Email</label>
                                             </div>
                                         </div>
@@ -27,7 +30,8 @@
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <input type="text" name="phoneNumber" id="form3Example2c" class="form-control"
+                                                <input type="text" name="phoneNumber" id="form3Example2c"
+                                                       class="form-control"
                                                 >
                                                 <label class="form-label" for="form3Example2c"
                                                 >Номер телефона</label>
@@ -37,7 +41,8 @@
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <input type="text" name="userName" id="form3Example3c" class="form-control"
+                                                <input type="text" name="userName" id="form3Example3c"
+                                                       class="form-control"
                                                 >
                                                 <label class="form-label" for="form3Example3c"
                                                 >Имя пользователя</label>
@@ -48,27 +53,35 @@
                                             <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
 
-                                                <select name="userType" id="form3Example4c" class="form-control">
+                                                <select name="userType" id="form3Example4c" class="form-control" required>
                                                     <option value="" disabled selected hidden>выбрать</option>
-                                                    <option value="employer" class="form-brd-radius col-6">работодатель</option>
-                                                    <option value="applicant" class="form-brd-radius col-6">соискатель</option>
+                                                    <option value="employer" class="form-brd-radius col-6">
+                                                        работодатель
+                                                    </option>
+                                                    <option value="applicant" class="form-brd-radius col-6">соискатель
+                                                    </option>
 
                                                 </select>
-                                                <label class="form-label" for="form3Example4c"
-                                                >Тип учетной записи</label>
+                                                <label class="form-label" for="form3Example4c">Тип учетной записи</label>
+
+
                                             </div>
                                         </div>
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <input type="password" name="password" id="form3Example5c" class="form-control"
-                                                       placeholder="пароль" required>
                                                 <label class="form-label" for="form3Example5c"
                                                 >Пароль</label>
+                                                <span style="color: red">
+                                                <@spring.formInput "userDto.password" 'id="form3Example4c" class="form-control" placeholder="пароль"' />
+                                                    <@spring.showErrors "<br>" "error"/>
+                                                </span>
+
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                            <button type="submit" class="btn btn-primary btn-lg">Зарегистрироваться</button>
+                                            <button type="submit" class="btn btn-primary btn-lg">Зарегистрироваться
+                                            </button>
                                         </div>
 
                                     </form>
@@ -87,4 +100,5 @@
             </div>
         </div>
     </section>
+
 </@main.layout>

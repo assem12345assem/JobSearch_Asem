@@ -4,6 +4,10 @@
     <div class="container">
         <h1 class="my-3 text-center">Вакансии</h1>
         <form class="d-flex m-5" id="searchForm">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <input class="form-control me-2" type="search"
                    placeholder="Поиск вакансии по названию, описанию, категории или зарплате" aria-label="Search" name="searchWord" id="searchWord">
             <button class="btn btn-outline-success" type="submit">Поиск</button>

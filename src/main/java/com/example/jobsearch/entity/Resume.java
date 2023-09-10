@@ -43,6 +43,6 @@ public class Resume {
     @OneToMany(mappedBy = "resume", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Education> educationList;
 
-    @OneToOne(mappedBy = "resume", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private JobApplication jobApplication;
+    @OneToMany(mappedBy = "resume")
+    private List<JobApplication> jobApplications;
 }

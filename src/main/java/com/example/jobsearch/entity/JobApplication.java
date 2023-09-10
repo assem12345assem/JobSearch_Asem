@@ -19,11 +19,11 @@ public class JobApplication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "vacancy_id")
     private Vacancy vacancy;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "resume_id")
     private Resume resume;
 

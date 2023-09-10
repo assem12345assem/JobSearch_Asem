@@ -41,27 +41,32 @@ public class UserService {
     public void register(UserDto userDto) {
         var u = userRepository.findById(userDto.getEmail());
         if(u.isEmpty()) {
-         User user =   userRepository.save(User.builder()
-                    .email(userDto.getEmail())
-                    .phoneNumber(userDto.getPhoneNumber())
-                    .userName(userDto.getUserName())
-                    .userType(userDto.getUserType())
-                    .password(encoder.encode(userDto.getPassword()))
-                    .photo(userDto.getPhoto())
-                    .enabled(Boolean.TRUE)
-                    .build());
-Role role = roleRepository.findByRole("ROLE_" + user.getUserType().toUpperCase());
-userRepository.assignRoleToUser(user.getEmail(), role.getId());
-            if (userDto.getUserType().equalsIgnoreCase("applicant")) {
-                applicantRepository.save(Applicant.builder()
-                        .user(user)
-                        .build());
-            }
-            if (userDto.getUserType().equalsIgnoreCase("employer")) {
-                employerRepository.save(Employer.builder()
-                        .user(user)
-                        .build());
-            }
+         if(u.get().getUserType() != null) {
+             User user =   userRepository.save(User.builder()
+                     .email(userDto.getEmail())
+                     .phoneNumber(userDto.getPhoneNumber())
+                     .userName(userDto.getUserName())
+                     .userType(userDto.getUserType())
+                     .password(encoder.encode(userDto.getPassword()))
+                     .photo(userDto.getPhoto())
+                     .enabled(Boolean.TRUE)
+                     .build());
+             Role role = roleRepository.findByRole("ROLE_" + user.getUserType().toUpperCase());
+             userRepository.assignRoleToUser(user.getEmail(), role.getId());
+             if (userDto.getUserType().equalsIgnoreCase("applicant")) {
+                 applicantRepository.save(Applicant.builder()
+                         .user(user)
+                         .build());
+             }
+             if (userDto.getUserType().equalsIgnoreCase("employer")) {
+                 employerRepository.save(Employer.builder()
+                         .user(user)
+                         .build());
+             }
+         } else {
+             log.info("User tried to register without user type: {}", u.get().getEmail());
+             throw new IllegalArgumentException("Please select a user type to reigser.");
+         }
         } else {
             throw new IllegalArgumentException("User already exists");
         }

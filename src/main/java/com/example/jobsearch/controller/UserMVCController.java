@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,15 +29,20 @@ public class UserMVCController {
     private final UtilService utilService;
 
     @GetMapping("/register")
-    public String register() {
+    public String register(Model model) {
+        model.addAttribute("userDto", new UserDto());
         return "auth/register";
     }
 
     @PostMapping("/register")
-    @ResponseStatus(code = HttpStatus.SEE_OTHER)
-    public String register(@Valid @ModelAttribute UserDto userDto) {
-        userService.register(userDto);
-        return "redirect:/auth/login";
+    public String register(@Valid UserDto userDto, BindingResult bindingResult) {
+        if(!bindingResult.hasErrors()) {
+            userService.register(userDto);
+            return "redirect:/auth/login";
+        } else {
+            return "/auth/register";
+        }
+
     }
 
     @GetMapping("/login")
