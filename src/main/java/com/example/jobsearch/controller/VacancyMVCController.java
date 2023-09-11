@@ -21,6 +21,9 @@ public class VacancyMVCController {
 
     @GetMapping("/{id}")
     public String vacancyInfo(@PathVariable Long id, Model model, Authentication auth) {
+        if (auth == null) {
+            return "redirect:/auth/login";
+        }
         model.addAttribute("vacancy", vacancyService.findDtoById(id));
         model.addAttribute("user", vacancyService.getVacancyOwner(id));
         model.addAttribute("viewer", authService.getAuthor(auth));
@@ -73,9 +76,21 @@ public class VacancyMVCController {
                           @RequestParam(name = "searchWord", defaultValue = "default") String searchWord,
                           Model model) {
         int pageSize = 6; // Number of vacancies per page
+        if (date.equalsIgnoreCase("выбрать дату")) {
+            date = "default";
+        }
+        if (category.equalsIgnoreCase("выбрать категорию")) {
+            category = "default";
+        }
+        if (application.equalsIgnoreCase("выбрать отклики")) {
+            application = "default";
+        }
+
         var totalVacancies = vacancyService.getAll(sort, pageNumber, pageSize, category, date, application, searchWord);
        int total = vacancyService.getTotalVacanciesCount();
         int totalPages = utilService.totalPagesCounter(total, pageSize);
+
+
 
         model.addAttribute("vacancies", totalVacancies);
         model.addAttribute("pageNumber", pageNumber);

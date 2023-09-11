@@ -8,10 +8,12 @@ import com.example.jobsearch.service.AuthService;
 import com.example.jobsearch.service.ResumeService;
 import com.example.jobsearch.service.UserService;
 import com.example.jobsearch.service.UtilService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -53,8 +55,8 @@ public class ResumeMVCController {
         return "resume/edit";
     }
     @PostMapping("/edit/{id}")
-    public String resumeEdit (@PathVariable Long id, @ModelAttribute ResumeDto resumeDto, Authentication auth) {
-        resumeService.edit(id, resumeDto, auth);
+    public String resumeEdit (@PathVariable Long id, @ModelAttribute ResumeDto resume, Authentication auth) {
+        resumeService.edit(id, resume, auth);
         return "redirect:/resume/info/" + id;
     }
 
@@ -70,7 +72,7 @@ public class ResumeMVCController {
         return "redirect:/resume/edit/" + resumeId;
     }
     @PostMapping("/edit/add_one_edu/{resumeId}")
-    public String addOneEducation(@PathVariable Long resumeId, @ModelAttribute EducationDto educationDto) {
+    public String addOneEducation(@PathVariable Long resumeId, @Valid @ModelAttribute EducationDto educationDto, BindingResult bindingResult) {
         resumeService.addOneEducation(resumeId, educationDto);
         return "redirect:/resume/edit/" + resumeId;
     }

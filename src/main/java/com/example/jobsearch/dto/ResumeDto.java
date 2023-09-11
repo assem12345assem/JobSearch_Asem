@@ -1,5 +1,6 @@
 package com.example.jobsearch.dto;
 
+import jakarta.validation.Valid;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class ResumeDto {
     private Integer expectedSalary;
     private boolean isActive;
     private boolean isPublished;
-    private List<EducationDto> eduList;
+    private List<@Valid EducationDto> eduList;
     private List<WorkExperienceDto> workList;
     private ContactInfoDto contact;
     private LocalDateTime dateTime;

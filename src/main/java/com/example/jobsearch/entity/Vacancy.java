@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -36,7 +37,7 @@ public class Vacancy {
     @UpdateTimestamp
     private LocalDateTime dateTime;
 
-    @OneToOne(mappedBy = "vacancy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private JobApplication jobApplication;
+    @OneToMany(mappedBy = "vacancy")
+    private List<JobApplication> jobApplications;
 }
 

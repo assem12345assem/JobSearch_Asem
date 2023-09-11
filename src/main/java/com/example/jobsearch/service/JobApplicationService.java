@@ -115,11 +115,16 @@ public class JobApplicationService {
 
             VacancyDto vDto = vacancyService.findDtoById(jobApplication.getVacancy().getId());
             ResumeDto rDto = resumeService.findDtoById(jobApplication.getResume().getId());
+            String company = vDto.getProfile().getCompanyName() != null ? vDto.getProfile().getCompanyName() : "не указано";
+            String firstName = rDto.getProfile().getFirstName();
+            String lastName = rDto.getProfile().getLastName();
+            String applicant = (firstName != null && lastName != null) ? (firstName + " " + lastName) : (firstName != null ? firstName : (lastName != null ? lastName : "не указано"));
+String vacancy = vDto.getVacancyName() != null ? vDto.getVacancyName() : "не указано";
             list.add(MessageListDto.builder()
                     .jobApplicationId(jobApplication.getId())
-                    .vacancyName(vDto.getVacancyName())
-                    .publisher(vDto.getProfile().getCompanyName())
-                    .applicant(rDto.getProfile().getFirstName() + " " + rDto.getProfile().getLastName())
+                    .vacancyName(vacancy)
+                    .publisher(company)
+                    .applicant(applicant)
                     .newMessage(msg.size())
                     .build());
         }

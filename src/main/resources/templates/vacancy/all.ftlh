@@ -4,6 +4,10 @@
     <div class="container">
         <h1 class="my-3 text-center">Вакансии</h1>
         <form class="d-flex m-5" id="searchForm">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <input class="form-control me-2" type="search"
                    placeholder="Поиск вакансии по названию, описанию, категории или зарплате" aria-label="Search" name="searchWord" id="searchWord">
             <button class="btn btn-outline-success" type="submit">Поиск</button>
@@ -59,12 +63,17 @@
                     </select>
                     <button type="submit" class="btn btn-info col-2 mx-2"> OK</button>
                 </form>
-
+                <#assign uniqueApplications = []>
+                <#list applications as application>
+                    <#if !uniqueApplications?seq_contains(application)>
+                        <#assign uniqueApplications = uniqueApplications + [application]>
+                    </#if>
+                </#list>
                 <form class="row mx-1" id="applicationsForm">
                     <select class="form-select border-dark col" aria-label="выбрать по откликам"
                             name="application" id="applications">
                         <option selected>выбрать отклики</option>
-                        <#list applications as application>
+                        <#list uniqueApplications as application>
                             <option value="${application}" class="form-brd-radius col-6">${application}</option>
                         </#list>
 
@@ -142,6 +151,5 @@
 
 
     </div>
-
 
 </@main.layout>

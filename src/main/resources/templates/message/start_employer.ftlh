@@ -79,11 +79,15 @@
                                 <#if (vacancies)??>
                                     <select class="form-select border-dark"
                                             aria-label="Default select example" name="vacancyId">
+                                        <option selected>Выберите вакансию из списка: </option>
 
                                     <#list vacancies as vacancy>
-                                        <option selected>Выберите вакансию из списка: </option>
                                         <option value="${vacancy.id}" class="form-brd-radius col-6">
-                                                ${vacancy.vacancyName}</option>
+                                            <#if (vacancy.vacancyName)?has_content>
+                                                ${vacancy.vacancyName}
+                                                <#else > вакансия без названия
+                                            </#if>
+                                                </option>
                                     </#list>
                                     </select>
 
