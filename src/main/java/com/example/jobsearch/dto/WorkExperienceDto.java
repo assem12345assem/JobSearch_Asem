@@ -1,5 +1,6 @@
 package com.example.jobsearch.dto;
 
+import com.example.jobsearch.validation.DatesComparison;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@DatesComparison(startDate = "dateStart", endDate = "dateEnd")
 public class WorkExperienceDto {
     private Long id;
     private String companyName;

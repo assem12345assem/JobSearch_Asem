@@ -1,5 +1,6 @@
 <#import "../layout.ftlh" as main>
 <#import '/spring.ftl' as spring>
+
 <@main.layout>
     <section class="vh-100" style="background-color: #eee;">
         <div class="container h-100">
@@ -30,11 +31,13 @@
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <input type="text" name="phoneNumber" id="form3Example2c"
-                                                       class="form-control"
-                                                >
                                                 <label class="form-label" for="form3Example2c"
                                                 >Номер телефона</label>
+                                                <span style="color: red">
+                                                <@spring.formInput "userDto.phoneNumber" 'id="form3Example2c" class="form-control" placeholder="Номер телефона"' />
+                                                    <@spring.showErrors "<br>" "error"/>
+                                                </span>
+
                                             </div>
                                         </div>
 
@@ -53,7 +56,8 @@
                                             <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
 
-                                                <select name="userType" id="form3Example4c" class="form-control" required>
+                                                <select name="userType" id="form3Example4c" class="form-control"
+                                                        required>
                                                     <option value="" disabled selected hidden>выбрать</option>
                                                     <option value="employer" class="form-brd-radius col-6">
                                                         работодатель
@@ -62,7 +66,8 @@
                                                     </option>
 
                                                 </select>
-                                                <label class="form-label" for="form3Example4c">Тип учетной записи</label>
+                                                <label class="form-label" for="form3Example4c">Тип учетной
+                                                    записи</label>
 
 
                                             </div>

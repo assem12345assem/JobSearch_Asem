@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import '/spring.ftl' as spring>
+
 <@main.layout>
     <div class="container">
         <div class="main-body">
@@ -418,20 +420,23 @@
                                                                name="eduList[${item_index}].startDate"
                                                                value="${item.startDate}"> <br>
                                                     <#else >
+
                                                         <input class="form-control" type="date"
                                                                placeholder="Начало обучения"
                                                                name="eduList[${item_index}].startDate">
                                                     </#if>
                                                 </div>
                                                 <small>Дата выпуска: </small>
-                                                <div>
-                                                    <#if (item.graduationDate)?has_content>
+                                        <#if (item.graduationDate)?has_content>
+
 
                                                         <input class="form-control" type="date"
                                                                placeholder="Дата выпуска"
                                                                name="eduList[${item_index}].graduationDate"
                                                                value="${item.graduationDate}"> <br>
                                                     <#else >
+
+
                                                         <input class="form-control" type="date"
                                                                placeholder="Дата выпуска"
                                                                name="eduList[${item_index}].graduationDate">

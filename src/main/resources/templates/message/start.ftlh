@@ -74,12 +74,15 @@
                                 <#if (resumes)?? >
                                     <select class="form-select border-dark"
                                             aria-label="Default select example" name="resumeId">
-
-                                    <#list resumes as resume>
                                         <small>Резюме</small>
                                         <option selected> Выберите резюме из списка:</option>
+                                    <#list resumes as resume>
+
                                             <option value="${resume.id}" class="form-brd-radius col-6">
-                                                ${resume.resumeTitle}</option>
+                                                <#if (resume.resumeTitle)?has_content>
+                                                ${resume.resumeTitle} <#else > резюме без названия
+                                                </#if>
+                                                </option>
                                     </#list>
                                     </select>
 

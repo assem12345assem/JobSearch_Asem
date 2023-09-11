@@ -39,9 +39,9 @@ public class UserMVCController {
         if(!bindingResult.hasErrors()) {
             userService.register(userDto);
             return "redirect:/auth/login";
-        } else {
-            return "/auth/register";
         }
+            return "auth/register";
+
 
     }
 

@@ -63,12 +63,17 @@
                     </select>
                     <button type="submit" class="btn btn-info col-2 mx-2"> OK</button>
                 </form>
-
+                <#assign uniqueApplications = []>
+                <#list applications as application>
+                    <#if !uniqueApplications?seq_contains(application)>
+                        <#assign uniqueApplications = uniqueApplications + [application]>
+                    </#if>
+                </#list>
                 <form class="row mx-1" id="applicationsForm">
                     <select class="form-select border-dark col" aria-label="выбрать по откликам"
                             name="application" id="applications">
                         <option selected>выбрать отклики</option>
-                        <#list applications as application>
+                        <#list uniqueApplications as application>
                             <option value="${application}" class="form-brd-radius col-6">${application}</option>
                         </#list>
 
@@ -146,6 +151,5 @@
 
 
     </div>
-
 
 </@main.layout>
