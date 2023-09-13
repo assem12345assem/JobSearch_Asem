@@ -26,7 +26,15 @@
                                    class="form-control form-control-lg"/>
                             <label class="form-label" for="form1Example23">Пароль</label>
                         </div>
-
+                        <div class="d-flex justify-content-around align-items-center mb-4">
+                            <!-- Checkbox -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="true" id="form1Example3"
+                                       name="remember-me" checked/>
+                                <label class="form-check-label" for="form1Example3"> Remember me </label>
+                            </div>
+                            <a href="/auth/forgot_password">Forgot password?</a>
+                        </div>
                         <button type="submit" class="btn btn-primary btn-lg btn-block">Войти</button>
                     </form>
                 </div>

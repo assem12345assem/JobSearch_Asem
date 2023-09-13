@@ -20,4 +20,6 @@ public class UserDto {
     @NotBlank (message = "Please enter a password")
     private String password;
     private String photo;
+    private String resetPasswordToken;
+
 }

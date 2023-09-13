@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,7 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
 //                .csrf(AbstractHttpConfigurer::disable)
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(form -> form
                         .loginPage("/auth/login")
@@ -41,7 +42,10 @@ public class SecurityConfig {
                         .requestMatchers("/apply/**",  "/auth/profile/**", "/auth/edit/**", "/auth/images/upload/**", "/resume/info/**").fullyAuthenticated()
                         .requestMatchers("/vacancy/**", "/auth/images/**").permitAll()
                         .anyRequest().permitAll()
-                );
+                )
+                .rememberMe(customizer -> customizer
+                        .key("secret")
+                        .tokenValiditySeconds(60));
         return http.build();
     }
     @Bean

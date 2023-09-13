@@ -13,19 +13,28 @@ import com.example.jobsearch.repository.ApplicantRepository;
 import com.example.jobsearch.repository.EmployerRepository;
 import com.example.jobsearch.repository.RoleRepository;
 import com.example.jobsearch.repository.UserRepository;
+import com.example.jobsearch.util.Utility;
+import jakarta.annotation.Nullable;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -37,6 +46,7 @@ public class UserService {
     private final ApplicantRepository applicantRepository;
     private final EmployerRepository employerRepository;
     private final RoleRepository roleRepository;
+    private final EmailService emailService;
 @Transactional
     public void register(UserDto userDto) {
         var u = userRepository.findById(userDto.getEmail());
@@ -199,5 +209,38 @@ public class UserService {
             }
 employerRepository.save(e);
         }
+    }
+    private void updateResetPasswordToken(String token, String email) {
+        User user = userRepository.getByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.setResetPasswordToken(token);
+        userRepository.saveAndFlush(user);
+    }
+
+    public UserDto getByResetPasswdToken(String token) {
+        User u = userRepository.findByResetPasswordToken(token).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return UserDto.builder()
+                .email(u.getEmail())
+                .phoneNumber(u.getPhoneNumber())
+                .password(u.getPassword())
+                .userName(u.getUserName())
+                .userType(u.getUserType())
+                .photo(u.getPhoto())
+                .resetPasswordToken(u.getResetPasswordToken())
+                .build();
+    }
+
+    public void updatePassword(UserDto userDto, String newPasswd) {
+        User u = userRepository.getByEmail(userDto.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        u.setResetPasswordToken(null);
+        u.setPassword(encoder.encode(newPasswd));
+        userRepository.saveAndFlush(u);
+    }
+
+    public void makeResetPasswdLink(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+        String email = request.getParameter("email");
+        String token = UUID.randomUUID().toString();
+        updateResetPasswordToken(token, email);
+        String resetPasswordLink = Utility.getSiteUrl(request) + "/auth/reset_password?token=" + token;
+        emailService.sendEmail(email, resetPasswordLink);
     }
 }
