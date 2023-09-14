@@ -78,7 +78,7 @@
                                                 <label class="form-label" for="form3Example5c"
                                                 >Пароль</label>
                                                 <span style="color: red">
-                                                <@spring.formInput "userDto.password" 'id="form3Example4c" class="form-control" placeholder="пароль"' />
+                                                <@spring.formInput "userDto.password" 'id="form3Example5c" class="form-control" placeholder="пароль"' />
                                                     <@spring.showErrors "<br>" "error"/>
                                                 </span>
 
@@ -105,5 +105,19 @@
             </div>
         </div>
     </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var userTypeSelect = document.getElementById('form3Example4c');
+            var userNameLabel = document.querySelector('label[for="form3Example3c"]');
+
+            userTypeSelect.addEventListener('change', function() {
+                if (this.value === 'employer') {
+                    userNameLabel.textContent = 'Имя компании';
+                } else {
+                    userNameLabel.textContent = 'Имя пользователя';
+                }
+            });
+        });
+    </script>
 
 </@main.layout>

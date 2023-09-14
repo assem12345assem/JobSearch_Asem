@@ -37,6 +37,7 @@ public class EmployerService {
     public Employer save(User user) {
         return employerRepository.save(Employer.builder()
                 .user(user)
+                .companyName(user.getUserName())
                 .build());
     }
 
