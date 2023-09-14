@@ -194,7 +194,17 @@
                                         </#if>
                                     </div>
                                 </div>
-
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <h6 class="mb-0">Активно:</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary">
+                                        <input class="form-check-input fs-2 border-dark" type="checkbox"
+                                               id="checkboxId" value="active"
+                                               name="isActive" <#if vacancy.isActive == "true">checked</#if>
+                                        />
+                                    </div>
+                                </div>
 
 
                                 <hr>

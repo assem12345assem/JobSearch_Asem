@@ -130,6 +130,9 @@
                     <div class="card-body">
                         <h5 class="card-title"><#if (item.title)??> ${item.title}<#else> Нет названия</#if></h5>
                         <p class="card-text"><#if (item.dateTime)??>${item.dateTime}<#else >Нет даты</#if></p>
+                        <p class="card-text"><#if (item.isActive)??>
+                                <#if item.isActive == "true">активно <#else> не активно</#if>
+                            </#if></p>
                         <div class="d-flex">
                             <#if user.userType=="employer">
                                 <a href="/vacancy/edit/${item.id}" class="btn btn-primary me-3">Редактировать</a>

@@ -52,6 +52,7 @@ public class ResumeService {
             list.add(SummaryDto.builder()
                     .id(r.getId())
                     .title(r.getResumeTitle())
+                            .isActive(Boolean.toString(r.isActive()))
                     .dateTime(r.getDateTime())
                     .build()
             );

@@ -50,7 +50,7 @@ public class VacancyService {
                 .description(v.getDescription())
                 .requiredExperienceMin(v.getRequiredExperienceMin())
                 .requiredExperienceMax(v.getRequiredExperienceMax())
-                .isActive(Boolean.TRUE)
+                .isActive(Boolean.toString(v.isActive()))
                 .isPublished(Boolean.TRUE)
                 .dateTime(v.getDateTime())
                 .build();
@@ -65,6 +65,10 @@ public class VacancyService {
         Vacancy v = getById(id);
         UserDto u = authService.getAuthor(auth);
         Employer e = employerService.getEmployerByUserEmail(u.getEmail());
+        boolean b = Boolean.FALSE;
+        if(vacancyDto.getIsActive() != null) {
+            b=Boolean.TRUE;
+        }
         vacancyRepository.save(Vacancy.builder()
                 .id(v.getId())
                 .employer(e)
@@ -74,7 +78,7 @@ public class VacancyService {
                 .description(vacancyDto.getDescription())
                 .requiredExperienceMin(vacancyDto.getRequiredExperienceMin())
                 .requiredExperienceMax(vacancyDto.getRequiredExperienceMax())
-                .isActive(vacancyDto.isActive())
+                .isActive(b)
                 .isPublished(vacancyDto.isPublished())
                 .dateTime(LocalDateTime.now())
                 .build());
@@ -84,19 +88,6 @@ public class VacancyService {
         Vacancy v = getById(id);
         v.setDateTime(LocalDateTime.now());
         vacancyRepository.save(v);
-//        vacancyRepository.save(Vacancy.builder()
-//                .id(v.getId())
-//                .employer(v.getEmployer())
-//                .vacancyName(v.getVacancyName())
-//                .category(v.getCategory())
-//                .salary(v.getSalary())
-//                .description(v.getDescription())
-//                .requiredExperienceMin(v.getRequiredExperienceMin())
-//                .requiredExperienceMax(v.getRequiredExperienceMax())
-//                .isActive(v.isActive())
-//                .isPublished(v.isPublished())
-//                .dateTime(LocalDateTime.now())
-//                .build());
     }
 
     public VacancyDto newVacancy(Authentication auth) {
@@ -135,6 +126,7 @@ public class VacancyService {
             list.add(SummaryDto.builder()
                     .id(v.getId())
                     .title(v.getVacancyName())
+                            .isActive(Boolean.toString(v.isActive()))
                     .dateTime(v.getDateTime())
                     .build());
         }
@@ -154,7 +146,7 @@ public class VacancyService {
     public List<Vacancy> findAllByEmployer(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
         Employer e = employerService.getEmployerByUserEmail(u.getEmail());
-        return vacancyRepository.findByEmployerId(e.getId());
+        return vacancyRepository.findByEmployerIdAndIsActiveTrue(e.getId());
     }
 
     private void cleanEmptyTemplate(Vacancy v) {
@@ -213,12 +205,12 @@ public class VacancyService {
     }
 
     public int getTotalVacanciesCount() {
-        List<Vacancy> list = vacancyRepository.findAll();
+        List<Vacancy> list = vacancyRepository.findByIsActiveTrue();
         return list.size();
     }
 
     public List<LocalDate> getDates() {
-        List<Vacancy> list = vacancyRepository.findAll();
+        List<Vacancy> list = vacancyRepository.findByIsActiveTrue();
         list.sort(Comparator.comparing(Vacancy::getDateTime));
         Set<LocalDate> uniqueDates = new HashSet<>();
         for (Vacancy v :
@@ -270,12 +262,12 @@ public class VacancyService {
 
     public Page<SummaryDto> findSummaryByEmployerEmail(String email, int page, int size) {
         Employer e = employerService.getEmployerByUserEmail(email);
-        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
+        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerIdAndIsActiveTrue(e.getId());
         List<SummaryDto> list = new ArrayList<>();
         for (Vacancy v : employerVacancies) {
             cleanEmptyTemplate(v);
         }
-        List<Vacancy> employerVacancies2 = vacancyRepository.findByEmployerId(e.getId());
+        List<Vacancy> employerVacancies2 = vacancyRepository.findByEmployerIdAndIsActiveTrue(e.getId());
 
         for (Vacancy v : employerVacancies2) {
             list.add(SummaryDto.builder()
@@ -294,7 +286,7 @@ public class VacancyService {
 
     public int getEmployerVacancyCount(String email) {
         Employer e = employerService.getEmployerByUserEmail(email);
-        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
+        List<Vacancy> employerVacancies = vacancyRepository.findByEmployerIdAndIsActiveTrue(e.getId());
         return employerVacancies.size();
     }
 

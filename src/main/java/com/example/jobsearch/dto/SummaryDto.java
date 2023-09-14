@@ -11,5 +11,6 @@ import java.time.LocalDateTime;
 public class SummaryDto {
     private Long id;
     private String title;
+    private String isActive;
     private LocalDateTime dateTime;
 }
