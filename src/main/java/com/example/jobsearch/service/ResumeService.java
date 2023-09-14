@@ -85,13 +85,14 @@ public class ResumeService {
         ContactInfoDto c = contactInfoService.getDtoByResumeId(resume.getId());
 
         ApplicantDto applicantDto = applicantService.getApplicantDtoById(resume.getApplicant().getId());
+
         return ResumeDto.builder()
                 .id(resume.getId())
                 .profile(applicantDto)
                 .resumeTitle(resume.getResumeTitle())
                 .category(resume.getCategory().getCategory())
                 .expectedSalary(resume.getExpectedSalary())
-                .isActive(Boolean.TRUE)
+                .isActive(Boolean.toString(resume.isActive()))
                 .isPublished(Boolean.TRUE)
                 .eduList(e)
                 .workList(w)
@@ -107,16 +108,21 @@ public class ResumeService {
     }
 
     public void edit(Long id, ResumeDto resumeDto, Authentication auth) {
+        System.out.println(resumeDto.getIsActive());
         UserDto u = authService.getAuthor(auth);
         Applicant a = applicantService.getApplicantByUserEmail(u.getEmail());
         Resume r = findById(id);
+        boolean b = Boolean.FALSE;
+        if(resumeDto.getIsActive() != null) {
+            b=Boolean.TRUE;
+        }
         Resume updatedResume = resumeRepository.save(Resume.builder()
                 .id(r.getId())
                 .applicant(a)
                 .resumeTitle(resumeDto.getResumeTitle())
                 .category(Category.builder().category(resumeDto.getCategory()).build())
                 .expectedSalary(resumeDto.getExpectedSalary())
-                .isActive(Boolean.TRUE)
+                .isActive(b)
                 .isPublished(Boolean.TRUE)
                 .dateTime(LocalDateTime.now())
                 .build());
@@ -165,8 +171,8 @@ public class ResumeService {
                 .resumeTitle(r.getResumeTitle())
                 .category(r.getCategory().getCategory())
                 .expectedSalary(r.getExpectedSalary())
-                .isActive(Boolean.TRUE)
-                .isPublished(Boolean.TRUE)
+                .isActive(Boolean.toString(r.isActive()))
+                .isPublished(r.isPublished())
                 .eduList(null)
                 .workList(null)
                 .contact(null)
@@ -189,7 +195,7 @@ public class ResumeService {
     public List<ResumeDto> findAllByApplicant(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
         Applicant a = applicantService.getApplicantByUserEmail(u.getEmail());
-        List<Resume> list = resumeRepository.findByApplicantId(a.getId());
+        List<Resume> list = resumeRepository.findByApplicantIdAndIsActiveTrue(a.getId());
         return list.stream().map(this::makeDtoFromResume).toList();
     }
 
@@ -202,11 +208,11 @@ public class ResumeService {
     public Page<ResumeDto> getAll(String sortCriteria, int page, int size, String category, String searchWord) {
         List<Resume> vlist;
         if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(searchWord)) {
-            vlist = resumeRepository.findAll(Sort.by(sortCriteria));
+            vlist = resumeRepository.findByIsActiveTrue(Sort.by(sortCriteria));
         } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(searchWord)) {
             vlist = resumeRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
         } else {
-            vlist = resumeRepository.findByCategoryAndSearchWord(
+            vlist = resumeRepository.customSearchResume(
                     "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
                     "default".equalsIgnoreCase(searchWord) ? null : searchWord,
                     Sort.by(sortCriteria)
@@ -229,7 +235,7 @@ public class ResumeService {
 
     public List<SummaryDto> findSummaryForMain() {
         Sort sort = Sort.by(Sort.Direction.DESC, "dateTime");
-        List<Resume> l = resumeRepository.findAll(sort);
+        List<Resume> l = resumeRepository.findByIsActiveTrue(sort);
         List<SummaryDto> summaryDtos = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             summaryDtos.add(SummaryDto.builder()

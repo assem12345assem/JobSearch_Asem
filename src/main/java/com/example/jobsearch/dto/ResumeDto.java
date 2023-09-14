@@ -16,7 +16,7 @@ public class ResumeDto {
     private String resumeTitle;
     private String category;
     private Integer expectedSalary;
-    private boolean isActive;
+    private String isActive;
     private boolean isPublished;
     private List<@Valid EducationDto> eduList;
     private List<WorkExperienceDto> workList;
