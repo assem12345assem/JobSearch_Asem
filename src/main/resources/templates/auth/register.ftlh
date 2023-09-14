@@ -14,7 +14,7 @@
                                     <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Регистрация
                                         пользователя</p>
 
-                                    <form class="mx-1 mx-md-4" action="/auth/register" method="post">
+                                    <form class="mx-1 mx-md-4" action="/auth/register" method="post" enctype="multipart/form-data">
                                         <#if _csrf??>
                                             <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                                    value="${(_csrf.token)!'csrf-token'}"/>
@@ -29,7 +29,9 @@
                                         </div>
 
                                         <div class="d-flex flex-row align-items-center mb-4">
-                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+<#--                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>-->
+                                            <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
+
                                             <div class="form-outline flex-fill mb-0">
                                                 <label class="form-label" for="form3Example2c"
                                                 >Номер телефона</label>
@@ -42,7 +44,8 @@
                                         </div>
 
                                         <div class="d-flex flex-row align-items-center mb-4">
-                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+<#--                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>-->
+                                            <i class="fa-solid fa-signature fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
                                                 <input type="text" name="userName" id="form3Example3c"
                                                        class="form-control"
@@ -82,6 +85,15 @@
                                                     <@spring.showErrors "<br>" "error"/>
                                                 </span>
 
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fa-solid fa-camera-retro fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+
+                                            <label class="form-label" for="file">Фото пользователя
+                                                </label> <br>
+                                                <input type="file" name="file" id="image_input"><br><br>
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
 @Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -20,6 +22,7 @@ public class UserDto {
     @NotBlank (message = "Please enter a password")
     private String password;
     private String photo;
+    private MultipartFile file;
     private String resetPasswordToken;
 
 }

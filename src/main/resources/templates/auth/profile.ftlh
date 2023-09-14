@@ -36,9 +36,7 @@
                                     <button type="submit" class="btn btn-warning p-3">+<br> Создать <br>резюме</button>
                                 </form>
                                 </#if>
-<#--                                <a href="/resume/add" >-->
-<#--                                    -->
-<#--                                </a>-->
+
                             </div>
                         <#else>
                             <div class="text-center">

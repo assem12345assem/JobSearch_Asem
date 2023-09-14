@@ -50,6 +50,9 @@ public class UserService {
                 System.out.println(userDto.getUserType());
                 try {
                     User user = userRepository.save(makeUserFromDto(userDto));
+                    if(userDto.getFile() != null) {
+                        uploadUserPhoto(user.getEmail(), userDto.getFile());
+                    }
                     Role role = roleRepository.findByRole("ROLE_" + user.getUserType().toUpperCase());
                     userRepository.assignRoleToUser(user.getEmail(), role.getId());
                     if (userDto.getUserType().equalsIgnoreCase("applicant")) {
