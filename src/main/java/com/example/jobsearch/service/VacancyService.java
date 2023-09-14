@@ -6,7 +6,6 @@ import com.example.jobsearch.entity.Category;
 import com.example.jobsearch.entity.Employer;
 import com.example.jobsearch.entity.Vacancy;
 import com.example.jobsearch.repository.CategoryRepository;
-import com.example.jobsearch.repository.EmployerRepository;
 import com.example.jobsearch.repository.VacancyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class VacancyService {
     private final VacancyRepository vacancyRepository;
-    private final EmployerRepository employerRepository;
+    private final EmployerService employerService;
     private final UserService userService;
     private final AuthService authService;
     private final CategoryRepository categoryRepository;
@@ -36,10 +35,7 @@ public class VacancyService {
     }
 
     private VacancyDto makeDtoFromVacancy(Vacancy v) {
-        Employer e = employerRepository.findById(v.getEmployer().getId()).orElseThrow(() -> {
-            log.warn("Employer not found: {}", v.getEmployer().getId());
-            return new NoSuchElementException("Employer not found");
-        });
+        Employer e = employerService.getEmployerById(v.getEmployer().getId());
         String categoryValue = (v.getCategory() != null) ? v.getCategory().getCategory() : null;
 
         return VacancyDto.builder()
@@ -68,8 +64,7 @@ public class VacancyService {
     public void edit(Long id, VacancyDto vacancyDto, Authentication auth) {
         Vacancy v = getById(id);
         UserDto u = authService.getAuthor(auth);
-        Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() ->
-                new NoSuchElementException("Employer is not found."));
+        Employer e = employerService.getEmployerByUserEmail(u.getEmail());
         vacancyRepository.save(Vacancy.builder()
                 .id(v.getId())
                 .employer(e)
@@ -87,27 +82,26 @@ public class VacancyService {
 
     public void dateFix(Long id) {
         Vacancy v = getById(id);
-        vacancyRepository.save(Vacancy.builder()
-                .id(v.getId())
-                .employer(v.getEmployer())
-                .vacancyName(v.getVacancyName())
-                .category(v.getCategory())
-                .salary(v.getSalary())
-                .description(v.getDescription())
-                .requiredExperienceMin(v.getRequiredExperienceMin())
-                .requiredExperienceMax(v.getRequiredExperienceMax())
-                .isActive(v.isActive())
-                .isPublished(v.isPublished())
-                .dateTime(LocalDateTime.now())
-                .build());
+        v.setDateTime(LocalDateTime.now());
+        vacancyRepository.save(v);
+//        vacancyRepository.save(Vacancy.builder()
+//                .id(v.getId())
+//                .employer(v.getEmployer())
+//                .vacancyName(v.getVacancyName())
+//                .category(v.getCategory())
+//                .salary(v.getSalary())
+//                .description(v.getDescription())
+//                .requiredExperienceMin(v.getRequiredExperienceMin())
+//                .requiredExperienceMax(v.getRequiredExperienceMax())
+//                .isActive(v.isActive())
+//                .isPublished(v.isPublished())
+//                .dateTime(LocalDateTime.now())
+//                .build());
     }
 
     public VacancyDto newVacancy(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> {
-            log.warn("Employer not found: {}", u.getEmail());
-            return new NoSuchElementException("Employer not found");
-        });
+        Employer e = employerService.getEmployerByUserEmail(u.getEmail());
         Vacancy v = vacancyRepository.save(Vacancy.builder()
                 .employer(e)
                 .vacancyName(null)
@@ -125,7 +119,7 @@ public class VacancyService {
 
     public UserDto getVacancyOwner(Long id) {
         Vacancy v = getById(id);
-        Employer e = employerRepository.findById(v.getEmployer().getId()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
+        Employer e = employerService.getEmployerById(v.getEmployer().getId());
         return userService.getUserDtoTest(e.getUser().getEmail());
     }
 
@@ -146,6 +140,7 @@ public class VacancyService {
         }
         return toPageSummary(list, PageRequest.of(page, size));
     }
+
     private Page<SummaryDto> toPageSummary(List<SummaryDto> v, Pageable pageable) {
         if (pageable.getOffset() >= v.size()) {
             return Page.empty();
@@ -158,23 +153,16 @@ public class VacancyService {
 
     public List<Vacancy> findAllByEmployer(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
-        Employer e = employerRepository.findByUserEmail(u.getEmail()).orElseThrow(() -> new NoSuchElementException("Employer not found"));
-
+        Employer e = employerService.getEmployerByUserEmail(u.getEmail());
         return vacancyRepository.findByEmployerId(e.getId());
     }
 
     private void cleanEmptyTemplate(Vacancy v) {
-        if (v.getVacancyName() == null) {
-            if (v.getDescription() == null) {
-                if (v.getCategory() == null) {
-                    if (v.getSalary() == null) {
-                        vacancyRepository.delete(vacancyRepository.findById(v.getId()).orElseThrow(() -> new NoSuchElementException("Vacancy does not exist.")));
-                    }
-                }
-            }
+        if (v.getVacancyName() == null && v.getDescription() == null && v.getCategory() == null && v.getSalary() == null) {
+            vacancyRepository.delete(vacancyRepository.findById(v.getId()).orElseThrow(() -> new NoSuchElementException("Vacancy does not exist.")));
         }
-
     }
+
 
     public void delete(Long id) {
         vacancyRepository.delete(vacancyRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Vacancy does not exist.")));
@@ -194,23 +182,23 @@ public class VacancyService {
         return summaryDtos;
     }
 
-public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String category, String date, String application, String searchWord) {
-    List<Vacancy> vlist;
-    if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
-        vlist = vacancyRepository.findAll(Sort.by(sortCriteria));
-    } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
-        vlist = vacancyRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
-    } else {
-        vlist = vacancyRepository.findByCategoryAndDateAndApplicationAndSearchWord(
-                "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
-                "default".equalsIgnoreCase(date) ? null : LocalDate.parse(date),
-                "default".equalsIgnoreCase(application) ? null : Integer.parseInt(application),
-                "default".equalsIgnoreCase(searchWord) ? null : searchWord,
-                Sort.by(sortCriteria)
-        );
+    public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String category, String date, String application, String searchWord) {
+        List<Vacancy> vlist;
+        if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
+            vlist = vacancyRepository.findAll(Sort.by(sortCriteria));
+        } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
+            vlist = vacancyRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
+        } else {
+            vlist = vacancyRepository.findByCategoryAndDateAndApplicationAndSearchWord(
+                    "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
+                    "default".equalsIgnoreCase(date) ? null : LocalDate.parse(date),
+                    "default".equalsIgnoreCase(application) ? null : Integer.parseInt(application),
+                    "default".equalsIgnoreCase(searchWord) ? null : searchWord,
+                    Sort.by(sortCriteria)
+            );
+        }
+        return toPage(vlist, PageRequest.of(page, size, Sort.by(sortCriteria)));
     }
-    return toPage(vlist, PageRequest.of(page, size, Sort.by(sortCriteria)));
-}
 
 
     private Page<VacancyDto> toPage(List<Vacancy> list, Pageable pageable) {
@@ -241,16 +229,16 @@ public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String c
     }
 
     public Page<CompanyDto> makeCompanyDtos(int pageNumber, int pageSize) {
-        List<Employer> elist = employerRepository.findAll();
+        List<Employer> elist = employerService.getAllEmployers();
         List<CompanyDto> clist = new ArrayList<>();
-        for (Employer e:
-             elist) {
+        for (Employer e :
+                elist) {
             UserDto u = userService.getUserDtoTest(e.getUser().getEmail());
             clist.add(CompanyDto.builder()
-                            .photo(u.getPhoto())
-                            .name(e.getCompanyName())
-                            .phoneNumber(u.getPhoneNumber())
-                            .email(u.getEmail())
+                    .photo(u.getPhoto())
+                    .name(e.getCompanyName())
+                    .phoneNumber(u.getPhoneNumber())
+                    .email(u.getEmail())
                     .build());
         }
         System.out.println("cList" + clist.size());
@@ -271,7 +259,7 @@ public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String c
 
     public CompanyDto getCompanyDto(String email) {
         UserDto u = userService.getUserDtoTest(email);
-        Employer e = employerRepository.findByUserEmail(email).orElseThrow(() -> {throw new NoSuchElementException("Employer does not exist");});
+        Employer e = employerService.getEmployerByUserEmail(email);
         return CompanyDto.builder()
                 .photo(u.getPhoto())
                 .name(e.getCompanyName())
@@ -281,7 +269,7 @@ public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String c
     }
 
     public Page<SummaryDto> findSummaryByEmployerEmail(String email, int page, int size) {
-        Employer e = employerRepository.findByUserEmail(email).orElseThrow(() -> {throw new NoSuchElementException("Employer does  not exist");});
+        Employer e = employerService.getEmployerByUserEmail(email);
         List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
         List<SummaryDto> list = new ArrayList<>();
         for (Vacancy v : employerVacancies) {
@@ -300,17 +288,18 @@ public Page<VacancyDto> getAll(String sortCriteria, int page, int size, String c
     }
 
     public int getCompanyDtoSize() {
-        var e = employerRepository.findAll();
+        var e = employerService.getAllEmployers();
         return e.size();
     }
 
     public int getEmployerVacancyCount(String email) {
-        Employer e = employerRepository.findByUserEmail(email).orElseThrow(() -> {throw new NoSuchElementException("Employer does  not exist");});
+        Employer e = employerService.getEmployerByUserEmail(email);
         List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
         return employerVacancies.size();
     }
+
     public int getEmployerVacancyCount(Long id) {
-        Employer e = employerRepository.findById(id).orElseThrow(() -> {throw new NoSuchElementException("Employer does  not exist");});
+        Employer e = employerService.getEmployerById(id);
         List<Vacancy> employerVacancies = vacancyRepository.findByEmployerId(e.getId());
         return employerVacancies.size();
     }

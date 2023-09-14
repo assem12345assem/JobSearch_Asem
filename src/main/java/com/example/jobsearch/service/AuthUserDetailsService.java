@@ -19,18 +19,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AuthUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        Optional<User> maybeUser = userRepository.getByEmail(username);
-//        if (maybeUser.isEmpty()) {
-//            return new org.springframework.security.core.userdetails.User(
-//                    " ",
-//                    " ",
-//                    getAuthorities(Collections.singletonList(roleRepository.findByRole("GUEST"))));
-//        } else {
-//          User user = maybeUser.get();
         User user = userRepository.getByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             return new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
@@ -65,7 +56,6 @@ public class AuthUserDetailsService implements UserDetailsService {
         for (Authority item : collection) {
             privileges.add(item.getAuthority());
         }
-        // ROLE_USER, FULL, READ_ONLY
         return privileges;
     }
 
