@@ -3,15 +3,13 @@
     <div class="container">
         <div class="main-body">
             <h2 class="text-primary fs-2 text-center"> Вакансия пользователя:</h2>
-
             <div class="row text-center">
                 <#if user.email == viewer.email>
-                <div class="col-sm-12">
-                    <a class="btn btn-info mt-3 text-dark px-4" target="__blank" href="/vacancy/edit/${vacancy.id}">Редактировать</a>
-                </div>
+                    <div class="col-sm-12">
+                        <a class="btn btn-info mt-3 text-dark px-4" target="__blank" href="/vacancy/edit/${vacancy.id}">Редактировать</a>
+                    </div>
                 </#if>
             </div>
-
             <div class="row gutters-sm mt-5">
                 <div class="col-md-4 mb-3">
                     <div class="card">
@@ -22,31 +20,26 @@
                                          src="/auth/images/${user.email}" alt="photo" width="250"
                                          height="auto">
                                 <#else>
-                                    <img
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPgCd93aiNba8lHWJYHQ1C1YwBPwcH_NUmw&usqp=CAU" alt="profile picture">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPgCd93aiNba8lHWJYHQ1C1YwBPwcH_NUmw&usqp=CAU"
+                                         alt="profile picture">
                                 </#if>
                                 <div class="mt-3">
                                     <#assign v=vacancy.profile.companyName!"Название компании не указано">
                                     <h4>${v}</h4>
-<#if user.email == viewer.email>
-                                    <a class="btn btn-success"
-                                       href="/auth/edit/${user.email}">Редактировать профиль</a>
-<#else>
-    <#if viewer.userType=="applicant">
-    <a class="btn btn-success"
-       href="/apply/forjob/${vacancy.id}">Откликнуться</a>
-    </#if>
-</#if>
-
+                                    <#if user.email == viewer.email>
+                                        <a class="btn btn-success"
+                                           href="/auth/edit/${user.email}">Редактировать профиль</a>
+                                    <#else>
+                                        <#if viewer.userType=="applicant">
+                                            <a class="btn btn-success"
+                                               href="/apply/forjob/${vacancy.id}">Откликнуться</a>
+                                        </#if>
+                                    </#if>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
-
                 <div class="col-md-8">
                     <div class="card mb-3">
                         <div class="card-body">
@@ -54,9 +47,6 @@
                                 <div class="col-sm-3">
                                     <h6 class="mb-0">Название вакансии:</h6>
                                 </div>
-
-
-
                                 <div class="col-sm-9 text-secondary">
                                     <#if (vacancy.vacancyName)??>
                                         <p class="form-control"> ${vacancy.vacancyName}</p>
@@ -77,7 +67,6 @@
                                     </p>
 
 
-
                                 </div>
                             </div>
                             <hr>
@@ -91,7 +80,6 @@
                                 </div>
                             </div>
                             <hr>
-
                             <div class="row">
                                 <div class="col-sm-3">
                                     <h6 class="mb-0">Описание вакансии:</h6>
@@ -104,7 +92,6 @@
                                 </div>
                             </div>
                             <hr>
-
                             <div class="row">
                                 <div class="col-sm-3">
                                     <h6 class="mb-0">Требуемый опыт:</h6>
@@ -119,21 +106,12 @@
 
                                 </div>
                             </div>
-
-
-
                             <hr>
                         </div>
                     </div>
-
-
                 </div>
             </div>
-
         </div>
-
-        </form>
-
     </div>
 
 

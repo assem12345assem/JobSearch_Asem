@@ -4,7 +4,6 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.dto.*;
 import com.example.jobsearch.entity.JobApplication;
 import com.example.jobsearch.entity.Message;
-import com.example.jobsearch.entity.Vacancy;
 import com.example.jobsearch.repository.JobApplicationRepository;
 import com.example.jobsearch.repository.MessageRepository;
 import com.example.jobsearch.repository.ResumeRepository;
@@ -35,18 +34,12 @@ public class JobApplicationService {
         UserDto u = authService.getAuthor(auth);
         JobApplication j = jobApplicationRepository.save(JobApplication.builder()
                 .vacancy(vacancyRepository.findById(firstJobApplicationDto.getVacancyId()).orElseThrow(() -> new NoSuchElementException("Vacancy not found")))
-                        .resume(resumeRepository.findById(firstJobApplicationDto.getResumeId()).orElseThrow(() -> new NoSuchElementException("Resume not found")))
-                        .dateTime(LocalDateTime.now())
-                        .build());
-        messageRepository.save(Message.builder()
-                .jobApplication(j)
-                .message(type + firstJobApplicationDto.getResumeId())
-                .author(u.getEmail())
-                .createTime(LocalDateTime.now())
+                .resume(resumeRepository.findById(firstJobApplicationDto.getResumeId()).orElseThrow(() -> new NoSuchElementException("Resume not found")))
+                .dateTime(LocalDateTime.now())
                 .build());
         messageRepository.save(Message.builder()
                 .jobApplication(j)
-                .message(firstJobApplicationDto.getMessageText())
+                .message(type + firstJobApplicationDto.getResumeId())
                 .author(u.getEmail())
                 .createTime(LocalDateTime.now())
                 .build());
@@ -59,7 +52,10 @@ public class JobApplicationService {
     }
 
     public JobApplication findById(Long jobApplicationId) {
-        return jobApplicationRepository.findById(jobApplicationId).orElseThrow(() -> new NoSuchElementException("Job application not found"));
+        return jobApplicationRepository.findById(jobApplicationId).orElseThrow(() -> {
+            log.warn("Job application was not found: {}", jobApplicationId);
+            return new NoSuchElementException("Job application not found");
+        });
     }
 
     public List<MessageDto> getMessages(Long jobApplicationId, Authentication auth) {
@@ -99,13 +95,12 @@ public class JobApplicationService {
                 }
             }
         } else {
-            List<Vacancy> va = vacancyService.findAllByEmployer(auth);
-            if (va != null) {
-                for (Vacancy v :
-                        va) {
-                    j.addAll(jobApplicationRepository.findAllByVacancyId(v.getId()));
-                }
-            }
+            List<JobApplication> va = vacancyService.findAllByEmployer(auth)
+                    .stream()
+                    .map(v -> jobApplicationRepository.findAllByVacancyId(v.getId()))
+                    .flatMap(List::stream)
+                    .toList();
+
         }
 
         List<MessageListDto> list = new ArrayList<>();
@@ -119,7 +114,7 @@ public class JobApplicationService {
             String firstName = rDto.getProfile().getFirstName();
             String lastName = rDto.getProfile().getLastName();
             String applicant = (firstName != null && lastName != null) ? (firstName + " " + lastName) : (firstName != null ? firstName : (lastName != null ? lastName : "не указано"));
-String vacancy = vDto.getVacancyName() != null ? vDto.getVacancyName() : "не указано";
+            String vacancy = vDto.getVacancyName() != null ? vDto.getVacancyName() : "не указано";
             list.add(MessageListDto.builder()
                     .jobApplicationId(jobApplication.getId())
                     .vacancyName(vacancy)
@@ -132,15 +127,11 @@ String vacancy = vDto.getVacancyName() != null ? vDto.getVacancyName() : "не �
     }
 
     public Integer getNew(Authentication auth) {
-        List<MessageListDto> temp = listMessages(auth);
-        int counter = 0;
-        for (MessageListDto m :
-                temp) {
-            if (m.getNewMessage() > 0) {
-                counter += m.getNewMessage();
-            }
-        }
-        return counter;
+        return listMessages(auth)
+                .stream()
+                .mapToInt(MessageListDto::getNewMessage)
+                .filter(newMessage -> newMessage > 0)
+                .sum();
     }
 
     public void sendMessage(MessageDto messageDto, Authentication auth) {
@@ -160,9 +151,10 @@ String vacancy = vDto.getVacancyName() != null ? vDto.getVacancyName() : "не �
 
     public List<Integer> getCountByVacancy() {
         var j = jobApplicationRepository.getCountByVacancy();
-        if(j.isEmpty()) {
+        if (j.isEmpty()) {
             j.add(0);
         }
         return j;
     }
+
 }

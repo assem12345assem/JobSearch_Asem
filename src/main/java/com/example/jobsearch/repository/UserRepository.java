@@ -14,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Modifying
     @Query(value = "INSERT INTO users_roles (user_email, role_id) VALUES (:email, :roleId)", nativeQuery = true)
     void assignRoleToUser(@Param("email") String email, @Param("roleId") Long roleId);
+
+    Optional<User> findByResetPasswordToken(String token);
+
 }

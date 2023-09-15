@@ -25,6 +25,8 @@ public class User implements UserDetails {
     private String password;
     private String photo;
     private boolean enabled;
+    private String resetPasswordToken;
+
 
     @OneToOne(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Applicant applicant;

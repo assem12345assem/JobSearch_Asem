@@ -17,7 +17,7 @@ public class VacancyDto {
     private String description;
     private Integer requiredExperienceMin;
     private Integer requiredExperienceMax;
-    private boolean isActive;
+    private String isActive;
     private boolean isPublished;
     private LocalDateTime dateTime;
 }

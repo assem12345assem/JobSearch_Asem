@@ -24,6 +24,8 @@ public class AuthService {
             log.warn("User not found: {}", email);
             return new NoSuchElementException("User not found.");
         });
-        return UserDto.builder().email(fromDao.getEmail()).phoneNumber(fromDao.getPhoneNumber()).userName(fromDao.getEmail()).userType(fromDao.getUserType()).password(fromDao.getPassword()).photo(fromDao.getPhoto()).build();
+        return UserDto.builder().email(fromDao.getEmail()).phoneNumber(fromDao.getPhoneNumber()).userName(fromDao.getEmail()).userType(fromDao.getUserType()).password(fromDao.getPassword())
+                .photo(fromDao.getPhoto())
+                .build();
     }
 }

@@ -36,9 +36,7 @@
                                     <button type="submit" class="btn btn-warning p-3">+<br> Создать <br>резюме</button>
                                 </form>
                                 </#if>
-<#--                                <a href="/resume/add" >-->
-<#--                                    -->
-<#--                                </a>-->
+
                             </div>
                         <#else>
                             <div class="text-center">
@@ -132,6 +130,9 @@
                     <div class="card-body">
                         <h5 class="card-title"><#if (item.title)??> ${item.title}<#else> Нет названия</#if></h5>
                         <p class="card-text"><#if (item.dateTime)??>${item.dateTime}<#else >Нет даты</#if></p>
+                        <p class="card-text"><#if (item.isActive)??>
+                                <#if item.isActive == "true">активно <#else> не активно</#if>
+                            </#if></p>
                         <div class="d-flex">
                             <#if user.userType=="employer">
                                 <a href="/vacancy/edit/${item.id}" class="btn btn-primary me-3">Редактировать</a>
@@ -204,8 +205,7 @@
                     try {
                         let user = await readUser();
                         if (user) {
-                            let newUrl = baseUrl + '/auth/edit/' + user.username;
-                            window.location.href = newUrl;
+                            window.location.href = baseUrl + '/auth/edit/' + user.username;;
                         }
                     } catch (e) {
                         console.error(e);

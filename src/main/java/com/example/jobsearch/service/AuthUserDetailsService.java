@@ -3,7 +3,6 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.entity.Authority;
 import com.example.jobsearch.entity.Role;
 import com.example.jobsearch.entity.User;
-import com.example.jobsearch.repository.RoleRepository;
 import com.example.jobsearch.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,18 +18,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AuthUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        Optional<User> maybeUser = userRepository.getByEmail(username);
-//        if (maybeUser.isEmpty()) {
-//            return new org.springframework.security.core.userdetails.User(
-//                    " ",
-//                    " ",
-//                    getAuthorities(Collections.singletonList(roleRepository.findByRole("GUEST"))));
-//        } else {
-//          User user = maybeUser.get();
         User user = userRepository.getByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             return new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
@@ -65,7 +55,6 @@ public class AuthUserDetailsService implements UserDetailsService {
         for (Authority item : collection) {
             privileges.add(item.getAuthority());
         }
-        // ROLE_USER, FULL, READ_ONLY
         return privileges;
     }
 

@@ -87,7 +87,8 @@ public class VacancyMVCController {
         }
 
         var totalVacancies = vacancyService.getAll(sort, pageNumber, pageSize, category, date, application, searchWord);
-       int total = vacancyService.getTotalVacanciesCount();
+
+        int total = vacancyService.getTotalVacanciesCount();
         int totalPages = utilService.totalPagesCounter(total, pageSize);
 
 

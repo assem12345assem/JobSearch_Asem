@@ -41,7 +41,7 @@
                         <#if known>
                             <#assign
  authority = SPRING_SECURITY_CONTEXT.authentication.getAuthorities()[0].getAuthority()>
-                            <#if authority == "APPLICANT">
+                            <#if authority == "ROLE_APPLICANT">
                                 <a class="nav-link" href="/vacancy/all/companies">Компании</a>
                             <#else>
                              <a class="nav-link" href="/resume/all/view">Резюме</a>
