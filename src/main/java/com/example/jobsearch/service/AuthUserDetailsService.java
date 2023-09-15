@@ -3,7 +3,6 @@ package com.example.jobsearch.service;
 import com.example.jobsearch.entity.Authority;
 import com.example.jobsearch.entity.Role;
 import com.example.jobsearch.entity.User;
-import com.example.jobsearch.repository.RoleRepository;
 import com.example.jobsearch.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

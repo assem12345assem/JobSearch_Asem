@@ -205,8 +205,7 @@
                     try {
                         let user = await readUser();
                         if (user) {
-                            let newUrl = baseUrl + '/auth/edit/' + user.username;
-                            window.location.href = newUrl;
+                            window.location.href = baseUrl + '/auth/edit/' + user.username;;
                         }
                     } catch (e) {
                         console.error(e);

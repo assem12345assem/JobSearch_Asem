@@ -5,8 +5,7 @@ document.getElementById("categoryForm").addEventListener("submit", function (eve
     const pageNumber = 0;
     const sort = "id";
 
-    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=${selectedCategory}&date=default&application=default&searchWord=default`;
-    window.location.href = url;
+    window.location.href = `/vacancy/all/view?pageNumber=0&sort=id&category=${selectedCategory}&date=default&application=default&searchWord=default`;
 })
 
 document.getElementById("dateForm").addEventListener("submit", function (event) {
@@ -16,9 +15,7 @@ document.getElementById("dateForm").addEventListener("submit", function (event) 
     const pageNumber = 0;
     const sort = "id";
 
-    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=${selectedDate}application=default&searchWord=default`;
-
-    window.location.href = url;
+    window.location.href = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=${selectedDate}application=default&searchWord=default`;
 })
 
 document.getElementById("applicationsForm").addEventListener("submit", function (event) {
@@ -27,10 +24,7 @@ document.getElementById("applicationsForm").addEventListener("submit", function 
     const selectedApplications = document.getElementById("applications").value;
     const pageNumber = 0;
     const sort = "id";
-
-    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=default&application=${selectedApplications}&searchWord=default`;
-
-    window.location.href = url;
+    window.location.href = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=default&application=${selectedApplications}&searchWord=default`;
 })
 
 document.getElementById("searchForm").addEventListener("submit", function (event) {
@@ -39,8 +33,5 @@ document.getElementById("searchForm").addEventListener("submit", function (event
     const searchWord = document.getElementById("searchWord").value;
     const pageNumber = 0;
     const sort = "id";
-
-    const url = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=default&application=default&searchWord=${searchWord}`;
-
-    window.location.href = url;
+    window.location.href = `/vacancy/all/view?pageNumber=0&sort=id&category=default&date=default&application=default&searchWord=${searchWord}`;
 })

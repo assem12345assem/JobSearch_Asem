@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -96,18 +95,11 @@ public class JobApplicationService {
                 }
             }
         } else {
-//            List<Vacancy> va = vacancyService.findAllByEmployer(auth);
-//            if (va != null) {
-//                for (Vacancy v :
-//                        va) {
-//                    j.addAll(jobApplicationRepository.findAllByVacancyId(v.getId()));
-//                }
-//            }
             List<JobApplication> va = vacancyService.findAllByEmployer(auth)
                     .stream()
                     .map(v -> jobApplicationRepository.findAllByVacancyId(v.getId()))
                     .flatMap(List::stream)
-                    .collect(Collectors.toList());
+                    .toList();
 
         }
 
@@ -135,15 +127,6 @@ public class JobApplicationService {
     }
 
     public Integer getNew(Authentication auth) {
-//        List<MessageListDto> temp = listMessages(auth);
-//        int counter = 0;
-//        for (MessageListDto m :
-//                temp) {
-//            if (m.getNewMessage() > 0) {
-//                counter += m.getNewMessage();
-//            }
-//        }
-//        return counter;
         return listMessages(auth)
                 .stream()
                 .mapToInt(MessageListDto::getNewMessage)

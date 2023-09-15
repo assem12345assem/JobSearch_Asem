@@ -26,7 +26,7 @@ public class VacancyService {
     private final UserService userService;
     private final AuthService authService;
     private final CategoryRepository categoryRepository;
-
+private final UtilService utilService;
     private Vacancy getById(Long id) {
         return vacancyRepository.findById(id).orElseThrow(() -> {
             log.warn("Vacancy not found: {}", id);
@@ -130,18 +130,10 @@ public class VacancyService {
                     .dateTime(v.getDateTime())
                     .build());
         }
-        return toPageSummary(list, PageRequest.of(page, size));
+        return utilService.toPage(list, PageRequest.of(page, size));
     }
 
-    private Page<SummaryDto> toPageSummary(List<SummaryDto> v, Pageable pageable) {
-        if (pageable.getOffset() >= v.size()) {
-            return Page.empty();
-        }
-        int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
-        List<SummaryDto> subList = v.subList(startIndex, endIndex);
-        return new PageImpl<>(subList, pageable, v.size());
-    }
+
 
     public List<Vacancy> findAllByEmployer(Authentication auth) {
         UserDto u = authService.getAuthor(auth);
@@ -189,19 +181,12 @@ public class VacancyService {
                     Sort.by(sortCriteria)
             );
         }
-        return toPage(vlist, PageRequest.of(page, size, Sort.by(sortCriteria)));
-    }
-
-
-    private Page<VacancyDto> toPage(List<Vacancy> list, Pageable pageable) {
-        var v = list.stream().map(this::makeDtoFromVacancy).toList();
-        if (pageable.getOffset() >= v.size()) {
-            return Page.empty();
+        if(sortCriteria.equalsIgnoreCase("id")) {
+            vlist.sort(Comparator.comparing(Vacancy::getDateTime).reversed());
         }
-        int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
-        List<VacancyDto> subList = v.subList(startIndex, endIndex);
-        return new PageImpl<>(subList, pageable, v.size());
+        var v = vlist.stream().map(this::makeDtoFromVacancy).toList();
+
+        return utilService.toPage(v, PageRequest.of(page, size, Sort.by(sortCriteria)));
     }
 
     public int getTotalVacanciesCount() {
@@ -235,18 +220,8 @@ public class VacancyService {
         }
         System.out.println("cList" + clist.size());
 
-        return toPageEmployers(clist, PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "email")));
+        return utilService.toPage(clist, PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "email")));
 
-    }
-
-    private Page<CompanyDto> toPageEmployers(List<CompanyDto> clist, Pageable pageable) {
-        if (pageable.getOffset() >= clist.size()) {
-            return Page.empty();
-        }
-        int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min(startIndex + pageable.getPageSize(), clist.size());
-        List<CompanyDto> subList = clist.subList(startIndex, endIndex);
-        return new PageImpl<>(subList, pageable, clist.size());
     }
 
     public CompanyDto getCompanyDto(String email) {
@@ -276,7 +251,7 @@ public class VacancyService {
                     .dateTime(v.getDateTime())
                     .build());
         }
-        return toPageSummary(list, PageRequest.of(page, size));
+        return utilService.toPage(list, PageRequest.of(page, size));
     }
 
     public int getCompanyDtoSize() {

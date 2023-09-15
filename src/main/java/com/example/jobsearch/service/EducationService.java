@@ -19,7 +19,7 @@ public class EducationService {
     private final EducationRepository educationRepository;
 
     public List<EducationDto> getDtoListByResumeId(Long resumeId) {
-        List<EducationDto> e = educationRepository.findByResumeId(resumeId).stream()
+        return educationRepository.findByResumeId(resumeId).stream()
                 .map(education -> EducationDto.builder()
                         .id(education.getId())
                         .education(education.getEducation())
@@ -28,7 +28,6 @@ public class EducationService {
                         .graduationDate(education.getGraduationDate())
                         .build())
                 .collect(Collectors.toList());
-        return e;
     }
 
     public void saveEducation(EducationDto educationDto, Resume resume) {

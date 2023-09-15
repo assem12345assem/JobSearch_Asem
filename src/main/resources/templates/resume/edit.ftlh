@@ -14,7 +14,6 @@
                     <button class="btn btn-success mt-3 bottom-button" type="submit" id="submitResume">Сохранить
                     </button>
                 </div>
-
                 <div class="row gutters-sm mt-5">
                     <div class="col-md-4 mb-3">
                         <div class="card">
@@ -74,17 +73,14 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                                     <#if (resume.contact.facebook)??>
-                                        <label for="facebook" class="fs-6"><i
-                                                    class="fa-brands fa-square-facebook fs-3"></i> Facebook:</label>
-                                        <input id="facebook" class="form-control" type="text"
-                                               placeholder="${resume.contact.facebook}"
-                                               name="contact.facebook" value=${resume.contact.facebook}">
-                                        <#else >
-                                            <label for="facebook" class="fs-6"><i class="fa-brands fa-square-facebook fs-3"></i> Facebook:</label>
-                                            <input id="facebook" class="form-control" type="text" placeholder="facebook"
-                                                                                       name="contact.facebook">
-                                        </#if>
+                                        <label for="facebook" class="fs-6"><i class="fa-brands fa-square-facebook fs-3"></i> Facebook:</label>
+                                        <input id="facebook" class="form-control" type="text" placeholder="${resume.contact.facebook}" name="contact.facebook" value="${resume.contact.facebook}">
+                                    <#else>
+                                        <label for="facebook" class="fs-6"><i class="fa-brands fa-square-facebook fs-3"></i> Facebook:</label>
+                                        <input id="facebook" class="form-control" type="text" placeholder="facebook" name="contact.facebook">
+                                    </#if>
                                 </li>
+
                                 <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 
                                     <#if (resume.contact.linkedIn)??>
@@ -473,165 +469,10 @@
                         </div>
                     </div>
                 </div>
+
+            </form>
+
         </div>
-        </form>
 
     </div>
-    </div>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="workModal" tabindex="-1" aria-labelledby="workModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="workModalLabel">Опыт работы</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="post" action="/resume/edit/add_one_work/${resume.id}">
-                    <#if _csrf??>
-                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                               value="${(_csrf.token)!'csrf-token'}"/>
-                    </#if>
-                    <div class="modal-body">
-
-                        <small>Название компании</small>
-                        <input class="form-control" type="text" placeholder="Название компании"
-                               name="companyName">
-                        <small>Должность</small>
-                        <input class="form-control" type="text" placeholder="Должность"
-                               name="position">
-                        <small>Обязанности:</small>
-                        <input class="form-control" type="text" placeholder="Обязанности"
-                               name="responsibilities">
-                        <small>Начало работы: </small>
-                        <input class="form-control" type="date" placeholder="Начало работы"
-                               name="dateStart">
-                        <small>Завершение работы: </small>
-                        <input class="form-control" type="date" placeholder="Завершение работы"
-                               name="dateEnd">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="addWorkExperience">OK</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="eduModal" tabindex="-1" aria-labelledby="eduModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="eduModalLabel">Образование</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="post" action="/resume/edit/add_one_edu/${resume.id}">
-                    <#if _csrf??>
-                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                               value="${(_csrf.token)!'csrf-token'}"/>
-                    </#if>
-                    <div class="modal-body">
-                        <small>Образование</small>
-                        <input class="form-control" type="text" placeholder="Образование"
-                               name="education">
-
-                        <small>Где учился</small>
-                        <input class="form-control" type="text" placeholder="Учебное заведение"
-                               name="schoolName">
-
-                        <small>Начало обучения</small>
-
-                        <input class="form-control" type="date" placeholder="Начало обучения"
-                               name="startDate">
-                        <small>Дата выпуска: </small>
-
-
-                        <input class="form-control" type="date" placeholder="Дата выпуска"
-                               name="graduationDate">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="addEducation">OK</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="mb-5 pb-5"></div>
-
-    <style>
-        body {
-            margin-top: 20px;
-            color: #1a202c;
-            text-align: left;
-            background-color: #e2e8f0;
-        }
-
-        .fixed-button-container {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            width: 100%;
-            padding: 10px 0 20px;
-            background-color: #1a202ca5;
-        }
-
-        .main-body {
-            padding: 15px;
-        }
-
-        .card {
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
-        }
-
-        .card {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            word-wrap: break-word;
-            background-color: #fff;
-            background-clip: border-box;
-            border: 0 solid rgba(0, 0, 0, .125);
-            border-radius: .25rem;
-        }
-
-        .card-body {
-            flex: 1 1 auto;
-            min-height: 1px;
-            padding: 1rem;
-        }
-
-        .gutters-sm {
-            margin-right: -8px;
-            margin-left: -8px;
-        }
-
-        .gutters-sm > .col, .gutters-sm > [class*=col-] {
-            padding-right: 8px;
-            padding-left: 8px;
-        }
-
-        .mb-3, .my-3 {
-            margin-bottom: 1rem !important;
-        }
-
-        .bg-gray-300 {
-            background-color: #e2e8f0;
-        }
-
-        .h-100 {
-            height: 100% !important;
-        }
-
-        .shadow-none {
-            box-shadow: none !important;
-        }
-    </style>
-
-
 </@main.layout>

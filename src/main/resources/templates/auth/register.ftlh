@@ -119,8 +119,8 @@
     </section>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var userTypeSelect = document.getElementById('form3Example4c');
-            var userNameLabel = document.querySelector('label[for="form3Example3c"]');
+            const userTypeSelect = document.getElementById('form3Example4c');
+            const userNameLabel = document.querySelector('label[for="form3Example3c"]');
 
             userTypeSelect.addEventListener('change', function() {
                 if (this.value === 'employer') {

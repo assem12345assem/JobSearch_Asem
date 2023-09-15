@@ -31,6 +31,7 @@ public class ResumeService {
     private final UserService userService;
     private final AuthService authService;
     private final CategoryRepository categoryRepository;
+    private final UtilService utilService;
 
     private Resume findById(Long resumeId) {
         return resumeRepository.findById(resumeId).orElseThrow(() -> {
@@ -57,18 +58,10 @@ public class ResumeService {
                     .build()
             );
         }
-        return toPageSummary(list, PageRequest.of(page, size));
+        return utilService.toPage(list, PageRequest.of(page, size));
     }
 
-    private Page<SummaryDto> toPageSummary(List<SummaryDto> v, Pageable pageable) {
-        if (pageable.getOffset() >= v.size()) {
-            return Page.empty();
-        }
-        int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
-        List<SummaryDto> subList = v.subList(startIndex, endIndex);
-        return new PageImpl<>(subList, pageable, v.size());
-    }
+
 
 
     private void cleanEmptyTemplate(Resume r) {
@@ -219,20 +212,9 @@ public class ResumeService {
                     Sort.by(sortCriteria)
             );
         }
-        return toPage(vlist, PageRequest.of(page, size, Sort.by(sortCriteria)));
+        List<ResumeDto> dtoList = vlist.stream().map(this::makeDtoFromResume).toList();
+        return utilService.toPage(dtoList, PageRequest.of(page, size, Sort.by(sortCriteria)));
     }
-
-    private Page<ResumeDto> toPage(List<Resume> list, Pageable pageable) {
-        var v = list.stream().map(this::makeDtoFromResume).toList();
-        if (pageable.getOffset() >= v.size()) {
-            return Page.empty();
-        }
-        int startIndex = (int) pageable.getOffset();
-        int endIndex = Math.min(startIndex + pageable.getPageSize(), v.size());
-        List<ResumeDto> subList = v.subList(startIndex, endIndex);
-        return new PageImpl<>(subList, pageable, v.size());
-    }
-
 
     public List<SummaryDto> findSummaryForMain() {
         Sort sort = Sort.by(Sort.Direction.DESC, "dateTime");

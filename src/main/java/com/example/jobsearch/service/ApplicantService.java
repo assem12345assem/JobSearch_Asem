@@ -37,8 +37,8 @@ public class ApplicantService {
         Applicant a = getApplicantByUserEmail(email);
         return makeDtoFromApplicant(a);
     }
-    public Applicant save(User user) {
-      return   applicantRepository.save(Applicant.builder()
+    public void save(User user) {
+        applicantRepository.save(Applicant.builder()
                 .user(user)
                 .build());
     }
