@@ -21,7 +21,7 @@
                                         </#if>
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                                            <div class="form-outline flex-fill mb-0">
+                                            <div class=" flex-fill mb-0">
                                                 <input type="email" name="email" id="form3Example1c"
                                                        class="form-control" placeholder="examle@mail.com" required>
                                                 <label class="form-label" for="form3Example1c">Email</label>
@@ -32,7 +32,7 @@
 <#--                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>-->
                                             <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
 
-                                            <div class="form-outline flex-fill mb-0">
+                                            <div class=" flex-fill mb-0">
                                                 <label class="form-label" for="form3Example2c"
                                                 >Номер телефона</label>
                                                 <span style="color: red">
@@ -46,7 +46,7 @@
                                         <div class="d-flex flex-row align-items-center mb-4">
 <#--                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>-->
                                             <i class="fa-solid fa-signature fa-lg me-3 fa-fw"></i>
-                                            <div class="form-outline flex-fill mb-0">
+                                            <div class=" flex-fill mb-0">
                                                 <input type="text" name="userName" id="form3Example3c"
                                                        class="form-control"
                                                 >
@@ -57,7 +57,7 @@
 
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                                            <div class="form-outline flex-fill mb-0">
+                                            <div class=" flex-fill mb-0">
 
                                                 <select name="userType" id="form3Example4c" class="form-control"
                                                         required>
@@ -77,7 +77,7 @@
                                         </div>
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                                            <div class="form-outline flex-fill mb-0">
+                                            <div class=" flex-fill mb-0">
                                                 <label class="form-label" for="form3Example5c"
                                                 >Пароль</label>
                                                 <span style="color: red">
@@ -89,7 +89,7 @@
                                         </div>
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fa-solid fa-camera-retro fa-lg me-3 fa-fw"></i>
-                                            <div class="form-outline flex-fill mb-0">
+                                            <div class=" flex-fill mb-0">
 
                                             <label class="form-label" for="file">Фото пользователя
                                                 </label> <br>

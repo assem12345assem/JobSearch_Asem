@@ -14,14 +14,15 @@
                                    value="${(_csrf.token)!'csrf-token'}"/>
                         </#if>
                         <!-- Email input -->
-                        <div class="form-outline mb-4">
+                            <div class="mb-4">
+
                             <input type="email" name="username" id="form1Example13"
                                    class="form-control form-control-lg"/>
                             <label class="form-label" for="form1Example13">Email</label>
                         </div>
 
                         <!-- Password input -->
-                        <div class="form-outline mb-4">
+                        <div class="mb-4">
                             <input type="password" name="password" id="form1Example23"
                                    class="form-control form-control-lg"/>
                             <label class="form-label" for="form1Example23">Пароль</label>
