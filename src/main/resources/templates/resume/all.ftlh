@@ -144,6 +144,5 @@
             </li>
         </ul>
 
-    </div>
 
 </@main.layout>

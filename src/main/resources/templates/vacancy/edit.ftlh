@@ -145,7 +145,7 @@
                                                    name="salary" value="${var3}">
                                         <#else>
                                             <input class="form-control" type="number"
-                                                   placeholder="<@spring.message 'vacancy.enter.salary'/>" name="salary">
+                                                   placeholder="<@spring.message 'instruction.enter.salary'/>" name="salary">
                                         </#if>
                                     </div>
                                 </div>

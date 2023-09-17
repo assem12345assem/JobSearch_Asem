@@ -37,6 +37,7 @@
                 src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"
         ></script>
         <script type="text/javascript" src="/static/scripts/main.js"></script>
+        <link rel="stylesheet" src="/static/css/mscl_styles.css">
     </head>
 
     <body>

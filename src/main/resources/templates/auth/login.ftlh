@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
     <section class="vh-100">
         <div class="container py-5 h-100">
@@ -25,18 +27,18 @@
                         <div class="mb-4">
                             <input type="password" name="password" id="form1Example23"
                                    class="form-control form-control-lg"/>
-                            <label class="form-label" for="form1Example23">Пароль</label>
+                            <label class="form-label" for="form1Example23"><@spring.message 'profile.password'/></label>
                         </div>
                         <div class="d-flex justify-content-around align-items-center mb-4">
                             <!-- Checkbox -->
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="true" id="form1Example3"
                                        name="remember-me" checked/>
-                                <label class="form-check-label" for="form1Example3"> Remember me </label>
+                                <label class="form-check-label" for="form1Example3"> <@spring.message 'profile.remember_me'/> </label>
                             </div>
-                            <a href="/auth/forgot_password">Forgot password?</a>
+                            <a href="/auth/forgot_password"><@spring.message 'profile.password_forgot_question'/></a>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Войти</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block"><@spring.message 'profile.login_enter'/></button>
                     </form>
                 </div>
             </div>

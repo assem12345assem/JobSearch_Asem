@@ -11,8 +11,7 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Регистрация
-                                        пользователя</p>
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4"><@spring.message 'profile.registration'/></p>
 
                                     <form class="mx-1 mx-md-4" action="/auth/register" method="post" enctype="multipart/form-data">
                                         <#if _csrf??>
@@ -34,9 +33,9 @@
 
                                             <div class=" flex-fill mb-0">
                                                 <label class="form-label" for="form3Example2c"
-                                                >Номер телефона</label>
+                                                ><@spring.message 'contact.phone_number'/></label>
                                                 <span style="color: red">
-                                                <@spring.formInput "userDto.phoneNumber" 'id="form3Example2c" class="form-control" placeholder="Номер телефона"' />
+                                                <@spring.formInput "userDto.phoneNumber" 'id="form3Example2c" class="form-control" placeholder="+996 555 000 000"' />
                                                     <@spring.showErrors "<br>" "error"/>
                                                 </span>
 
@@ -51,7 +50,7 @@
                                                        class="form-control"
                                                 >
                                                 <label class="form-label" for="form3Example3c"
-                                                >Имя пользователя</label>
+                                                ><@spring.message 'profile.user_name'/></label>
                                             </div>
                                         </div>
 
@@ -61,16 +60,15 @@
 
                                                 <select name="userType" id="form3Example4c" class="form-control"
                                                         required>
-                                                    <option value="" disabled selected hidden>выбрать</option>
+                                                    <option value="" disabled selected hidden><@spring.message 'profile.select'/></option>
                                                     <option value="employer" class="form-brd-radius col-6">
-                                                        работодатель
+                                                        <@spring.message 'profile.type.employer'/>
                                                     </option>
-                                                    <option value="applicant" class="form-brd-radius col-6">соискатель
+                                                    <option value="applicant" class="form-brd-radius col-6"><@spring.message 'profile.type.applicant'/>
                                                     </option>
 
                                                 </select>
-                                                <label class="form-label" for="form3Example4c">Тип учетной
-                                                    записи</label>
+                                                <label class="form-label" for="form3Example4c"><@spring.message 'profile.type'/></label>
 
 
                                             </div>
@@ -79,9 +77,9 @@
                                             <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                                             <div class=" flex-fill mb-0">
                                                 <label class="form-label" for="form3Example5c"
-                                                >Пароль</label>
+                                                ><@spring.message 'profile.password'/></label>
                                                 <span style="color: red">
-                                                <@spring.formInput "userDto.password" 'id="form3Example5c" class="form-control" placeholder="пароль"' />
+                                                <@spring.formInput "userDto.password" 'id="form3Example5c" class="form-control" ' />
                                                     <@spring.showErrors "<br>" "error"/>
                                                 </span>
 
@@ -91,13 +89,13 @@
                                             <i class="fa-solid fa-camera-retro fa-lg me-3 fa-fw"></i>
                                             <div class=" flex-fill mb-0">
 
-                                            <label class="form-label" for="file">Фото пользователя
+                                            <label class="form-label" for="file"><@spring.message 'profile.photo'/>
                                                 </label> <br>
                                                 <input type="file" name="file" id="image_input"><br><br>
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                            <button type="submit" class="btn btn-primary btn-lg">Зарегистрироваться
+                                            <button type="submit" class="btn btn-primary btn-lg"><@spring.message 'button.register'/>
                                             </button>
                                         </div>
 
@@ -124,9 +122,9 @@
 
             userTypeSelect.addEventListener('change', function() {
                 if (this.value === 'employer') {
-                    userNameLabel.textContent = 'Имя компании';
+                    userNameLabel.textContent = '<@spring.message 'companies.name'/>';
                 } else {
-                    userNameLabel.textContent = 'Имя пользователя';
+                    userNameLabel.textContent = '<@spring.message 'profile.user_name'/>';
                 }
             });
         });
