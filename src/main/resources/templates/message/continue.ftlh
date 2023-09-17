@@ -1,11 +1,13 @@
 <#import '../layout.ftlh' as main>
+<#import '/spring.ftl' as spring>
+
 <@main.layout>
     <div class="container">
         <div class="main-body">
             <#if user.userType == "applicant">
-            <h2 class="text-primary fs-2 text-center"> Отклик на вакансию</h2>
+            <h2 class="text-primary fs-2 text-center"> <@spring.message 'vacancy.application'/></h2>
             <#else >
-            <h2 class="text-primary fs-2 text-center"> Предложение вакансии от работодателя</h2>
+            <h2 class="text-primary fs-2 text-center"> <@spring.message 'vacancy.vacancy_offer'/></h2>
 
             </#if>
 
@@ -24,11 +26,11 @@
                                 <div class="mt-3">
 
                                     <#if user.userType == "applicant">
-                                    <#assign v=vacancy.profile.companyName!"Название компании не указано">
+                                    <#assign v=vacancy.profile.companyName!"<@spring.message 'companies.no_company_name'/>">
                                     <h4>${v}</h4>
                                     <#else >
                                     <h4><#if (resume.profile.firstName)??>${resume.profile.firstName}</#if> <#if (resume.profile.lastName)??>${resume.profile.lastName}</#if></h4>
-                                    <p class="text-secondary mb-1">Дата рождения:</p>
+                                    <p class="text-secondary mb-1"><@spring.message 'resume.dob'/>:</p>
                                     <p class="text-muted font-size-sm"><#if (resume.profile.dateOfBirth)??> ${resume.profile.dateOfBirth}</#if></p>
 
                                     </#if>
@@ -48,9 +50,9 @@
                             <div class="row">
                                 <div class="col-sm-3">
                                     <#if user.userType == "applicant">
-                                    <h6 class="mb-0">Название вакансии:</h6>
+                                    <h6 class="mb-0"><@spring.message 'vacancy.name'/></h6>
                                     <#else >
-                                    <h6 class="mb-0">Название резюме:</h6>
+                                    <h6 class="mb-0"><@spring.message 'resume.title'/></h6>
 
                                     </#if>
                                 </div>
@@ -61,14 +63,14 @@
                                     <#if (vacancy.vacancyName)??>
                                     <p class="form-control"> ${vacancy.vacancyName}</p>
                                     <#else>
-                                    <p class="form-control"> Не указано</p>
+                                    <p class="form-control"> <@spring.message 'no.info'/></p>
 
                                     </#if>
                                     <#else >
                                     <#if (resume.resumeTitle)??>
                                     <p class="form-control"> ${resume.resumeTitle}</p>
                                     <#else>
-                                    <p class="form-control"> Не указано</p>
+                                    <p class="form-control"> <@spring.message 'no.info'/></p>
 
                                     </#if>
 
@@ -89,9 +91,9 @@
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <#if user.userType == "applicant">
-                                    <a href="${firstMessage.message}">ссылка на резюме</a>
+                                    <a href="${firstMessage.message}"><@spring.message 'resume.link'/></a>
                                     <#else >
-                                    <a href="${firstMessage.message}">ссылка на вакансию</a>
+                                    <a href="${firstMessage.message}"><@spring.message 'vacancy.link'/></a>
 
                                     </#if>
                                 </div>
@@ -121,11 +123,11 @@
                                     <#if _csrf??>
                                     <input type="hidden" name="_csrf" value="${(_csrf.token)!'csrf-token'}"/>
                                     </#if>
-                                    <small>Сообщение</small>
+                                    <small><@spring.message 'message'/></small>
                                     <input type="hidden" name="jobApplicationId"
                                            value="${firstMessage.jobApplicationId}">
                                     <input type="text" name="message">
-                                    <button type="submit" class="btn btn-success">Отправить</button>
+                                    <button type="submit" class="btn btn-success"><@spring.message 'button.send'/></button>
                                 </form>
                             </div>
                         </div>
