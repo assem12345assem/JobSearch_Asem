@@ -91,7 +91,7 @@
                         </li>
                     </ul>
                 </div>
-                <div  >
+                <div class="d-flex align-items-right" >
                     <#assign
                     known = SPRING_SECURITY_CONTEXT??
                     >
@@ -100,7 +100,7 @@
                         user = SPRING_SECURITY_CONTEXT.authentication.principal
                         name = user.getUsername()
                         >
-                        <a href="/auth/profile/${name}" class="text-light m-2 m-sm-0" id="profile_page"><@spring.message 'navbar.user.hi'/> ${name}</a>
+                        <a href="/auth/profile/${name}" class="text-light mt-2" id="profile_page"><@spring.message 'navbar.user.hi'/> ${name}</a>
                         <#if _csrf??>
                             <form action="/logout" method="post">
                                 <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
@@ -108,7 +108,7 @@
                                 <button type="submit" class="btn btn-outline-info m-2" id="logout"><@spring.message 'navbar.user.logout'/></button>
                             </form>
                         <#else>
-                            <a href="/logout" class="btn btn-outline-info m-2" id="logout"><@spring.message 'navbar.user.logout'/></a>
+                            <a href="/logout" class="btn btn-outline-info ms-2" id="logout"><@spring.message 'navbar.user.logout'/></a>
                         </#if>
                     <#else>
                         <a href="/auth/login" class="btn btn-outline-info m-2"><@spring.message 'navbar.user.signin'/></a>

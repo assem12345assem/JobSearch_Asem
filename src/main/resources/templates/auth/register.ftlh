@@ -23,7 +23,7 @@
                                             <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                                             <div class=" flex-fill mb-0">
                                                 <input type="email" name="email" id="form3Example1c"
-                                                       class="form-control" placeholder="examle@mail.com" required>
+                                                       class="form-control" placeholder="examle@mail.com" autofocus required>
                                                 <label class="form-label" for="form3Example1c">Email</label>
                                             </div>
                                         </div>

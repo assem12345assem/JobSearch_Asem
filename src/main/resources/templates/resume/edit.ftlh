@@ -128,7 +128,7 @@
                                             <input class="form-control" type="text" placeholder="${resume.resumeTitle}"
                                                    name="resumeTitle" value="${resume.resumeTitle}">
                                         <#else>
-                                            <input class="form-control" type="text" placeholder="Введите название"
+                                            <input class="form-control" type="text" placeholder="<@spring.message 'instruction.input.title'/>"
                                                    name="resumeTitle">
                                         </#if>
                                     </div>

@@ -17,7 +17,7 @@
                             <div class="mb-4">
 
                             <input type="email" name="username" id="form1Example13"
-                                   class="form-control form-control-lg"/>
+                                   class="form-control form-control-lg" autofocus/>
                             <label class="form-label" for="form1Example13">Email</label>
                         </div>
 
