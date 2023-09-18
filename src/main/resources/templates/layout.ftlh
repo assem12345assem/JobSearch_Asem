@@ -10,8 +10,12 @@
               name="viewport">
         <meta content="ie=edge" http-equiv="X-UA-Compatible">
         <title>JobSearch Index page</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+              crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+                crossorigin="anonymous"></script>
         <script
                 src="https://kit.fontawesome.com/198548d859.js"
                 crossorigin="anonymous"
@@ -62,11 +66,12 @@
                         <#assign known = SPRING_SECURITY_CONTEXT??>
                         <#if known>
                             <#assign
- authority = SPRING_SECURITY_CONTEXT.authentication.getAuthorities()[0].getAuthority()>
+                            authority = SPRING_SECURITY_CONTEXT.authentication.getAuthorities()[0].getAuthority()>
                             <#if authority == "ROLE_APPLICANT">
-                                <a class="nav-link" href="/vacancy/all/companies"><@spring.message 'navbar.navi.companies'/></a>
+                                <a class="nav-link"
+                                   href="/vacancy/all/companies"><@spring.message 'navbar.navi.companies'/></a>
                             <#else>
-                             <a class="nav-link" href="/resume/all/view"><@spring.message 'navbar.navi.resumes'/></a>
+                                <a class="nav-link" href="/resume/all/view"><@spring.message 'navbar.navi.resumes'/></a>
                             </#if>
                         </#if>
                     </li>
@@ -80,19 +85,19 @@
 
                     <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton1">
                         <li>
-                            <a class="dropdown-item" href="?lang=en">
+                            <a class="dropdown-item language-link" href="?lang=en">
                                 <i class="flag-united-states flag "></i>English <i
-                                    class="fa text-success ms-2"></i></a>
+                                        class="fa text-success ms-2"></i></a>
                         </li>
                         <li>
                             <hr class="dropdown-divider"/>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="?lang=ru"><i class="flag-russia flag"></i>Русский</a>
+                            <a class="dropdown-item language-link" href="?lang=ru"><i class="flag-russia flag"></i>Русский</a>
                         </li>
                     </ul>
                 </div>
-                <div class="d-flex align-items-right" >
+                <div class="d-flex align-items-right">
                     <#assign
                     known = SPRING_SECURITY_CONTEXT??
                     >
@@ -101,19 +106,24 @@
                         user = SPRING_SECURITY_CONTEXT.authentication.principal
                         name = user.getUsername()
                         >
-                        <a href="/auth/profile/${name}" class="text-light mt-2" id="profile_page"><@spring.message 'navbar.user.hi'/> ${name}</a>
+                        <a href="/auth/profile/${name}" class="text-light mt-2"
+                           id="profile_page"><@spring.message 'navbar.user.hi'/> ${name}</a>
                         <#if _csrf??>
                             <form action="/logout" method="post">
                                 <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
                                        value="${(_csrf.token)!'--no-token--'}"/>
-                                <button type="submit" class="btn btn-outline-info m-2" id="logout"><@spring.message 'navbar.user.logout'/></button>
+                                <button type="submit" class="btn btn-outline-info m-2"
+                                        id="logout"><@spring.message 'navbar.user.logout'/></button>
                             </form>
                         <#else>
-                            <a href="/logout" class="btn btn-outline-info ms-2" id="logout"><@spring.message 'navbar.user.logout'/></a>
+                            <a href="/logout" class="btn btn-outline-info ms-2"
+                               id="logout"><@spring.message 'navbar.user.logout'/></a>
                         </#if>
                     <#else>
-                        <a href="/auth/login" class="btn btn-outline-info m-2"><@spring.message 'navbar.user.signin'/></a>
-                        <a href="/auth/register" class="btn btn-outline-info m-2"><@spring.message 'navbar.user.signup'/></a>
+                        <a href="/auth/login"
+                           class="btn btn-outline-info m-2"><@spring.message 'navbar.user.signin'/></a>
+                        <a href="/auth/register"
+                           class="btn btn-outline-info m-2"><@spring.message 'navbar.user.signup'/></a>
                     </#if>
                 </div>
 
@@ -127,12 +137,12 @@
     </body>
     <script>
 
-            let logout = document.getElementById('logout');
-            if (logout) {
-                logout.addEventListener('click', () => localStorage.removeItem('user'));
-            }
+        let logout = document.getElementById('logout');
+        if (logout) {
+            logout.addEventListener('click', () => localStorage.removeItem('user'));
+        }
 
     </script>
 
-</html>
+    </html>
 </#macro>

@@ -19,4 +19,5 @@ public class MainPageController {
         model.addAttribute("resumes", resumeService.findSummaryForMain());
         return "index";
     }
+
 }

@@ -36,7 +36,7 @@
                                                 ><@spring.message 'contact.phone_number'/></label>
                                                 <span style="color: red">
                                                 <@spring.formInput "userDto.phoneNumber" 'id="form3Example2c" class="form-control" placeholder="+996 555 000 000"' />
-                                                    <@spring.showErrors "<br>" "error"/>
+                                                    <@spring.showErrors "<br>" 'userDto.phoneNumber.pattern'/>
                                                 </span>
 
                                             </div>

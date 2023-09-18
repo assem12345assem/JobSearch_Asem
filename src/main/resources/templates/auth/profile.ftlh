@@ -31,7 +31,7 @@
             <!-- add resume button-->
             <div class="col-xl-3 d-flex align-items-center justify-content-center">
                 <div class="card-body text-center d-flex ">
-                    <div class="mx-3">
+                    <div class="mx-3 mb-2">
                         <#if user.userType=="applicant">
                             <div class="text-center">
                                 <#if _csrf??>
@@ -138,13 +138,29 @@
                         <p class="card-text"><#if (item.isActive)??>
                                 <#if item.isActive == "true"><@spring.message 'instruction.active'/> <#else> <@spring.message 'instruction.not_active'/></#if>
                             </#if></p>
-                        <div class="d-flex">
+                        <div >
                             <#if user.userType=="employer">
-                                <a href="/vacancy/edit/${item.id}" class="btn btn-primary me-3"><@spring.message 'button.edit'/></a>
-                                <a href="/vacancy/edit/datefix/${item.id}" class="btn btn-success"><@spring.message 'button.date_update'/></a>
+                            <div class="text-center my-1">
+                                <a href="/vacancy/edit/${item.id}"
+                                   class="btn btn-primary me-3"><@spring.message 'button.edit'/></a>
+
+                            </div>
+                            <div class="text-center my-1">
+                                <a href="/vacancy/edit/datefix/${item.id}"
+                                   class="btn btn-success"><@spring.message 'button.date_update'/></a>
+
+                            </div>
                             <#else>
-                                <a href="/resume/edit/${item.id}" class="btn btn-primary me-3"><@spring.message 'button.edit'/></a>
-                                <a href="/resume/edit/datefix/${item.id}" class="btn btn-success"><@spring.message 'button.date_update'/></a>
+                            <div class="text-center my-1">
+                                <a href="/resume/edit/${item.id}"
+                                   class="btn btn-primary me-3"><@spring.message 'button.edit'/></a>
+
+                            </div>
+                            <div class="text-center my-1">
+                                <a href="/resume/edit/datefix/${item.id}"
+                                   class="btn btn-success"><@spring.message 'button.date_update'/></a>
+
+                            </div>
                             </#if>
                         </div>
                         <div class="text-center my-2">

@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,10 +46,9 @@ public class UserService {
         var u = userRepository.findById(userDto.getEmail());
         if (u.isEmpty()) {
             if (userDto.getUserType() != null) {
-                System.out.println(userDto.getUserType());
                 try {
                     User user = userRepository.save(makeUserFromDto(userDto));
-                    if(userDto.getFile() != null) {
+                    if (userDto.getFile() != null) {
                         uploadUserPhoto(user.getEmail(), userDto.getFile());
                     }
                     Role role = roleRepository.findByRole("ROLE_" + user.getUserType().toUpperCase());
@@ -76,19 +74,24 @@ public class UserService {
 
     public UserDto getUserDto(Authentication auth) {
         User userAuth = (User) auth.getPrincipal();
-        User user = userRepository.findById(userAuth.getUsername()).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = getUserByEmail(userAuth.getUsername());
         return makeDtoFromUser(user);
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+    }
+
     public UserDto getUserDtoLocalStorage(String email) {
-        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = getUserByEmail(email);
         return makeDtoFromUser(user);
     }
 
     public UserDto getUserDtoTest(String email) {
-        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = getUserByEmail(email);
         return makeDtoFromUser(user);
     }
+
     private User makeUserFromDto(UserDto userDto) {
         return User.builder()
                 .email(userDto.getEmail())
@@ -125,7 +128,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> getPhoto(String email) {
-        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = getUserByEmail(email);
         if (!((user.getPhoto() == null) && !user.getPhoto().isEmpty())) {
             String extension = getFileExtension(user.getPhoto());
             if (extension != null && extension.equalsIgnoreCase("png")) {
@@ -148,14 +151,14 @@ public class UserService {
     }
 
     public void uploadUserPhoto(String email, MultipartFile file) {
-        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = getUserByEmail(email);
         String fileName = fileService.saveUploadedFile(file, "images");
         user.setPhoto(fileName);
         userRepository.save(user);
     }
 
     public void editProfile(String email, EditProfileDto editProfileDto) {
-        User user = userRepository.findById(email).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = getUserByEmail(email);
         if (!(editProfileDto.getPhoneNumber().isEmpty() || editProfileDto.getPhoneNumber() == null)) {
             user.setPhoneNumber(editProfileDto.getPhoneNumber());
         }
@@ -191,18 +194,18 @@ public class UserService {
     }
 
     private void updateResetPasswordToken(String token, String email) {
-        User user = userRepository.getByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = getUserByEmail(email);
         user.setResetPasswordToken(token);
         userRepository.saveAndFlush(user);
     }
 
     public UserDto getByResetPasswdToken(String token) {
-        User u = userRepository.findByResetPasswordToken(token).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User u = getUserByEmail(token);
         return makeDtoFromUser(u);
     }
 
     public void updatePassword(UserDto userDto, String newPasswd) {
-        User u = userRepository.getByEmail(userDto.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User u = getUserByEmail(userDto.getEmail());
         u.setResetPasswordToken(null);
         u.setPassword(encoder.encode(newPasswd));
         userRepository.saveAndFlush(u);
@@ -214,5 +217,16 @@ public class UserService {
         updateResetPasswordToken(token, email);
         String resetPasswordLink = Utility.getSiteUrl(request) + "/auth/reset_password?token=" + token;
         emailService.sendEmail(email, resetPasswordLink);
+    }
+
+    public String getLanguage(String email) {
+        User u = getUserByEmail(email);
+        return u.getPreferredLanguage();
+    }
+
+    public void setLanguage(String email, String language) {
+        User u = getUserByEmail(email);
+        u.setPreferredLanguage(language);
+        userRepository.save(u);
     }
 }

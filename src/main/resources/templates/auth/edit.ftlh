@@ -73,7 +73,7 @@
                         </div>
                         <!-- Form Row        -->
                         <div class="mb-3">
-                            <label class="small mb-1" for="inputPhone"><@spring.message 'Номер телефона'/></label>
+                            <label class="small mb-1" for="inputPhone"><@spring.message 'contact.phone_number'/></label>
                             <input class="form-control" name="phoneNumber" id="inputPhone" type="text"
                                    placeholder="${user.phoneNumber}">
                         </div>

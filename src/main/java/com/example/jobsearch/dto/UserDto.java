@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class UserDto {
-    @Email
+    @Email(message="Please enter a valid email")
     private String email;
     @Nullable
     @Pattern(regexp = "^[0-9 ()-]+$", message = "Phone number can only contain numbers, hyphens, spaces, and parentheses")
