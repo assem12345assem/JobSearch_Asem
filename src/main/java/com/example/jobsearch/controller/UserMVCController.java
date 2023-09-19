@@ -9,7 +9,6 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Locale;
 
 @Controller
 @RequestMapping("/auth")
@@ -51,10 +49,12 @@ public class UserMVCController {
 
 
     }
-@GetMapping("/error_login")
-public String errorLogin() {
+
+    @GetMapping("/error_login")
+    public String errorLogin() {
         return "auth/error_login";
-}
+    }
+
     @GetMapping("/login")
     public String login() {
         return "/auth/login";
@@ -135,6 +135,7 @@ public String errorLogin() {
         userService.uploadUserPhoto(userLocalStorage, file);
         return "redirect:/auth/edit/" + userLocalStorage;
     }
+
     @GetMapping("/forgot_password")
     public String forgotPassword() {
         return "auth/forgot_password";

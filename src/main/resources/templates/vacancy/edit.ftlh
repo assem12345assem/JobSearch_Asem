@@ -29,7 +29,7 @@
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPgCd93aiNba8lHWJYHQ1C1YwBPwcH_NUmw&usqp=CAU" alt="profile picture">
                                     </#if>
                                     <div class="mt-3">
-                                        <#assign v=vacancy.profile.companyName!"<@spring.message 'companies.no_company_name'/>">
+                                        <#assign v=vacancy.profile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                         <h4>${v}</h4>
 
                                         <a class="btn btn-success"
@@ -69,13 +69,13 @@
                                         <h6 class="mb-0"><@spring.message 'category.category'/></h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <#assign var1=vacancy.category! "<@spring.message 'category.no.info'/>">
+                                        <#assign var1=vacancy.category! "${springMacroRequestContext.getMessage('category.no.info')}">
                                         <#if (var1)?has_content>
                                             <@spring.message 'category.select.another'/>
                                             <select class="form-select border-dark"
                                                     aria-label="Default select example" name="category"
                                                     id="category">
-                                                <#assign var1=vacancy.category! "<@spring.message 'vacancy.sort.by_category'/>">
+                                                <#assign var1=vacancy.category! "${springMacroRequestContext.getMessage('vacancy.sort.by_category')}">
                                                 <option selected>${var1}
                                                 <option value="Technology" class="form-brd-radius col-6"><@spring.message 'category.Technology'/></option>
                                                 <option value="Healthcare" class="form-brd-radius col-6"><@spring.message 'category.Healthcare'/></option>

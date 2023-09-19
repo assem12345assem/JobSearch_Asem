@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class UserService {
     private final EmployerService employerService;
     private final RoleRepository roleRepository;
     private final EmailService emailService;
+    private final AuthService authService;
 
     @Transactional
     public void register(UserDto userDto) {
@@ -229,4 +231,20 @@ public class UserService {
         u.setPreferredLanguage(language);
         userRepository.save(u);
     }
+
+    public boolean ifApplicant(Authentication auth) {
+        try {
+            UserDto user = authService.getAuthor(auth);
+
+            if (user.getUserType().equalsIgnoreCase("applicant")) {
+                return true;
+            } else {
+                throw new AccessDeniedException("Access is denied");
+            }
+        } catch (AccessDeniedException e) {
+            log.warn("Access denied for user: " + auth.getName());
+            return false;
+        }
+    }
+
 }

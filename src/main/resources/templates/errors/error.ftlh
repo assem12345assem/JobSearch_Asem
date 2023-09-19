@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.bunny.net">
@@ -326,16 +328,16 @@
             </div>
             <div class="content">
                 <h1>${status}</h1>
-                <h2><span data-l10n>UH OH</span>! <span data-l10n>${reason}</span></h2>
+                <h2><span data-l10n><@spring.message 'error.uh_oh'/></span>! <span data-l10n><@spring.message '${reason}'/></span></h2>
                 <!--        <p data-l10n>{{ description></p>-->
 
                 <#if details??>
                     <ul class="details">
                         <#if details.serverName??>
-                            <li><span><span data-l10n>Host</span>:</span> <code>${details.serverName}</code></li>
+                            <li><span><span data-l10n><@spring.message 'error.host'/></span>:</span> <code>${details.serverName}</code></li>
                         </#if>
                         <#if details.requestURL??>
-                            <li><span><span data-l10n>Original URI</span>:</span> <code>${details.requestURL}</code>
+                            <li><span><span data-l10n><@spring.message 'error.uri'/></span>:</span> <code>${details.requestURL}</code>
                             </li>
                         </#if>
                         <#--            <#if forwarded_for>-->
@@ -347,13 +349,13 @@
                         <#--            <#if service_name>-->
                         <#--                <li><span><span data-l10n>Service name</span>:</span> <code>{{ service_name></code></li></#if>-->
                         <#if details.serverPort??>
-                            <li><span><span data-l10n>Service port</span>:</span> <code>${details.serverPort}</code>
+                            <li><span><span data-l10n><@spring.message 'error.port'/></span>:</span> <code>${details.serverPort}</code>
                             </li>
                         </#if>
                         <#if details.requestId??>
-                            <li><span><span data-l10n>Request ID</span>:</span> <code>${details.requestId}</code></li>
+                            <li><span><span data-l10n><@spring.message 'error.id'/></span>:</span> <code>${details.requestId}</code></li>
                         </#if>
-                        <li><span><span data-l10n>Timestamp</span>:</span> <code>${.now}</code></li>
+                        <li><span><span data-l10n><@spring.message 'error.time'/></span>:</span> <code>${.now}</code></li>
                     </ul>
                 </#if>
             </div>

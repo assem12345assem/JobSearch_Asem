@@ -26,7 +26,7 @@
                                 <div class="mt-3">
 
                                     <#if user.userType == "applicant">
-                                    <#assign v=vacancy.profile.companyName!"<@spring.message 'companies.no_company_name'/>">
+                                    <#assign v=vacancy.profile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                     <h4>${v}</h4>
                                     <#else >
                                     <h4><#if (resume.profile.firstName)??>${resume.profile.firstName}</#if> <#if (resume.profile.lastName)??>${resume.profile.lastName}</#if></h4>

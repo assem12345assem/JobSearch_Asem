@@ -36,7 +36,7 @@
                         <!-- Form Row-->
 
                         <div class="mb-3">
-                            <#assign str = company.name!"<@spring.message 'companies.no_company_name'/>">
+                            <#assign str = company.name!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                             <label class="small mb-1" for="orgName"><@spring.message 'companies.name'/></label>
                             <p class="form-control" id="orgName" type="text">${str}</p>
                         </div>

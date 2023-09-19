@@ -5,7 +5,7 @@
     <div class="container">
         <div class="main-body">
             <h2 class="text-primary fs-2 text-center"> <@spring.message 'resume.user_resume'/></h2>
-            <form action="/resume/edit/${resume.id}" method="post">
+            <form action="/resume/edit/${resume.id}" method="post" id="edit_resume">
                 <#if _csrf??>
                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                            value="${(_csrf.token)!'csrf-token'}"/>
@@ -63,7 +63,6 @@
                                         <input id="email" class="form-control" type="text"
                                                placeholder="${resume.contact.email}"
                                                name="contact.email" value="${resume.contact.email}">
-
                                     <#else>
                                         <label for="email" class="fs-6"><i class="fa-solid fa-envelope fs-3"></i> Email:</label>
                                         <input id="email" class="form-control" type="text" placeholder="email"
@@ -107,6 +106,10 @@
                                         <label for="phoneNumber" class="fs-6"><i class="fa-solid fa-phone fs-3"></i> <@spring.message 'contact.phone_number'/>:</label>
                                         <input id="phoneNumber" class="form-control" type="text" placeholder="+996 999 555 555"
                                                name="contact.phoneNumber">
+                                        <div id="customErrorMessage" style="color: red;"></div>
+                                        <div id="phoneError" style="display:none;">
+                                            <@spring.message 'userDto.phoneNumber.pattern'/>
+                                        </div>
                                     </#if>
                                 </li>
 
@@ -138,12 +141,12 @@
                                         <h6 class="mb-0"><@spring.message 'category.category'/></h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <#assign var1 = resume.category! "<@spring.message 'category.no.info'/>">
+                                        <#assign var1 = resume.category! "${springMacroRequestContext.getMessage('category.no.info')}">
                                         <#if (var1)?has_content>
                                             <@spring.message 'category.select.another'/>
                                             <select class="form-select border-dark" aria-label="Default select example"
                                                     name="category" id="category">
-                                                <#assign var1=resume.category! "<@spring.message 'button.sort.by_category'/>">
+                                                <#assign var1=resume.category! "${springMacroRequestContext.getMessage('button.sort.by_category')}">
                                                 <option selected>${var1}
                                                 <option value="Technology"
                                                         class="form-brd-radius col-6"><@spring.message 'category.Technology'/></option>
@@ -369,10 +372,6 @@
                                                                name="workList[${item_index}].dateEnd">
                                                     </#if>
                                                 </div>
-
-
-
-
                                                 <hr>
                                             </#list>
                                         </#if>
@@ -471,4 +470,122 @@
         </div>
 
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="workModal" tabindex="-1" aria-labelledby="workModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="workModalLabel"><@spring.message 'resume.work_experience'/></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="/resume/edit/add_one_work/${resume.id}" id="work-modal">
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                               value="${(_csrf.token)!'csrf-token'}"/>
+                    </#if>
+                    <div class="modal-body">
+
+                        <small><@spring.message 'companies.name'/></small>
+                        <input class="form-control" type="text" placeholder="<@spring.message 'companies.name'/>"
+                               name="companyName">
+                        <small><@spring.message 'resume.position'/></small>
+                        <input class="form-control" type="text" placeholder="<@spring.message 'resume.position'/>"
+                               name="position">
+                        <small><@spring.message 'resume.responsibilities'/>:</small>
+                        <input class="form-control" type="text" placeholder="<@spring.message 'resume.responsibilities'/>"
+                               name="responsibilities">
+                        <small><@spring.message 'resume.start_work'/>: </small>
+                        <input class="form-control" type="date" placeholder="<@spring.message 'resume.start_work'/>"
+                               name="dateStart">
+                        <small><@spring.message 'resume.end_work'/>: </small>
+                        <input class="form-control" type="date" placeholder="<@spring.message 'resume.end_work'/>"
+                               name="dateEnd">
+                        <div id="customErrorMessageDateWork" style="color: red;"></div>
+
+                        <div id="dateErrorWork" style="display:none;">
+                            <@spring.message 'resume.work.date_error'/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="addWorkExperience">OK</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="eduModal" tabindex="-1" aria-labelledby="eduModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eduModalLabel"><@spring.message 'resume.education'/></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="/resume/edit/add_one_edu/${resume.id}" id="education-modal">
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                               value="${(_csrf.token)!'csrf-token'}"/>
+                    </#if>
+                    <div class="modal-body">
+                        <small><@spring.message 'resume.education'/></small>
+                        <input class="form-control" type="text" placeholder="<@spring.message 'resume.education'/>"
+                               name="education">
+
+                        <small><@spring.message 'resume.place_of_study'/></small>
+                        <input class="form-control" type="text" placeholder="<@spring.message 'resume.school'/>"
+                               name="schoolName">
+
+                        <small><@spring.message 'resume.education_start'/></small>
+
+                        <input class="form-control" type="date" placeholder="<@spring.message 'resume.education_start'/>"
+                               name="startDate">
+                        <small><@spring.message 'resume.education_end'/>: </small>
+
+
+                        <input class="form-control" type="date" placeholder="<@spring.message 'resume.education_end'/>"
+                               name="graduationDate">
+                        <div id="customErrorMessageDate" style="color: red;"></div>
+
+                        <div id="dateError" style="display:none;">
+                            <@spring.message 'resume.education.date_error'/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="addEducation">OK</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="mb-5 pb-5"></div>
+
+    <script>
+        document.getElementById('education-modal').addEventListener('submit', function(event) {
+            const startDate = document.getElementsByName('startDate')[0].value;
+            const graduationDate = document.getElementsByName('graduationDate')[0].value;
+
+            if (graduationDate < startDate) {
+                event.preventDefault();
+                    const errorDiv = document.getElementById('dateError');
+                    const errorElement = document.getElementById('customErrorMessageDate');
+                    errorElement.textContent = errorDiv.innerText;
+
+            }
+        });
+        document.getElementById('work-modal').addEventListener('submit', function(event) {
+            const startDate = document.getElementsByName('dateStart')[0].value;
+            const dateEnd = document.getElementsByName('dateEnd')[0].value;
+
+            if (dateEnd < startDate) {
+                event.preventDefault();
+                const errorDiv = document.getElementById('dateErrorWork');
+                const errorElement = document.getElementById('customErrorMessageDateWork');
+                errorElement.textContent = errorDiv.innerText;
+
+            }
+        });
+
+    </script>
 </@main.layout>

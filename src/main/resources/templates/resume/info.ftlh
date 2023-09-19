@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import '/spring.ftl' as spring>
+
 <@main.layout>
 
     <div class="container">
@@ -81,7 +83,8 @@
                                     <h6 class="mb-0"><@spring.message 'resume.title'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <#assign var2 = resume.resumeTitle!"<@spring.message 'no.info'/>">
+                                    <#assign var2 = resume.resumeTitle!"${springMacroRequestContext.getMessage('no.info')}
+                                    ">
                                     ${var2}
                                 </div>
                             </div>
@@ -91,7 +94,7 @@
                                     <h6 class="mb-0"><@spring.message 'category.category'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <#assign var1 = resume.category! "<@spring.message 'category.no.info'/>">
+                                    <#assign var1 = resume.category! "${springMacroRequestContext.getMessage('category.no.info')}">
                                     ${var1}
                                 </div>
                             </div>
@@ -101,7 +104,7 @@
                                     <h6 class="mb-0"><@spring.message 'resume.expected_salary'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <#assign var3 = (resume.expectedSalary)!"<@spring.message 'no.info'/>">
+                                    <#assign var3 = (resume.expectedSalary)!"${springMacroRequestContext.getMessage('no.info')}">
                                     ${var3}
                                 </div>
                             </div>
@@ -121,23 +124,24 @@
 
                                         <small><@spring.message 'companies.name'/></small>
                                         <div>
-                                            ${item.companyName! "<@spring.message 'no.info'/>"}
+                                            ${item.companyName! "${springMacroRequestContext.getMessage('no.info')}
+                                            "}
                                         </div>
                                         <small><@spring.message 'resume.position'/></small>
                                         <div>
-                                            ${item.position! "<@spring.message 'no.info'/>"}
+                                            ${item.position! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <small><@spring.message 'resume.responsibilities'/>:</small>
                                         <div>
-                                            ${item.responsibilities! "<@spring.message 'no.info'/>"}
+                                            ${item.responsibilities! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <small><@spring.message 'resume.start_work'/>: </small>
                                         <div>
-                                            ${item.dateStart! "<@spring.message 'no.info'/>"}
+                                            ${item.dateStart! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <small><@spring.message 'resume.end_work'/>: </small>
                                         <div>
-                                            ${item.dateEnd! "<@spring.message 'no.info'/>"}
+                                            ${item.dateEnd! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <hr>
                                     </#list>
@@ -153,19 +157,19 @@
 
                                         <small><@spring.message 'resume.education'/></small>
                                         <div>
-                                            ${item.education! "<@spring.message 'no.info'/>"}
+                                            ${item.education! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <small><@spring.message 'resume.place_of_study'/>:</small>
                                         <div>
-                                            ${item.schoolName! "<@spring.message 'no.info'/>"}
+                                            ${item.schoolName! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <small><@spring.message 'resume.education_start'/>: </small>
                                         <div>
-                                            ${item.startDate! "<@spring.message 'no.info'/>"}
+                                            ${item.startDate! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <small><@spring.message 'resume.education_end'/>: </small>
                                         <div>
-                                            ${item.graduationDate! "<@spring.message 'no.info'/>"}
+                                            ${item.graduationDate! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <hr>
                                     </#list>

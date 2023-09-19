@@ -21,7 +21,7 @@
                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPgCd93aiNba8lHWJYHQ1C1YwBPwcH_NUmw&usqp=CAU" alt="profile picture">
                                 </#if>
                                 <div class="mt-3">
-                                    <#assign v=vacancy.profile.companyName!"<@spring.message 'companies.no_company_name'/>">
+                                    <#assign v=vacancy.profile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                     <h4>${v}</h4>
 
 

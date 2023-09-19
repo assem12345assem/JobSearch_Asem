@@ -22,7 +22,7 @@
                                 </#if>
                                 <div class="mt-3">
 
-                                    <#assign r=resume.profile.companyName!"<@spring.message 'companies.no_company_name'/>">
+                                    <#assign r=resume.profile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                     <h4>${resume.profile.firstName} ${resume.profile.lastName}</h4>
                                     <p class="text-secondary mb-1"><@spring.message 'resume.dob'/></p>
                                     <p class="text-muted font-size-sm">${resume.profile.dateOfBirth}</p>

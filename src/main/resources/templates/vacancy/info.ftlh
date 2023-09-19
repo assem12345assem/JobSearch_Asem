@@ -26,7 +26,7 @@
                                          alt="profile picture">
                                 </#if>
                                 <div class="mt-3">
-                                    <#assign v=vacancy.profile.companyName!"<@spring.message 'companies.no_company_name'/>">
+                                    <#assign v=vacancy.profile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                     <h4>${v}</h4>
                                     <#if user.email == viewer.email>
                                         <a class="btn btn-success"
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <p class="form-control">
-                                        <#assign var1=vacancy.category! "<@spring.message 'category.no.info'/>"> ${var1}
+                                        <#assign var1=vacancy.category! "${springMacroRequestContext.getMessage('category.no.info')}"> ${var1}
                                     </p>
                                 </div>
                             </div>
@@ -75,7 +75,7 @@
                                     <h6 class="mb-0"><@spring.message 'vacancy.salary'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <#assign var3=vacancy.salary!"<@spring.message 'category.no.info'/>">
+                                    <#assign var3=vacancy.salary!"${springMacroRequestContext.getMessage('no.info')}">
                                     <p class="form-control">${var3}</p>
                                 </div>
                             </div>
@@ -86,7 +86,7 @@
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <p class="form-control p-1">
-                                        <#assign var4=vacancy.description!"<@spring.message 'category.no.info'/>"> ${var4}
+                                        <#assign var4=vacancy.description!"${springMacroRequestContext.getMessage('no.info')}"> ${var4}
                                     </p>
 
                                 </div>
@@ -98,8 +98,8 @@
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <p class="form-control">
-                                        <#assign var5=vacancy.requiredExperienceMin!"<@spring.message 'category.no.info'/>">
-                                        <#assign var6=vacancy.requiredExperienceMax!"<@spring.message 'category.no.info'/>">
+                                        <#assign var5=vacancy.requiredExperienceMin!"${springMacroRequestContext.getMessage('no.info')}">
+                                        <#assign var6=vacancy.requiredExperienceMax!"${springMacroRequestContext.getMessage('no.info')}">
                                         ${var5} - ${var6} <@spring.message 'vacancy.years'/>
                                     </p>
 

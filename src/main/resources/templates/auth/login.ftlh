@@ -98,10 +98,8 @@
                 errorElement.textContent = errorDiv.innerText;
             }
             function validatePassword(password) {
-                if(password.length<3) {
-                    return false;
-                }
-                return true;
+                return password.length >= 3;
+
             }
             function displayCustomErrorMessagePassword() {
                 const errorDiv = document.getElementById('passwordError');

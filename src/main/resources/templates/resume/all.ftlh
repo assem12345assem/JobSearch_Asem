@@ -7,10 +7,7 @@
     <div class="container">
         <h1 class="my-3 text-center"><@spring.message 'navbar.navi.resumes'/></h1>
         <form class="d-flex m-5" id="searchForm">
-            <#if _csrf??>
-                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                       value="${(_csrf.token)!'csrf-token'}"/>
-            </#if>
+
             <input class="form-control me-2" type="search" placeholder="<@spring.message 'resume.search.text'/>"
                    aria-label="Search" name="searchWord" id="searchWord">
             <button class="btn btn-outline-success" type="submit"><@spring.message 'button.search'/></button>
@@ -25,10 +22,7 @@
 
                     </div>
                     <form class="row my-3" id="categoryForm">
-                        <#if _csrf??>
-                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                               value="${(_csrf.token)!'csrf-token'}"/>
-                        </#if>
+
                         <div class="col-3"><@spring.message 'button.sort.by_category'/>:</div>
                         <div class="col-6">
                             <select class="form-select border-dark col-5"

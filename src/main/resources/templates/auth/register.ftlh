@@ -161,10 +161,8 @@
 
         function validatePhoneNumber(phoneNumber) {
             const phoneNumberPattern = /^[0-9 ()-]+$/;
-            if (phoneNumber === null || !phoneNumberPattern.test(phoneNumber)) {
-                return false;
-            }
-            return true;
+            return !(phoneNumber === null || !phoneNumberPattern.test(phoneNumber));
+
         }
 
         function displayCustomErrorMessagePhone() {
@@ -187,10 +185,8 @@
             errorElement.textContent = errorDiv.innerText;
         }
         function validatePassword(password) {
-            if(password.length<3) {
-                return false;
-            }
-            return true;
+            return password.length >= 3;
+
         }
         function displayCustomErrorMessagePassword() {
             const errorDiv = document.getElementById('passwordError');

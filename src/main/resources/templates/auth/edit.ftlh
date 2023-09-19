@@ -76,12 +76,16 @@
                             <label class="small mb-1" for="inputPhone"><@spring.message 'contact.phone_number'/></label>
                             <input class="form-control" name="phoneNumber" id="inputPhone" type="text"
                                    placeholder="${user.phoneNumber}">
+                            <div id="customErrorMessage" style="color: red;"></div>
+                            <div id="phoneError" style="display:none;">
+                                <@spring.message 'userDto.phoneNumber.pattern'/>
+                            </div>
                         </div>
                         <!-- Form Row-->
                         <#if user.userType=="applicant">
-                            <#assign variable1 = applicantProfile.firstName!"<@spring.message 'profile.no.first_name'/>">
-                            <#assign variable2 = applicantProfile.lastName!"<@spring.message 'profile.no.last_name'/>">
-                            <#assign variable3 = applicantProfile.dateOfBirth!"<@spring.message 'profile.no.dob'/>">
+                            <#assign variable1 = applicantProfile.firstName!"${springMacroRequestContext.getMessage('profile.no.first_name')}">
+                            <#assign variable2 = applicantProfile.lastName!"${springMacroRequestContext.getMessage('profile.no.last_name')}">
+                            <#assign variable3 = applicantProfile.dateOfBirth!"${springMacroRequestContext.getMessage('profile.no.dob')}">
                             <div class="row gx-3 mb-3">
                                 <div class="col-md-6">
                                     <label class="small mb-1"
@@ -101,12 +105,17 @@
                                     <label class="small mb-1"
                                            for="inputBirthday"><@spring.message 'resume.dob'/></label>
                                     <input class="form-control" name="dateOfBirth" id="inputBirthday" type="date"
-                                           name="birthday" value="${variable3}">
+                                            value="${variable3}">
+                                    <div id="customErrorMessageDob" style="color: red;"></div>
+
+                                    <div id="dobError" style="display:none;">
+                                        <@spring.message 'userDto.error_dob'/>
+                                    </div>
                                 </div>
                             </div>
                         <#else>
                             <div class="mb-3">
-                                <#assign str = employerProfile.companyName!"<@spring.message 'companies.no_company_name'/>">
+                                <#assign str = employerProfile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                 <label class="small mb-1" for="orgName"><@spring.message 'companies.name'/></label>
                                 <input class="form-control" name="companyName" id="orgName" type="text"
                                        placeholder="${str}">
@@ -124,6 +133,52 @@
             </div>
         </div>
     </div>
+    <script>
+        const form = document.getElementById('edit_profile');
+
+        form.addEventListener('submit', function (event) {
+            let phoneNumber = form.elements['phoneNumber'].value;
+            let dateOfBirth = form.elements['dateOfBirth'].value;
+
+            if (!validatePhoneNumber(phoneNumber)) {
+                event.preventDefault();
+                displayCustomErrorMessagePhone();
+            }
+            if (!validateDOB(dateOfBirth)) {
+                event.preventDefault();
+                displayCustomErrorMessageDob();
+            }
+
+        });
+
+        function validateDOB(dob) {
+            const currentDate = new Date();
+
+            return new Date(dob) < currentDate;
+
+        }
+
+        function displayCustomErrorMessageDob() {
+            const errorDiv = document.getElementById('dobError');
+
+            const errorElement = document.getElementById('customErrorMessageDob');
+            errorElement.textContent = errorDiv.innerText;
+        }
+
+        function validatePhoneNumber(phoneNumber) {
+            const phoneNumberPattern = /^[0-9 ()-]+$/;
+            return !(phoneNumber === null || !phoneNumberPattern.test(phoneNumber));
+
+        }
+
+        function displayCustomErrorMessagePhone() {
+            const errorDiv = document.getElementById('phoneError');
+
+            const errorElement = document.getElementById('customErrorMessage');
+            errorElement.textContent = errorDiv.innerText;
+        }
+
+    </script>
     <style>
         body {
             margin-top: 20px;

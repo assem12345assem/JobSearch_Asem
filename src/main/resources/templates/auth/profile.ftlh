@@ -86,9 +86,9 @@
                         </div>
                         <!-- Form Row-->
                         <#if user.userType=="applicant">
-                            <#assign variable1 = (applicantProfile.firstName)!"<@spring.message 'profile.no.first_name'/>">
-                            <#assign variable2 = (applicantProfile.lastName)!"<@spring.message 'profile.no.last_name'/>">
-                            <#assign variable3 = (applicantProfile.dateOfBirth)!"<@spring.message 'profile.no.dob'/>">
+                            <#assign variable1 = (applicantProfile.firstName)!"${springMacroRequestContext.getMessage('profile.no.first_name')}">
+                            <#assign variable2 = (applicantProfile.lastName)!"${springMacroRequestContext.getMessage('profile.no.last_name')}">
+                            <#assign variable3 = (applicantProfile.dateOfBirth)!"${springMacroRequestContext.getMessage('profile.no.dob')}">
                             <div class="row gx-3 mb-3">
                                 <div class="col-md-6">
                                     <label class="small mb-1" for="inputFirstName"><@spring.message 'profile.first_name'/></label>
@@ -107,7 +107,7 @@
                             </div>
                         <#else>
                             <div class="mb-3">
-                                <#assign str = employerProfile.companyName!"<@spring.message 'companies.no_company_name'/>">
+                                <#assign str = employerProfile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                 <label class="small mb-1" for="orgName"><@spring.message 'companies.name'/></label>
                                 <p class="form-control" id="orgName" type="text">${str}</p>
                             </div>

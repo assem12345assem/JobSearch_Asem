@@ -18,7 +18,7 @@
                         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                value="${(_csrf.token)!'csrf-token'}"/>
                     </#if>
-                    <div class="form-outline  border border-secondary rounded p-3">
+                    <div class="border border-secondary rounded p-3">
                         <div>
                             <p><@spring.message 'password.send_email'/></p>
                         </div>
