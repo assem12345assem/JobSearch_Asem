@@ -51,7 +51,10 @@ public class UserMVCController {
 
 
     }
-
+@GetMapping("/error_login")
+public String errorLogin() {
+        return "auth/error_login";
+}
     @GetMapping("/login")
     public String login() {
         return "/auth/login";

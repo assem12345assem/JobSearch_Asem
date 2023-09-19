@@ -17,7 +17,11 @@
                         </#if>
                         <!-- Email input -->
                             <div class="mb-4">
+                                <div id="customErrorMessageEmail" style="color: red;"></div>
 
+                                <div id="emailError" style="display:none;">
+                                    <@spring.message 'userDto.email.email'/>
+                                </div>
                             <input type="email" name="username" id="form1Example13"
                                    class="form-control form-control-lg" autofocus/>
                             <label class="form-label" for="form1Example13">Email</label>
@@ -25,6 +29,10 @@
 
                         <!-- Password input -->
                         <div class="mb-4">
+                            <div id="customErrorMessagePassword" style="color: red;"></div>
+                            <div id="passwordError" style="display:none;">
+                                <@spring.message 'userDto.password.notBlank'/>
+                            </div>
                             <input type="password" name="password" id="form1Example23"
                                    class="form-control form-control-lg"/>
                             <label class="form-label" for="form1Example23"><@spring.message 'profile.password'/></label>
@@ -32,6 +40,7 @@
                         <div class="d-flex justify-content-around align-items-center mb-4">
                             <!-- Checkbox -->
                             <div class="form-check">
+
                                 <input class="form-check-input" type="checkbox" value="true" id="form1Example3"
                                        name="remember-me" checked/>
                                 <label class="form-check-label" for="form1Example3"> <@spring.message 'profile.remember_me'/> </label>
@@ -52,6 +61,52 @@
                 let userFormData = new FormData(form)
                 let user = Object.fromEntries(userFormData)
                 saveUser(user)
+            }
+
+
+            const form = document.getElementById('login-form');
+
+            form.addEventListener('submit', function(event) {
+                let email = form.elements['username'].value;
+                let password = form.elements['password'].value;
+
+                if (!validateEmail(email)) {
+                    event.preventDefault();
+                    displayCustomErrorMessageEmail();
+                }
+
+                if (!validatePassword(password)) {
+                    event.preventDefault();
+                    displayCustomErrorMessagePassword();
+                }
+
+            });
+
+
+
+            function validateEmail(email) {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if(email === null) {
+                    return false
+                }
+                return emailPattern.test(email);
+            }
+
+            function displayCustomErrorMessageEmail() {
+                const errorDiv = document.getElementById('emailError');
+                const errorElement = document.getElementById('customErrorMessageEmail');
+                errorElement.textContent = errorDiv.innerText;
+            }
+            function validatePassword(password) {
+                if(password.length<3) {
+                    return false;
+                }
+                return true;
+            }
+            function displayCustomErrorMessagePassword() {
+                const errorDiv = document.getElementById('passwordError');
+                const errorElement = document.getElementById('customErrorMessagePassword');
+                errorElement.textContent = errorDiv.innerText;
             }
         </script>
     </section>
