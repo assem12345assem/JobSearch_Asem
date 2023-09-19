@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
     <section class="vh-100">
         <div class="container py-5 h-100">
@@ -14,28 +16,38 @@
                                    value="${(_csrf.token)!'csrf-token'}"/>
                         </#if>
                         <!-- Email input -->
-                        <div class="form-outline mb-4">
+                            <div class="mb-4">
+                                <div id="customErrorMessageEmail" style="color: red;"></div>
+
+                                <div id="emailError" style="display:none;">
+                                    <@spring.message 'userDto.email.email'/>
+                                </div>
                             <input type="email" name="username" id="form1Example13"
-                                   class="form-control form-control-lg"/>
+                                   class="form-control form-control-lg" autofocus/>
                             <label class="form-label" for="form1Example13">Email</label>
                         </div>
 
                         <!-- Password input -->
-                        <div class="form-outline mb-4">
+                        <div class="mb-4">
+                            <div id="customErrorMessagePassword" style="color: red;"></div>
+                            <div id="passwordError" style="display:none;">
+                                <@spring.message 'userDto.password.notBlank'/>
+                            </div>
                             <input type="password" name="password" id="form1Example23"
                                    class="form-control form-control-lg"/>
-                            <label class="form-label" for="form1Example23">Пароль</label>
+                            <label class="form-label" for="form1Example23"><@spring.message 'profile.password'/></label>
                         </div>
                         <div class="d-flex justify-content-around align-items-center mb-4">
                             <!-- Checkbox -->
                             <div class="form-check">
+
                                 <input class="form-check-input" type="checkbox" value="true" id="form1Example3"
                                        name="remember-me" checked/>
-                                <label class="form-check-label" for="form1Example3"> Remember me </label>
+                                <label class="form-check-label" for="form1Example3"> <@spring.message 'profile.remember_me'/> </label>
                             </div>
-                            <a href="/auth/forgot_password">Forgot password?</a>
+                            <a href="/auth/forgot_password"><@spring.message 'profile.password_forgot_question'/></a>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Войти</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block"><@spring.message 'profile.login_enter'/></button>
                     </form>
                 </div>
             </div>
@@ -49,6 +61,50 @@
                 let userFormData = new FormData(form)
                 let user = Object.fromEntries(userFormData)
                 saveUser(user)
+            }
+
+
+            const form = document.getElementById('login-form');
+
+            form.addEventListener('submit', function(event) {
+                let email = form.elements['username'].value;
+                let password = form.elements['password'].value;
+
+                if (!validateEmail(email)) {
+                    event.preventDefault();
+                    displayCustomErrorMessageEmail();
+                }
+
+                if (!validatePassword(password)) {
+                    event.preventDefault();
+                    displayCustomErrorMessagePassword();
+                }
+
+            });
+
+
+
+            function validateEmail(email) {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if(email === null) {
+                    return false
+                }
+                return emailPattern.test(email);
+            }
+
+            function displayCustomErrorMessageEmail() {
+                const errorDiv = document.getElementById('emailError');
+                const errorElement = document.getElementById('customErrorMessageEmail');
+                errorElement.textContent = errorDiv.innerText;
+            }
+            function validatePassword(password) {
+                return password.length >= 3;
+
+            }
+            function displayCustomErrorMessagePassword() {
+                const errorDiv = document.getElementById('passwordError');
+                const errorElement = document.getElementById('customErrorMessagePassword');
+                errorElement.textContent = errorDiv.innerText;
             }
         </script>
     </section>

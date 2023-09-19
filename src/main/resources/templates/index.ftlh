@@ -1,9 +1,10 @@
 <#import "layout.ftlh" as main>
-<@main.layout>
-<h1 class="text-center my-5 text-danger">Job Search</h1>
-    <p class="mb-5"> Перейдите по ссылкам на панели навигации для просмотра всего списка.</p>
+<#import "/spring.ftl" as spring>
 
-    <h2 class="text-success">Новые вакансии:</h2>
+<@main.layout>
+<h1 class="text-center my-5 text-danger"><@spring.message 'navbar.logo'/></h1>
+    <p class="mb-5"> <@spring.message 'index.intro'/></p>
+    <h2 class="text-success"><@spring.message 'index.new.vacancies'/></h2>
     <div class="mb-5 d-flex">
         <#list vacancies as vacancy>
             <div class="card mx-3" style="width: 18rem;">
@@ -14,7 +15,7 @@
             </div>
         </#list>
     </div>
-    <h2 class="text-info">Новые резюме:</h2>
+    <h2 class="text-info"><@spring.message 'index.new.resumes'/></h2>
     <div class="mb-5 d-flex">
 
     <#list resumes as resume>

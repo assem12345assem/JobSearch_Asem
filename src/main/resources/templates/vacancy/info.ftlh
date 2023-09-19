@@ -1,12 +1,14 @@
 <#import '../layout.ftlh' as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
     <div class="container">
         <div class="main-body">
-            <h2 class="text-primary fs-2 text-center"> Вакансия пользователя:</h2>
+            <h2 class="text-primary fs-2 text-center"> <@spring.message 'vacancy.user_vacancy'/></h2>
             <div class="row text-center">
                 <#if user.email == viewer.email>
                     <div class="col-sm-12">
-                        <a class="btn btn-info mt-3 text-dark px-4" target="__blank" href="/vacancy/edit/${vacancy.id}">Редактировать</a>
+                        <a class="btn btn-info mt-3 text-dark px-4" target="__blank" href="/vacancy/edit/${vacancy.id}"><@spring.message 'button.edit'/></a>
                     </div>
                 </#if>
             </div>
@@ -24,15 +26,15 @@
                                          alt="profile picture">
                                 </#if>
                                 <div class="mt-3">
-                                    <#assign v=vacancy.profile.companyName!"Название компании не указано">
+                                    <#assign v=vacancy.profile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                     <h4>${v}</h4>
                                     <#if user.email == viewer.email>
                                         <a class="btn btn-success"
-                                           href="/auth/edit/${user.email}">Редактировать профиль</a>
+                                           href="/auth/edit/${user.email}"><@spring.message 'profile.edit'/></a>
                                     <#else>
                                         <#if viewer.userType=="applicant">
                                             <a class="btn btn-success"
-                                               href="/apply/forjob/${vacancy.id}">Откликнуться</a>
+                                               href="/apply/forjob/${vacancy.id}"><@spring.message 'vacancy.apply.button'/></a>
                                         </#if>
                                     </#if>
                                 </div>
@@ -45,13 +47,13 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">Название вакансии:</h6>
+                                    <h6 class="mb-0"><@spring.message 'vacancy.name'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <#if (vacancy.vacancyName)??>
                                         <p class="form-control"> ${vacancy.vacancyName}</p>
                                     <#else>
-                                        <p class="form-control"> Не указано</p>
+                                        <p class="form-control"> <@spring.message 'no.info'/></p>
 
                                     </#if>
                                 </div>
@@ -59,34 +61,32 @@
                             <hr>
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">Категория:</h6>
+                                    <h6 class="mb-0"><@spring.message 'category.category'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <p class="form-control">
-                                        <#assign var1=vacancy.category! "Категория не известна"> ${var1}
+                                        <#assign var1=vacancy.category! "${springMacroRequestContext.getMessage('category.no.info')}"> ${var1}
                                     </p>
-
-
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">Заработная плата:</h6>
+                                    <h6 class="mb-0"><@spring.message 'vacancy.salary'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <#assign var3=vacancy.salary!"Не указано">
+                                    <#assign var3=vacancy.salary!"${springMacroRequestContext.getMessage('no.info')}">
                                     <p class="form-control">${var3}</p>
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">Описание вакансии:</h6>
+                                    <h6 class="mb-0"><@spring.message 'vacancy.description'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <p class="form-control">
-                                        <#assign var4=vacancy.description!"Не указано"> ${var4}
+                                    <p class="form-control p-1">
+                                        <#assign var4=vacancy.description!"${springMacroRequestContext.getMessage('no.info')}"> ${var4}
                                     </p>
 
                                 </div>
@@ -94,14 +94,13 @@
                             <hr>
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">Требуемый опыт:</h6>
+                                    <h6 class="mb-0"><@spring.message 'vacancy.required.experience'/>:</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <p class="form-control">
-                                        <#assign var5=vacancy.requiredExperienceMin!"Не указано">
-                                        <#assign var6=vacancy.requiredExperienceMax!"Не указано">
-
-                                        ${var5} - ${var6} лет
+                                        <#assign var5=vacancy.requiredExperienceMin!"${springMacroRequestContext.getMessage('no.info')}">
+                                        <#assign var6=vacancy.requiredExperienceMax!"${springMacroRequestContext.getMessage('no.info')}">
+                                        ${var5} - ${var6} <@spring.message 'vacancy.years'/>
                                     </p>
 
                                 </div>

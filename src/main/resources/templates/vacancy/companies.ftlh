@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
     <div class="container">
     <div class="d-flex">
@@ -18,10 +20,9 @@
                         <h5 class="card-title">
                             <#if company.name??>
                             ${company.name}</h5>
-                        <#else> Название компании не указано
+                        <#else> <@spring.message 'companies.no_company_name'/>
                         </#if>
-                        <a href="/auth/profile/company/${company.email}" class="btn btn-success">Посмотреть профиль
-                            компании</a>
+                        <a href="/auth/profile/company/${company.email}" class="btn btn-success"><@spring.message 'companies.more_info'/></a>
                     </div>
                 </div>
             </#list>
@@ -30,11 +31,11 @@
 
     <ul class="pagination">
         <li class="page-item">
-            <a class="page-link" href="/vacancy/all/companies?pageNumber=0">First</a>
+            <a class="page-link" href="/vacancy/all/companies?pageNumber=0"><@spring.message 'pagination.first'/></a>
         </li>
         <#if (pageNumber > 0)>
             <li class="page-item">
-                <a class="page-link" href="/vacancy/all/companies?pageNumber=${pageNumber - 1}">&laquo; Previous</a>
+                <a class="page-link" href="/vacancy/all/companies?pageNumber=${pageNumber - 1}">&laquo; <@spring.message 'pagination.previous'/></a>
             </li>
         </#if>
         <#list 1..totalPages as pageNo>
@@ -44,11 +45,11 @@
         </#list>
         <#if (pageNumber < (totalPages - 1))>
             <li class="page-item">
-                <a class="page-link" href="/vacancy/all/companies?pageNumber=${pageNumber + 1}">Next &raquo;</a>
+                <a class="page-link" href="/vacancy/all/companies?pageNumber=${pageNumber + 1}"><@spring.message 'pagination.next'/> &raquo;</a>
             </li>
         </#if>
         <li class="page-item">
-            <a class="page-link" href="/vacancy/all/companies?pageNumber=${totalPages - 1}">Last</a>
+            <a class="page-link" href="/vacancy/all/companies?pageNumber=${totalPages - 1}"><@spring.message 'pagination.last'/></a>
         </li>
     </ul>
 

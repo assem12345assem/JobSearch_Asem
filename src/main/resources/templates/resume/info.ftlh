@@ -1,12 +1,14 @@
 <#import "../layout.ftlh" as main>
+<#import '/spring.ftl' as spring>
+
 <@main.layout>
 
     <div class="container">
         <div class="main-body">
-            <h2 class="text-primary fs-2 text-center"> Резюме пользователя:</h2>
+            <h2 class="text-primary fs-2 text-center"> <@spring.message 'resume.user_resume'/></h2>
             <#if user.email == viewer.email>
                     <div class="col-sm-12 text-center">
-                        <a class="btn btn-info mt-3 text-dark px-4" target="__blank" href="/resume/edit/${resume.id}">Редактировать</a>
+                        <a class="btn btn-info mt-3 text-dark px-4" target="__blank" href="/resume/edit/${resume.id}"><@spring.message 'button.edit'/></a>
                     </div>
             </#if>
 
@@ -27,12 +29,12 @@
                                     <p class="text-muted font-size-sm"><#if (resume.profile.dateOfBirth)??> ${resume.profile.dateOfBirth}</#if></p>
                                     <#if user.email == viewer.email>
                                         <a class="btn btn-success"
-                                           href="/auth/edit/${user.email}">Редактировать профиль</a>
+                                           href="/auth/edit/${user.email}"><@spring.message 'profile.edit'/></a>
 
                                     </#if>
                                     <#if viewer.userType == "employer">
                                         <a class="btn btn-success"
-                                           href="/apply/offerjob/${resume.id}">Предложить вакансию</a>
+                                           href="/apply/offerjob/${resume.id}"><@spring.message 'vacancy.offer'/></a>
                                     </#if>
                                 </div>
                             </div>
@@ -66,7 +68,7 @@
                             </#if>
                             <#if resume.contact.phoneNumber??>
                                 <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                    <h6 class="mb-0"><i class="fa-solid fa-phone fs-3"></i> Phone Number:</h6>
+                                    <h6 class="mb-0"><i class="fa-solid fa-phone fs-3"></i> <@spring.message 'contact.phone_number'/>:</h6>
                                     <span class="text-secondary">${resume.contact.phoneNumber}</span>
                                 </li>
                             </#if>
@@ -78,30 +80,31 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">Название резюме:</h6>
+                                    <h6 class="mb-0"><@spring.message 'resume.title'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <#assign var2 = resume.resumeTitle!"Не указано">
+                                    <#assign var2 = resume.resumeTitle!"${springMacroRequestContext.getMessage('no.info')}
+                                    ">
                                     ${var2}
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">Категория:</h6>
+                                    <h6 class="mb-0"><@spring.message 'category.category'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <#assign var1 = resume.category! "Категория не известна">
+                                    <#assign var1 = resume.category! "${springMacroRequestContext.getMessage('category.no.info')}">
                                     ${var1}
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">Ожидаемый уровень оклада:</h6>
+                                    <h6 class="mb-0"><@spring.message 'resume.expected_salary'/></h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    <#assign var3 = (resume.expectedSalary)!"Не указано">
+                                    <#assign var3 = (resume.expectedSalary)!"${springMacroRequestContext.getMessage('no.info')}">
                                     ${var3}
                                 </div>
                             </div>
@@ -113,31 +116,32 @@
                         <div class="col-sm-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <h6 class="d-flex align-items-center mb-3">Опыт работы</h6>
+                                    <h6 class="d-flex align-items-center mb-3"><@spring.message 'resume.work_experience'/></h6>
 
                                     <#list resume.workList as item>
                                         <button class="btn btn-info rounded-circle px-3 mb-2">${item_index + 1}</button><br>
 
 
-                                        <small>Название компании</small>
+                                        <small><@spring.message 'companies.name'/></small>
                                         <div>
-                                            ${item.companyName! "Не указано"}
+                                            ${item.companyName! "${springMacroRequestContext.getMessage('no.info')}
+                                            "}
                                         </div>
-                                        <small>Должность</small>
+                                        <small><@spring.message 'resume.position'/></small>
                                         <div>
-                                            ${item.position! "Не указано"}
+                                            ${item.position! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
-                                        <small>Обязанности:</small>
+                                        <small><@spring.message 'resume.responsibilities'/>:</small>
                                         <div>
-                                            ${item.responsibilities! "Не указано"}
+                                            ${item.responsibilities! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
-                                        <small>Начало работы: </small>
+                                        <small><@spring.message 'resume.start_work'/>: </small>
                                         <div>
-                                            ${item.dateStart! "Не указано"}
+                                            ${item.dateStart! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
-                                        <small>Завершение работы: </small>
+                                        <small><@spring.message 'resume.end_work'/>: </small>
                                         <div>
-                                            ${item.dateEnd! "Не указано"}
+                                            ${item.dateEnd! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <hr>
                                     </#list>
@@ -147,25 +151,25 @@
                         <div class="col-sm-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <h6 class="d-flex align-items-center mb-3">Образование</h6>
+                                    <h6 class="d-flex align-items-center mb-3"><@spring.message 'resume.education'/></h6>
                                     <#list resume.eduList as item>
                                         <button class="btn btn-info rounded-circle px-3 mb-2">${item_index + 1}</button><br>
 
-                                        <small>Образование</small>
+                                        <small><@spring.message 'resume.education'/></small>
                                         <div>
-                                            ${item.education! "Не указано"}
+                                            ${item.education! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
-                                        <small>Где учился:</small>
+                                        <small><@spring.message 'resume.place_of_study'/>:</small>
                                         <div>
-                                            ${item.schoolName! "Не указано"}
+                                            ${item.schoolName! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
-                                        <small>Начало обучения: </small>
+                                        <small><@spring.message 'resume.education_start'/>: </small>
                                         <div>
-                                            ${item.startDate! "Не указано"}
+                                            ${item.startDate! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
-                                        <small>Дата выпуска: </small>
+                                        <small><@spring.message 'resume.education_end'/>: </small>
                                         <div>
-                                            ${item.graduationDate! "Не указано"}
+                                            ${item.graduationDate! "${springMacroRequestContext.getMessage('no.info')}"}
                                         </div>
                                         <hr>
                                     </#list>

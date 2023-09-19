@@ -107,14 +107,17 @@ public class VacancyMVCController {
     }
     @GetMapping("/all/companies")
     public String companies(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber,
-                            Model model) {
-        int pageSize = 3; //companies per page
+                            Model model, Authentication auth) {
+        int pageSize = 3;
+        if (userService.ifApplicant(auth)) {
+            int total = utilService.totalPagesCounter(vacancyService.getCompanyDtoSize(), pageSize);
+            model.addAttribute("companies", vacancyService.makeCompanyDtos(pageNumber, pageSize));
+            model.addAttribute("pageNumber", pageNumber);
+            model.addAttribute("totalPages", total);
+            return "vacancy/companies";
 
-       int total = utilService.totalPagesCounter(vacancyService.getCompanyDtoSize(), pageSize);
-        model.addAttribute("companies", vacancyService.makeCompanyDtos(pageNumber, pageSize));
-        model.addAttribute("pageNumber", pageNumber);
-        model.addAttribute("totalPages", total);
-        return "vacancy/companies";
-
+        } else {
+            return "errors/error";
+        }
     }
 }

@@ -1,58 +1,82 @@
 <#import '../layout.ftlh' as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
     <script type="text/javascript" src="/static/scripts/searchFormResume.js"></script>
 
     <div class="container">
-        <h1 class="my-3 text-center">Резюме</h1>
+        <h1 class="my-3 text-center"><@spring.message 'navbar.navi.resumes'/></h1>
         <form class="d-flex m-5" id="searchForm">
-            <#if _csrf??>
-                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                       value="${(_csrf.token)!'csrf-token'}"/>
-            </#if>
-            <input class="form-control me-2" type="search" placeholder="Поиск резюме по названию, категории или ожидаемой зарплате"
+
+            <input class="form-control me-2" type="search" placeholder="<@spring.message 'resume.search.text'/>"
                    aria-label="Search" name="searchWord" id="searchWord">
-            <button class="btn btn-outline-success" type="submit">Поиск</button>
+            <button class="btn btn-outline-success" type="submit"><@spring.message 'button.search'/></button>
         </form>
         <div class="m-3">
-            <h3> Сортировать</h3>
-            <div class="d-flex">
-                <a href="/resume/all/view?pageNumber=0&sort=dateTime&category=default&searchWord=default" class="btn btn-info">по дате</a>
+            <h3> <@spring.message 'button.sort'/></h3>
+            <div class="container">
+                    <div class="col-2 mt-3">
+                        <a href="/resume/all/view?pageNumber=0&sort=dateTime&category=default&searchWord=default"
+                           class="btn btn-info">
+                            <@spring.message 'button.sort.by_date' /></a>
 
-                <form class="row mx-1" id="categoryForm">
-                    <#if _csrf??>
-                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                               value="${(_csrf.token)!'csrf-token'}"/>
-                    </#if>
-                    <div class="col-5">выбрать по категории:</div>
-                    <select class="form-select border-dark col" aria-label="выбрать категорию"
-                            name="category" id="category">
-                        <option selected>выбрать категорию"</option>
-                        <option value="Technology" class="form-brd-radius col-6">Technology</option>
-                        <option value="Healthcare" class="form-brd-radius col-6">Healthcare</option>
-                        <option value="Finance" class="form-brd-radius col-6">Finance</option>
-                        <option value="Education" class="form-brd-radius col-6">Education</option>
-                        <option value="Hospitality" class="form-brd-radius col-6">Hospitality</option>
-                        <option value="Marketing" class="form-brd-radius col-6">Marketing</option>
-                        <option value="Engineering" class="form-brd-radius col-6">Engineering</option>
-                        <option value="Retail" class="form-brd-radius col-6">Retail</option>
-                        <option value="Art and Design" class="form-brd-radius col-6">Art and Design</option>
-                        <option value="Customer Service" class="form-brd-radius col-6">Customer Service</option>
-                        <option value="Sales" class="form-brd-radius col-6">Sales</option>
-                        <option value="Manufacturing" class="form-brd-radius col-6">Manufacturing</option>
-                        <option value="Media and Entertainment" class="form-brd-radius col-6">Media and Entertainment
-                        </option>
-                        <option value="Science" class="form-brd-radius col-6">Science</option>
-                        <option value="Legal" class="form-brd-radius col-6">Legal</option>
-                        <option value="Human Resources" class="form-brd-radius col-6">Human Resources</option>
-                        <option value="Transportation" class="form-brd-radius col-6">Transportation</option>
-                        <option value="Construction" class="form-brd-radius col-6">Construction</option>
-                        <option value="Non-profit" class="form-brd-radius col-6">Non-profit</option>
-                        <option value="Agriculture" class="form-brd-radius col-6">Agriculture</option>
-                        <option value="Other" class="form-brd-radius col-6">Other</option>
+                    </div>
+                    <form class="row my-3" id="categoryForm">
 
-                    </select>
-                    <button type="submit" class="btn btn-info col-2 mx-2"> OK</button>
-                </form>
+                        <div class="col-3"><@spring.message 'button.sort.by_category'/>:</div>
+                        <div class="col-6">
+                            <select class="form-select border-dark col-5"
+                                    aria-label="<@spring.message 'button.sort.by_category'/>"
+                                    name="category" id="category">
+                                <option selected><@spring.message 'button.sort.by_category'/></option>
+                                <option value="Technology"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Technology'/></option>
+                                <option value="Healthcare"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Healthcare'/></option>
+                                <option value="Finance"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Finance'/></option>
+                                <option value="Education"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Education'/></option>
+                                <option value="Hospitality"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Hospitality'/></option>
+                                <option value="Marketing"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Marketing'/></option>
+                                <option value="Engineering"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Engineering'/></option>
+                                <option value="Retail"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Retail'/></option>
+                                <option value="ArtAndDesign"
+                                        class="form-brd-radius col-6"><@spring.message 'category.ArtAndDesign'/></option>
+                                <option value="CustomerService"
+                                        class="form-brd-radius col-6"><@spring.message 'category.CustomerService'/></option>
+                                <option value="Sales"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Sales'/></option>
+                                <option value="Manufacturing"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Manufacturing'/></option>
+                                <option value="MediaAndEntertainment"
+                                        class="form-brd-radius col-6"><@spring.message 'category.MediaAndEntertainment'/></option>
+                                <option value="Science"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Science'/></option>
+                                <option value="Legal"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Legal'/></option>
+                                <option value="HumanResources"
+                                        class="form-brd-radius col-6"><@spring.message 'category.HumanResources'/></option>
+                                <option value="Transportation"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Transportation'/></option>
+                                <option value="Construction"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Construction'/></option>
+                                <option value="NonProfit"
+                                        class="form-brd-radius col-6"><@spring.message 'category.NonProfit'/></option>
+                                <option value="Agriculture"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Agriculture'/></option>
+                                <option value="Other"
+                                        class="form-brd-radius col-6"><@spring.message 'category.Other'/></option>
+
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-info col-2 mx-2"> OK</button>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="row row-cols-4 row-cols-lg-3 g-2 g-lg-3">
@@ -73,47 +97,46 @@
                                 <p>${item.dateTime}</p>
                             </#if>
                             <a href="/resume/view/by_employer/${item.id}"
-                               class="btn btn-success d-flex justify-content-center">Подробно</a>
+                               class="btn btn-success d-flex justify-content-center"><@spring.message 'button.info'/></a>
                         </div>
                     </div>
                 </#list>
             <#else>
-                Нет данных.
+                <@spring.message 'info.no_result'/>
             </#if>
         </div>
         <!-- Pagination controls -->
         <ul class="pagination">
             <li class="page-item">
                 <a class="page-link"
-                   href="/resume/all/view?pageNumber=0&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">First</a>
+                   href="/resume/all/view?pageNumber=0&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}"><@spring.message 'pagination.first'/></a>
             </li>
             <li class="page-item">
                 <#if (pageNumber > 0)>
                     <a class="page-link"
                        href="/resume/all/view?pageNumber=${pageNumber - 1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">&laquo;
-                        Previous</a>
+                        <@spring.message 'pagination.previous'/></a>
                 </#if>
             </li>
             <#list 1..totalPages as pageNo>
                 <li class="page-item">
                     <a class="page-link"
                        href="/resume/all/view?pageNumber=${pageNo - 1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">
-                        <#if pageNumber == pageNo> </#if>${pageNo}</a>
+                        ${pageNo}</a>
                 </li>
             </#list>
             <li class="page-item">
                 <#if pageNumber < (totalPages-1)>
                     <a class="page-link"
-                       href="/resume/all/view?pageNumber=${pageNumber + 1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">Next
+                       href="/resume/all/view?pageNumber=${pageNumber + 1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}"><@spring.message 'pagination.next'/>
                         &raquo;</a>
                 </#if>
             </li>
             <li class="page-item">
                 <a class="page-link"
-                   href="/resume/all/view?pageNumber=${totalPages-1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}">Last</a>
+                   href="/resume/all/view?pageNumber=${totalPages-1}&sort=${sortCriteria}&category=${category}&searchWord=${searchWord}"><@spring.message 'pagination.last'/></a>
             </li>
         </ul>
 
-    </div>
 
 </@main.layout>

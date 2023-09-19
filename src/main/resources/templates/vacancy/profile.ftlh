@@ -1,4 +1,6 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
     <div class="container-xl px-4 mt-4">
 
@@ -7,7 +9,7 @@
         <!-- Profile picture card-->
         <div class="col-xl-4">
             <div class="card mb-4 mb-xl-0">
-                <div class="card-header">Профиль компании
+                <div class="card-header"><@spring.message 'companies.profile'/>
                 </div>
                 <div class="card-body text-center pb-5">
                     <#if company.photo?has_content>
@@ -25,7 +27,7 @@
             <div class="card mb-4">
                 <div class="card-header ">
                     <div class="col-8">
-                        Информация о компании
+                        <@spring.message 'companies.info'/>
                     </div>
                 </div>
                 <!-- Form Group (username)-->
@@ -34,15 +36,15 @@
                         <!-- Form Row-->
 
                         <div class="mb-3">
-                            <#assign str = company.name!"Название компании не указано">
-                            <label class="small mb-1" for="orgName">Название компании</label>
+                            <#assign str = company.name!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
+                            <label class="small mb-1" for="orgName"><@spring.message 'companies.name'/></label>
                             <p class="form-control" id="orgName" type="text">${str}</p>
                         </div>
                         <!-- Form Row        -->
                         <div class="mb-3">
-                            <label class="small mb-1" for="inputPhone">Номер телефона</label>
+                            <label class="small mb-1" for="inputPhone"><@spring.message 'contact.phone_number'/></label>
                             <p class="form-control" id="inputPhone" type="text">
-                                <#if (company.phoneNumber)??>${company.phoneNumber}<#else >  не указано</#if>
+                                <#if (company.phoneNumber)??>${company.phoneNumber}<#else >  <@spring.message 'no.info'/></#if>
                             </p>
                         </div>
 
@@ -55,7 +57,7 @@
     </div>
     <div class="container">
         <div class="row">
-            <h3>Вакансии компании </h3>
+            <h3><@spring.message 'companies.vacancies'/> </h3>
 
             <#if (myList)??>
                 <#list myList.content as item>
@@ -64,10 +66,10 @@
                     </#if>
                     <div class="card col mx-1">
                         <div class="card-body">
-                            <h5 class="card-title"><#if (item.title)??> ${item.title}<#else> Нет названия</#if></h5>
-                            <p class="card-text"><#if (item.dateTime)??>${item.dateTime}<#else >Нет даты</#if></p>
+                            <h5 class="card-title"><#if (item.title)??> ${item.title}<#else> <@spring.message 'no.title'/></#if></h5>
+                            <p class="card-text"><#if (item.dateTime)??>${item.dateTime}<#else ><@spring.message 'no.date'/></#if></p>
                             <div class="d-flex">
-                                <a href="/vacancy/${item.id}" class="btn btn-primary me-3">Посмотреть</a>
+                                <a href="/vacancy/${item.id}" class="btn btn-primary me-3"><@spring.message 'button.view'/></a>
 
                             </div>
 
@@ -78,7 +80,7 @@
                     </#if>
                 </#list>
             <#else >
-                Ещё нет вакансий
+                <@spring.message 'vacancies.none.yet'/>
             </#if>
         </div>
 
@@ -86,32 +88,32 @@
         <ul class="pagination">
             <li class="page-item">
                 <a class="page-link"
-                   href="/auth/profile/company/${company.email}?pageNumber=0">First</a>
+                   href="/auth/profile/company/${company.email}?pageNumber=0"><@spring.message 'pagination.first'/></a>
             </li>
             <li class="page-item">
                 <#if (pageNumber > 0)>
                     <a class="page-link"
                        href="/auth/profile/company/${company.email}?pageNumber=${pageNumber - 1}">&laquo;
-                        Previous</a>
+                        <@spring.message 'pagination.previous'/></a>
                 </#if>
             </li>
             <#list 1..totalPages as pageNo>
                 <li class="page-item">
                     <a class="page-link"
                        href="/auth/profile/company/${company.email}?pageNumber=${pageNo - 1}">
-                        <#if pageNumber == pageNo> </#if>${pageNo}</a>
+                        ${pageNo}</a>
                 </li>
             </#list>
             <li class="page-item">
                 <#if pageNumber < (totalPages-1)>
                     <a class="page-link"
-                       href="/auth/profile/company/${company.email}?pageNumber=${pageNumber + 1}">Next
+                       href="/auth/profile/company/${company.email}?pageNumber=${pageNumber + 1}"><@spring.message 'pagination.next'/>
                         &raquo;</a>
                 </#if>
             </li>
             <li class="page-item">
                 <a class="page-link"
-                   href="/auth/profile/company/${company.email}?pageNumber=${totalPages-1}">Last</a>
+                   href="/auth/profile/company/${company.email}?pageNumber=${totalPages-1}"><@spring.message 'pagination.last'/></a>
             </li>
         </ul>
     </div>

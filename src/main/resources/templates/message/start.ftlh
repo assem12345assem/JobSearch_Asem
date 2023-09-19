@@ -1,8 +1,10 @@
 <#import '../layout.ftlh' as main>
+<#import '/spring.ftl' as spring>
+
 <@main.layout>
     <div class="container">
         <div class="main-body">
-            <h2 class="text-primary fs-2 text-center"> Откликнуться на вакансию:</h2>
+            <h2 class="text-primary fs-2 text-center"> <@spring.message 'vacancy.apply'/>:</h2>
 
 
 
@@ -19,7 +21,7 @@
                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPgCd93aiNba8lHWJYHQ1C1YwBPwcH_NUmw&usqp=CAU" alt="profile picture">
                                 </#if>
                                 <div class="mt-3">
-                                    <#assign v=vacancy.profile.companyName!"Название компании не указано">
+                                    <#assign v=vacancy.profile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                     <h4>${v}</h4>
 
 
@@ -37,7 +39,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">Название вакансии:</h6>
+                                    <h6 class="mb-0"><@spring.message 'vacancy.name'/></h6>
                                 </div>
 
 
@@ -46,7 +48,7 @@
                                     <#if (vacancy.vacancyName)??>
                                         <p class="form-control"> ${vacancy.vacancyName}</p>
                                     <#else>
-                                        <p class="form-control"> Не указано</p>
+                                        <p class="form-control"> <@spring.message 'no.info'/></p>
 
                                     </#if>
                                 </div>
@@ -57,7 +59,7 @@
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="card-title">
-<h3>Ваш отклик:</h3>
+<h3><@spring.message 'applications.start'/></h3>
                             </div>
                             <form action="/apply/forjob/${vacancy.id}" method="post">
                                 <#if _csrf??>
@@ -65,22 +67,22 @@
                                            value="${(_csrf.token)!'csrf-token'}"/>
                                 </#if>
                                 <input type="hidden" name="vacancyId" value="${vacancy.id}">
-                                <small>Текст сообщения:</small>
-                                <input class="form-control mb-2" type="text" placeholder="текст сообщения"
+                                <small><@spring.message 'applications.message_text'/></small>
+                                <input class="form-control mb-2" type="text" placeholder="<@spring.message 'applications.message_text'/>"
                                        name="messageText">
-                                <p class="mb-3">Создайте резюме, чтобы откликнуться на вакансию или выберите из списка:</p>
+                                <p class="mb-3"><@spring.message 'applications.instruction'/></p>
 
 
                                 <#if (resumes)?? >
                                     <select class="form-select border-dark"
                                             aria-label="Default select example" name="resumeId">
-                                        <small>Резюме</small>
-                                        <option selected> Выберите резюме из списка:</option>
+                                        <small><@spring.message 'navbar.navi.resumes'/></small>
+                                        <option selected> <@spring.message 'applications.select_resume'/></option>
                                     <#list resumes as resume>
 
                                             <option value="${resume.id}" class="form-brd-radius col-6">
                                                 <#if (resume.resumeTitle)?has_content>
-                                                ${resume.resumeTitle} <#else > резюме без названия
+                                                ${resume.resumeTitle} <#else > <@spring.message 'resume.with_no_title'/>
                                                 </#if>
                                                 </option>
                                     </#list>
@@ -89,7 +91,7 @@
 
                                 </#if>
 
-                                <button type="submit" class="btn btn-primary my-3"> Отправить </button>
+                                <button type="submit" class="btn btn-primary my-3"> <@spring.message 'button.send'/> </button>
                             </form>
                         </div>
                     </div>

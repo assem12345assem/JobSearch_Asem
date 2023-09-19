@@ -1,7 +1,9 @@
 <#import "../layout.ftlh" as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
 
-    <h2>Forgot Password</h2>
+    <h2><@spring.message 'password.restore'/></h2>
     <#if error??>
         <b class="text-danger text-center">${error}</b>
     </#if>
@@ -16,17 +18,17 @@
                         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                value="${(_csrf.token)!'csrf-token'}"/>
                     </#if>
-                    <div class="form-outline  border border-secondary rounded p-3">
+                    <div class="border border-secondary rounded p-3">
                         <div>
-                            <p>We will be sending a reset password link to your email.</p>
+                            <p><@spring.message 'password.send_email'/></p>
                         </div>
                         <div>
                             <p>
-                                <input type="email" name="email" class="form-control" placeholder="Enter your e-mail"
+                                <input type="email" name="email" class="form-control" placeholder="<@spring.message 'instruction.enter_email'/>"
                                        required autofocus/>
                             </p>
                             <p class="text-center">
-                                <input type="submit" value="Send" class="btn btn-primary"/>
+                                <input type="submit" value="<@spring.message 'button.send'/>" class="btn btn-primary"/>
                             </p>
                         </div>
                     </div>

@@ -50,6 +50,11 @@ public class UserMVCController {
 
     }
 
+    @GetMapping("/error_login")
+    public String errorLogin() {
+        return "auth/error_login";
+    }
+
     @GetMapping("/login")
     public String login() {
         return "/auth/login";
@@ -130,6 +135,7 @@ public class UserMVCController {
         userService.uploadUserPhoto(userLocalStorage, file);
         return "redirect:/auth/edit/" + userLocalStorage;
     }
+
     @GetMapping("/forgot_password")
     public String forgotPassword() {
         return "auth/forgot_password";

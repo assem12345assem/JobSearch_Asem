@@ -28,4 +28,5 @@ public class AuthService {
                 .photo(fromDao.getPhoto())
                 .build();
     }
+
 }

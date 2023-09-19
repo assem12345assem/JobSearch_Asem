@@ -1,15 +1,17 @@
 <#import '../layout.ftlh' as main>
+<#import '/spring.ftl' as spring>
+
 <@main.layout>
     <div class="container">
-        <h2> Список откликов </h2>
+        <h2> <@spring.message 'applications.list'/> </h2>
         <table class="table table-striped">
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Название вакансии</th>
-                <th scope="col">Компания</th>
-                <th scope="col">Соискатель</th>
-                <th scope="col">Количество сообщений</th>
+                <th scope="col"><@spring.message 'applications.vacancy.name'/></th>
+                <th scope="col"><@spring.message 'companies.company'/></th>
+                <th scope="col"><@spring.message 'profile.type.applicant'/></th>
+                <th scope="col"><@spring.message 'applications.message_number'/></th>
             </tr>
             </thead>
             <tbody>

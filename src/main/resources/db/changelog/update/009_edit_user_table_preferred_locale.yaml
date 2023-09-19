@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add locale preference to user_table
+      author: Asem
+      changes:
+        - addColumn:
+            tableName: user_table
+            columns:
+              - column:
+                  name: preferred_language
+                  type: varchar(50)

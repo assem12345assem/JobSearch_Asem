@@ -1,16 +1,18 @@
 <#import '../layout.ftlh' as main>
+<#import "/spring.ftl" as spring>
+
 <@main.layout>
 
     <div class="container">
         <div class="main-body">
-            <h2 class="text-primary fs-2 text-center"> Вакансия пользователя:</h2>
+            <h2 class="text-primary fs-2 text-center"> <@spring.message 'vacancy.user_vacancy'/></h2>
             <form action="/vacancy/edit/${vacancy.id}" method="post">
                 <#if _csrf??>
                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                            value="${(_csrf.token)!'csrf-token'}"/>
                 </#if>
                 <div class="d-grid gap-2 fixed-button-container">
-                    <button class="btn btn-success mt-3 bottom-button" type="submit" id="submitResume">Сохранить
+                    <button class="btn btn-success mt-3 bottom-button" type="submit" id="submitResume"><@spring.message 'button.save'/>
                     </button>
                 </div>
 
@@ -24,18 +26,14 @@
                                              src="/auth/images/${user.email}" alt="photo" width="250"
                                              height="auto">
                                     <#else>
-                                        <img
-                                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPgCd93aiNba8lHWJYHQ1C1YwBPwcH_NUmw&usqp=CAU" alt="profile picture">
+                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPgCd93aiNba8lHWJYHQ1C1YwBPwcH_NUmw&usqp=CAU" alt="profile picture">
                                     </#if>
                                     <div class="mt-3">
-                                        <#assign v=vacancy.profile.companyName!"Название компании не указано">
+                                        <#assign v=vacancy.profile.companyName!"${springMacroRequestContext.getMessage('companies.no_company_name')}">
                                         <h4>${v}</h4>
 
                                         <a class="btn btn-success"
-                                           href="/auth/edit/${user.email}">Редактировать профиль</a>
-
-
-
+                                           href="/auth/edit/${user.email}"><@spring.message 'profile.edit'/></a>
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +48,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Название вакансии:</h6>
+                                        <h6 class="mb-0"><@spring.message 'vacancy.name'/></h6>
                                     </div>
 
 
@@ -61,45 +59,46 @@
                                                    value="${vacancy.vacancyName}">
                                         <#else>
                                             <input class="form-control" type="text"
-                                                   placeholder="Введите название" name="vacancyName">
+                                                   placeholder="<@spring.message 'instruction.input.title'/>" name="vacancyName">
                                         </#if>
                                     </div>
                                 </div>
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Категория:</h6>
+                                        <h6 class="mb-0"><@spring.message 'category.category'/></h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <#assign var1=vacancy.category! "Категория не известна">
+                                        <#assign var1=vacancy.category! "${springMacroRequestContext.getMessage('category.no.info')}">
                                         <#if (var1)?has_content>
-                                            выбрать другую категорию:
+                                            <@spring.message 'category.select.another'/>
                                             <select class="form-select border-dark"
                                                     aria-label="Default select example" name="category"
                                                     id="category">
-                                                <#assign var1=vacancy.category! "Выберите категорию">
+                                                <#assign var1=vacancy.category! "${springMacroRequestContext.getMessage('vacancy.sort.by_category')}">
                                                 <option selected>${var1}
-                                                <option value="Technology" class="form-brd-radius col-6">Technology</option>
-                                                <option value="Healthcare" class="form-brd-radius col-6">Healthcare</option>
-                                                <option value="Finance" class="form-brd-radius col-6">Finance</option>
-                                                <option value="Education" class="form-brd-radius col-6">Education</option>
-                                                <option value="Hospitality" class="form-brd-radius col-6">Hospitality</option>
-                                                <option value="Marketing" class="form-brd-radius col-6">Marketing</option>
-                                                <option value="Engineering" class="form-brd-radius col-6">Engineering</option>
-                                                <option value="Retail" class="form-brd-radius col-6">Retail</option>
-                                                <option value="Art and Design" class="form-brd-radius col-6">Art and Design</option>
-                                                <option value="Customer Service" class="form-brd-radius col-6">Customer Service</option>
-                                                <option value="Sales" class="form-brd-radius col-6">Sales</option>
-                                                <option value="Manufacturing" class="form-brd-radius col-6">Manufacturing</option>
-                                                <option value="Media and Entertainment" class="form-brd-radius col-6">Media and Entertainment</option>
-                                                <option value="Science" class="form-brd-radius col-6">Science</option>
-                                                <option value="Legal" class="form-brd-radius col-6">Legal</option>
-                                                <option value="Human Resources" class="form-brd-radius col-6">Human Resources</option>
-                                                <option value="Transportation" class="form-brd-radius col-6">Transportation</option>
-                                                <option value="Construction" class="form-brd-radius col-6">Construction</option>
-                                                <option value="Non-profit" class="form-brd-radius col-6">Non-profit</option>
-                                                <option value="Agriculture" class="form-brd-radius col-6">Agriculture</option>
-                                                <option value="Other" class="form-brd-radius col-6">Other</option>
+                                                <option value="Technology" class="form-brd-radius col-6"><@spring.message 'category.Technology'/></option>
+                                                <option value="Healthcare" class="form-brd-radius col-6"><@spring.message 'category.Healthcare'/></option>
+                                                <option value="Finance" class="form-brd-radius col-6"><@spring.message 'category.Finance'/></option>
+                                                <option value="Education" class="form-brd-radius col-6"><@spring.message 'category.Education'/></option>
+                                                <option value="Hospitality" class="form-brd-radius col-6"><@spring.message 'category.Hospitality'/></option>
+                                                <option value="Marketing" class="form-brd-radius col-6"><@spring.message 'category.Marketing'/></option>
+                                                <option value="Engineering" class="form-brd-radius col-6"><@spring.message 'category.Engineering'/></option>
+                                                <option value="Retail" class="form-brd-radius col-6"><@spring.message 'category.Retail'/></option>
+                                                <option value="ArtAndDesign" class="form-brd-radius col-6"><@spring.message 'category.ArtAndDesign'/></option>
+                                                <option value="CustomerService" class="form-brd-radius col-6"><@spring.message 'category.CustomerService'/></option>
+                                                <option value="Sales" class="form-brd-radius col-6"><@spring.message 'category.Sales'/></option>
+                                                <option value="Manufacturing" class="form-brd-radius col-6"><@spring.message 'category.Manufacturing'/></option>
+                                                <option value="MediaAndEntertainment" class="form-brd-radius col-6"><@spring.message 'category.MediaAndEntertainment'/></option>
+                                                <option value="Science" class="form-brd-radius col-6"><@spring.message 'category.Science'/></option>
+                                                <option value="Legal" class="form-brd-radius col-6"><@spring.message 'category.Legal'/></option>
+                                                <option value="HumanResources" class="form-brd-radius col-6"><@spring.message 'category.HumanResources'/></option>
+                                                <option value="Transportation" class="form-brd-radius col-6"><@spring.message 'category.Transportation'/></option>
+                                                <option value="Construction" class="form-brd-radius col-6"><@spring.message 'category.Construction'/></option>
+                                                <option value="NonProfit" class="form-brd-radius col-6"><@spring.message 'category.NonProfit'/></option>
+                                                <option value="Agriculture" class="form-brd-radius col-6"><@spring.message 'category.Agriculture'/></option>
+                                                <option value="Other" class="form-brd-radius col-6"><@spring.message 'category.Other'/></option>
+
 
                                             </select>
                                         <#else>
@@ -107,27 +106,27 @@
                                                     aria-label="Default select example" name="category"
                                                     id="category">
 
-                                                <option value="Technology" class="form-brd-radius col-6">Technology</option>
-                                                <option value="Healthcare" class="form-brd-radius col-6">Healthcare</option>
-                                                <option value="Finance" class="form-brd-radius col-6">Finance</option>
-                                                <option value="Education" class="form-brd-radius col-6">Education</option>
-                                                <option value="Hospitality" class="form-brd-radius col-6">Hospitality</option>
-                                                <option value="Marketing" class="form-brd-radius col-6">Marketing</option>
-                                                <option value="Engineering" class="form-brd-radius col-6">Engineering</option>
-                                                <option value="Retail" class="form-brd-radius col-6">Retail</option>
-                                                <option value="Art and Design" class="form-brd-radius col-6">Art and Design</option>
-                                                <option value="Customer Service" class="form-brd-radius col-6">Customer Service</option>
-                                                <option value="Sales" class="form-brd-radius col-6">Sales</option>
-                                                <option value="Manufacturing" class="form-brd-radius col-6">Manufacturing</option>
-                                                <option value="Media and Entertainment" class="form-brd-radius col-6">Media and Entertainment</option>
-                                                <option value="Science" class="form-brd-radius col-6">Science</option>
-                                                <option value="Legal" class="form-brd-radius col-6">Legal</option>
-                                                <option value="Human Resources" class="form-brd-radius col-6">Human Resources</option>
-                                                <option value="Transportation" class="form-brd-radius col-6">Transportation</option>
-                                                <option value="Construction" class="form-brd-radius col-6">Construction</option>
-                                                <option value="Non-profit" class="form-brd-radius col-6">Non-profit</option>
-                                                <option value="Agriculture" class="form-brd-radius col-6">Agriculture</option>
-                                                <option value="Other" class="form-brd-radius col-6" selected>Other</option>
+                                                <option value="Technology" class="form-brd-radius col-6"><@spring.message 'category.Technology'/></option>
+                                                <option value="Healthcare" class="form-brd-radius col-6"><@spring.message 'category.Healthcare'/></option>
+                                                <option value="Finance" class="form-brd-radius col-6"><@spring.message 'category.Finance'/></option>
+                                                <option value="Education" class="form-brd-radius col-6"><@spring.message 'category.Education'/></option>
+                                                <option value="Hospitality" class="form-brd-radius col-6"><@spring.message 'category.Hospitality'/></option>
+                                                <option value="Marketing" class="form-brd-radius col-6"><@spring.message 'category.Marketing'/></option>
+                                                <option value="Engineering" class="form-brd-radius col-6"><@spring.message 'category.Engineering'/></option>
+                                                <option value="Retail" class="form-brd-radius col-6"><@spring.message 'category.Retail'/></option>
+                                                <option value="ArtAndDesign" class="form-brd-radius col-6"><@spring.message 'category.ArtAndDesign'/></option>
+                                                <option value="CustomerService" class="form-brd-radius col-6"><@spring.message 'category.CustomerService'/></option>
+                                                <option value="Sales" class="form-brd-radius col-6"><@spring.message 'category.Sales'/></option>
+                                                <option value="Manufacturing" class="form-brd-radius col-6"><@spring.message 'category.Manufacturing'/></option>
+                                                <option value="MediaAndEntertainment" class="form-brd-radius col-6"><@spring.message 'category.MediaAndEntertainment'/></option>
+                                                <option value="Science" class="form-brd-radius col-6"><@spring.message 'category.Science'/></option>
+                                                <option value="Legal" class="form-brd-radius col-6"><@spring.message 'category.Legal'/></option>
+                                                <option value="HumanResources" class="form-brd-radius col-6"><@spring.message 'category.HumanResources'/></option>
+                                                <option value="Transportation" class="form-brd-radius col-6"><@spring.message 'category.Transportation'/></option>
+                                                <option value="Construction" class="form-brd-radius col-6"><@spring.message 'category.Construction'/></option>
+                                                <option value="NonProfit" class="form-brd-radius col-6"><@spring.message 'category.NonProfit'/></option>
+                                                <option value="Agriculture" class="form-brd-radius col-6"><@spring.message 'category.Agriculture'/></option>
+                                                <option value="Other" class="form-brd-radius col-6"><@spring.message 'category.Other'/></option>
 
                                             </select>
                                         </#if>
@@ -137,7 +136,7 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Заработная плата:</h6>
+                                        <h6 class="mb-0"><@spring.message 'vacancy.salary'/></h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
                                         <#assign var3=vacancy.salary>
@@ -146,7 +145,7 @@
                                                    name="salary" value="${var3}">
                                         <#else>
                                             <input class="form-control" type="number"
-                                                   placeholder="Введите оклад" name="salary">
+                                                   placeholder="<@spring.message 'instruction.enter.salary'/>" name="salary">
                                         </#if>
                                     </div>
                                 </div>
@@ -154,7 +153,7 @@
 
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Описание вакансии:</h6>
+                                        <h6 class="mb-0"><@spring.message 'vacancy.description'/></h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
                                         <#if (vacancy.description)?has_content>
@@ -163,7 +162,7 @@
                                                    value="${vacancy.description}">
                                         <#else>
                                             <input class="form-control" type="text"
-                                                   placeholder="Введите описание" name="description">
+                                                   placeholder="<@spring.message 'vacancy.enter.description'/>" name="description">
                                         </#if>
                                     </div>
                                 </div>
@@ -171,7 +170,7 @@
 
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Требуемый опыт:</h6>
+                                        <h6 class="mb-0"><@spring.message 'vacancy.required.experience'/>:</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
                                         <#if (vacancy.requiredExperienceMin)?has_content>
@@ -180,7 +179,7 @@
                                                    name="requiredExperienceMin"
                                                    value="${vacancy.requiredExperienceMin}">
                                         <#else>
-                                            <input class="form-control" type="text" placeholder="от"
+                                            <input class="form-control" type="text" placeholder="<@spring.message 'vacancy.from'/>"
                                                    name="requiredExperienceMin">
                                         </#if>
                                         <#if (vacancy.requiredExperienceMax)?has_content>
@@ -189,14 +188,14 @@
                                                    name="requiredExperienceMax"
                                                    value="${vacancy.requiredExperienceMax}">
                                         <#else>
-                                            <input class="form-control" type="text" placeholder="до"
+                                            <input class="form-control" type="text" placeholder="<@spring.message 'vacancy.to'/>"
                                                    name="requiredExperienceMax">
                                         </#if>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0">Активно:</h6>
+                                        <h6 class="mb-0"><@spring.message 'instruction.active'/>:</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
                                         <input class="form-check-input fs-2 border-dark" type="checkbox"
