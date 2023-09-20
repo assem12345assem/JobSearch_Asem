@@ -144,12 +144,10 @@ public class UserMVCController {
     @PostMapping("/forgot_password")
     public String forgotPassword(HttpServletRequest request, Model model) {
         try {
-            userService.makeResetPasswdLink(request);
-            model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
-        } catch (UsernameNotFoundException | UnsupportedEncodingException e) {
+            String pswdResetLink = userService.makeResetPasswdLink(request);
+            model.addAttribute("message", pswdResetLink);
+        } catch (UsernameNotFoundException e) {
             model.addAttribute("error", e.getMessage());
-        } catch (MessagingException e) {
-            model.addAttribute("error", "Error while sending email");
         }
         return "auth/forgot_password";
     }

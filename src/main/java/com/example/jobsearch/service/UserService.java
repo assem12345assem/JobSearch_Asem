@@ -11,7 +11,6 @@ import com.example.jobsearch.entity.User;
 import com.example.jobsearch.repository.RoleRepository;
 import com.example.jobsearch.repository.UserRepository;
 import com.example.jobsearch.util.Utility;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -213,12 +212,14 @@ public class UserService {
         userRepository.saveAndFlush(u);
     }
 
-    public void makeResetPasswdLink(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+    public String makeResetPasswdLink(HttpServletRequest request) {
         String email = request.getParameter("email");
         String token = UUID.randomUUID().toString();
         updateResetPasswordToken(token, email);
         String resetPasswordLink = Utility.getSiteUrl(request) + "/auth/reset_password?token=" + token;
-        emailService.sendEmail(email, resetPasswordLink);
+        return resetPasswordLink;
+//        emailService.sendEmail(email, resetPasswordLink);
+
     }
 
     public String getLanguage(String email) {
