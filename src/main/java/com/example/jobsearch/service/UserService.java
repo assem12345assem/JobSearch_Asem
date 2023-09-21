@@ -46,7 +46,7 @@ public class UserService {
             if (userDto.getUserType() != null) {
                 try {
                     User user = userRepository.save(makeUserFromDto(userDto));
-                    if (userDto.getFile() != null) {
+                    if (!userDto.getFile().isEmpty()) {
                         uploadUserPhoto(user.getEmail(), userDto.getFile());
                     }
                     Role role = roleRepository.findByRole("ROLE_" + user.getUserType().toUpperCase());

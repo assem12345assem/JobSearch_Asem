@@ -86,7 +86,7 @@
                                                 <label class="form-label" for="form3Example5c"
                                                 ><@spring.message 'profile.password'/></label>
 
-                                                    <@spring.formInput "userDto.password" 'id="form3Example5c" name="password" class="form-control" ' />
+                                                    <input type="password" id="form3Example5c" name="password" class="form-control"  />
                                                     <div id="customErrorMessagePassword" style="color: red;"></div>
                                                 <div id="passwordError" style="display:none;">
                                                     <@spring.message 'userDto.password.notBlank'/>
