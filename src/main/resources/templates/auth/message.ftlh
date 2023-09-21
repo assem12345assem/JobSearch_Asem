@@ -4,8 +4,8 @@
 <@main.layout>
 
     <div class="text-center">
-        <h2><@spring.message 'profile.password_reset_message'/></h2>
-        <p class="text-warning">${message}</p>
+            <b class="text-success"><@spring.message 'password.changed'/></b>
+
     </div>
 
 </@main.layout>

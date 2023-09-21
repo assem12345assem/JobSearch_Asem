@@ -39,7 +39,6 @@ public class UserService {
     private final ApplicantService applicantService;
     private final EmployerService employerService;
     private final RoleRepository roleRepository;
-    private final EmailService emailService;
     private final AuthService authService;
 
     @Transactional
@@ -200,8 +199,11 @@ public class UserService {
         userRepository.saveAndFlush(user);
     }
 
-    public UserDto getByResetPasswdToken(String token) {
-        User u = getUserByEmail(token);
+    public UserDto getByResetPasswdToken(String email, String token) {
+        User u = getUserByEmail(email);
+        if(!u.getResetPasswordToken().equalsIgnoreCase(token)) {
+            throw new IllegalArgumentException("Token not found");
+        }
         return makeDtoFromUser(u);
     }
 
@@ -212,14 +214,10 @@ public class UserService {
         userRepository.saveAndFlush(u);
     }
 
-    public String makeResetPasswdLink(HttpServletRequest request) {
+    public void makeResetPasswdLink(HttpServletRequest request) {
         String email = request.getParameter("email");
         String token = UUID.randomUUID().toString();
         updateResetPasswordToken(token, email);
-        String resetPasswordLink = Utility.getSiteUrl(request) + "/auth/reset_password?token=" + token;
-        return resetPasswordLink;
-//        emailService.sendEmail(email, resetPasswordLink);
-
     }
 
     public String getLanguage(String email) {
@@ -248,4 +246,8 @@ public class UserService {
         }
     }
 
+    public String getToken(String email) {
+        User user = getUserByEmail(email);
+        return user.getResetPasswordToken();
+    }
 }

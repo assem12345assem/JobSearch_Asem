@@ -37,7 +37,8 @@
 <div>
     <#if message??>
         <h3><@spring.message 'password.reset_link'/></h3>
-        <b class="text-warning text-center">${message}</b>
+        <a class="btn btn-success text-center" href="${message}">
+            <@spring.message 'password.reset'/></a>
     </#if>
 </div>
 </@main.layout>

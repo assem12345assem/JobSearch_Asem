@@ -1,5 +1,6 @@
 package com.example.jobsearch.errors.handler;
 
+import com.example.jobsearch.errors.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,13 @@ public class GlobalExceptionHandler {
     private String accessDenied (HttpServletRequest request, Model model) {
         model.addAttribute("status", HttpStatus.FORBIDDEN.value());
         model.addAttribute("reason", "reason.forbidden");
+        model.addAttribute("details", request);
+        return "errors/error";
+    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    private String pageNotFound(HttpServletRequest request, Model model) {
+        model.addAttribute("status", HttpStatus.NOT_FOUND.value());
+        model.addAttribute("reason", "reason.page_not_found");
         model.addAttribute("details", request);
         return "errors/error";
     }
