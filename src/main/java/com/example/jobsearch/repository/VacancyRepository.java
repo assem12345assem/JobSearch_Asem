@@ -2,6 +2,7 @@ package com.example.jobsearch.repository;
 
 import com.example.jobsearch.entity.Category;
 import com.example.jobsearch.entity.Vacancy;
+import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,7 +18,7 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
 
     List<Vacancy> findByEmployerId(Long employerId);
 
-    Page<Vacancy> findAll(Pageable pageable);
+    Page<Vacancy> findAll(@Nullable Pageable pageable);
 
     List<Vacancy> findByIsActiveTrue();
 

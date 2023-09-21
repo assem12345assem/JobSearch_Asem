@@ -19,8 +19,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.UnsupportedEncodingException;
-
 @Controller
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -29,7 +27,6 @@ public class UserMVCController {
     private final ResumeService resumeService;
     private final VacancyService vacancyService;
     private final JobApplicationService jobApplicationService;
-    private final AuthService authService;
     private final UtilService utilService;
 
     @GetMapping("/register")
@@ -142,9 +139,9 @@ public class UserMVCController {
 
     @PostMapping("/forgot_password")
     public String forgotPassword(HttpServletRequest request, Model model) {
-            userService.makeResetPasswdLink(request);
-            model.addAttribute("message", "http://localhost:8089/auth/reset_password");
-            request.getSession().setAttribute("email", request.getParameter("email"));
+        userService.makeResetPasswdLink(request);
+        model.addAttribute("message", "http://localhost:8089/auth/reset_password");
+        request.getSession().setAttribute("email", request.getParameter("email"));
         return "auth/forgot_password";
     }
 
@@ -167,14 +164,15 @@ public class UserMVCController {
         String password = request.getParameter("password");
         try {
             var user = userService.getByResetPasswdToken(email, token);
-                userService.updatePassword(user, password);
-                model.addAttribute("message", "You have successfully changed your password.");
+            userService.updatePassword(user, password);
+            model.addAttribute("message", "You have successfully changed your password.");
 
         } catch (UsernameNotFoundException e) {
             model.addAttribute("error", "Invalid token.");
         }
         return "redirect:/auth/message";
     }
+
     @GetMapping("/message")
     public String changedPage() {
         return "auth/message";

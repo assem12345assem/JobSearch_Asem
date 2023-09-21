@@ -110,11 +110,11 @@ public class JobApplicationService {
 
             VacancyDto vDto = vacancyService.findDtoById(jobApplication.getVacancy().getId());
             ResumeDto rDto = resumeService.findDtoById(jobApplication.getResume().getId());
-            String company = vDto.getProfile().getCompanyName() != null ? vDto.getProfile().getCompanyName() : "не указано";
+            String company = vDto.getProfile().getCompanyName() != null ? vDto.getProfile().getCompanyName() : "${springMacroRequestContext.getMessage('no.info')}";
             String firstName = rDto.getProfile().getFirstName();
             String lastName = rDto.getProfile().getLastName();
-            String applicant = (firstName != null && lastName != null) ? (firstName + " " + lastName) : (firstName != null ? firstName : (lastName != null ? lastName : "не указано"));
-            String vacancy = vDto.getVacancyName() != null ? vDto.getVacancyName() : "не указано";
+            String applicant = (firstName != null && lastName != null) ? (firstName + " " + lastName) : (firstName != null ? firstName : (lastName != null ? lastName : "${springMacroRequestContext.getMessage('no.info')}"));
+            String vacancy = vDto.getVacancyName() != null ? vDto.getVacancyName() : "${springMacroRequestContext.getMessage('no.info')}";
             list.add(MessageListDto.builder()
                     .jobApplicationId(jobApplication.getId())
                     .vacancyName(vacancy)

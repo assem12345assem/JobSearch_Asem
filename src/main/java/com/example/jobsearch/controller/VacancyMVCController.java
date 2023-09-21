@@ -76,13 +76,13 @@ public class VacancyMVCController {
                           @RequestParam(name = "searchWord", defaultValue = "default") String searchWord,
                           Model model) {
         int pageSize = 6; // Number of vacancies per page
-        if (date.equalsIgnoreCase("выбрать дату")) {
+        if (category.equalsIgnoreCase("выбрать дату") || category.equalsIgnoreCase("select a date")) {
             date = "default";
         }
-        if (category.equalsIgnoreCase("выбрать категорию")) {
+        if (category.equalsIgnoreCase("выбрать категорию") || category.equalsIgnoreCase("select a category")) {
             category = "default";
         }
-        if (application.equalsIgnoreCase("выбрать отклики")) {
+        if (application.equalsIgnoreCase("выбрать по количеству откликов") || application.equalsIgnoreCase("select number of applications")) {
             application = "default";
         }
 

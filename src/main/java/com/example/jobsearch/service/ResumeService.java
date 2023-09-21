@@ -5,12 +5,13 @@ import com.example.jobsearch.dto.*;
 import com.example.jobsearch.entity.Applicant;
 import com.example.jobsearch.entity.Category;
 import com.example.jobsearch.entity.Resume;
-import com.example.jobsearch.repository.CategoryRepository;
 import com.example.jobsearch.repository.ResumeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class ResumeService {
     private final ApplicantService applicantService;
     private final UserService userService;
     private final AuthService authService;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
     private final UtilService utilService;
 
     private Resume findById(Long resumeId) {
@@ -53,15 +54,13 @@ public class ResumeService {
             list.add(SummaryDto.builder()
                     .id(r.getId())
                     .title(r.getResumeTitle())
-                            .isActive(Boolean.toString(r.isActive()))
+                    .isActive(Boolean.toString(r.isActive()))
                     .dateTime(r.getDateTime())
                     .build()
             );
         }
         return utilService.toPage(list, PageRequest.of(page, size));
     }
-
-
 
 
     private void cleanEmptyTemplate(Resume r) {
@@ -107,8 +106,8 @@ public class ResumeService {
         Applicant a = applicantService.getApplicantByUserEmail(u.getEmail());
         Resume r = findById(id);
         boolean b = Boolean.FALSE;
-        if(resumeDto.getIsActive() != null) {
-            b=Boolean.TRUE;
+        if (resumeDto.getIsActive() != null) {
+            b = Boolean.TRUE;
         }
         Resume updatedResume = resumeRepository.save(Resume.builder()
                 .id(r.getId())
@@ -204,10 +203,10 @@ public class ResumeService {
         if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(searchWord)) {
             vlist = resumeRepository.findByIsActiveTrue(Sort.by(sortCriteria));
         } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(searchWord)) {
-            vlist = resumeRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
+            vlist = resumeRepository.findByCategory(categoryService.getByName(category), Sort.by(sortCriteria));
         } else {
             vlist = resumeRepository.customSearchResume(
-                    "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
+                    "default".equalsIgnoreCase(category) ? null : categoryService.getByName(category),
                     "default".equalsIgnoreCase(searchWord) ? null : searchWord,
                     Sort.by(sortCriteria)
             );

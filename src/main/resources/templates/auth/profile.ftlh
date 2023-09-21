@@ -226,7 +226,7 @@
                     try {
                         let user = await readUser();
                         if (user) {
-                            window.location.href = baseUrl + '/auth/edit/' + user.username;;
+                            window.location.href = baseUrl + '/auth/edit/' + user.username;
                         }
                     } catch (e) {
                         console.error(e);

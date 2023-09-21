@@ -6,7 +6,6 @@ import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.dto.WorkExperienceDto;
 import com.example.jobsearch.service.AuthService;
 import com.example.jobsearch.service.ResumeService;
-import com.example.jobsearch.service.UserService;
 import com.example.jobsearch.service.UtilService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ResumeMVCController {
     private final ResumeService resumeService;
-    private final UserService userService;
     private final AuthService authService;
     private final UtilService utilService;
 
