@@ -15,10 +15,9 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public Category getByName(String category) {
-        Category c = categoryRepository.findById(category).orElseThrow(() -> {
+        return categoryRepository.findById(category).orElseThrow(() -> {
             log.warn("Category not found: {}", category);
-            throw new NoSuchElementException("Category not found");
+            return new NoSuchElementException("Category not found");
         });
-        return c;
     }
 }

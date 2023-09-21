@@ -123,14 +123,14 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0"><@spring.message 'resume.title'/></h6>
+                                        <label for="resumeTitle"  class="font-weight-bold mb-0"><@spring.message 'resume.title'/></label>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
                                         <#if (resume.resumeTitle)??>
-                                            <input class="form-control" type="text" placeholder="${resume.resumeTitle}"
+                                            <input id="resumeTitle" class="form-control" type="text" placeholder="${resume.resumeTitle}"
                                                    name="resumeTitle" value="${resume.resumeTitle}">
                                         <#else>
-                                            <input class="form-control" type="text" placeholder="<@spring.message 'instruction.input.title'/>"
+                                            <input id="resumeTitle" class="form-control" type="text" placeholder="<@spring.message 'instruction.input.title'/>"
                                                    name="resumeTitle">
                                         </#if>
                                     </div>
@@ -246,15 +246,15 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0"><@spring.message 'resume.expected_salary'/></h6>
+                                        <label for="expectedSalary"  class="font-weight-bold mb-0"><@spring.message 'resume.expected_salary'/></label>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
                                         <#if (resume.expectedSalary)?has_content>
-                                            <input class="form-control" type="number"
+                                            <input id="expectedSalary" class="form-control" type="number"
                                                    placeholder="${resume.expectedSalary}"
                                                    name="expectedSalary" value="${resume.expectedSalary}">
                                         <#else >
-                                            <input class="form-control" type="number" placeholder="<@spring.message 'instruction.enter.salary'/>"
+                                            <input id="expectedSalary" class="form-control" type="number" placeholder="<@spring.message 'instruction.enter.salary'/>"
                                                    name="expectedSalary">
                                         </#if>
                                     </div>
@@ -262,7 +262,7 @@
                                 <hr>
                                 <div class="row mt-1">
                                     <div class="col-sm-3">
-                                        <h6 class="mb-0"><@spring.message 'instruction.active'/>:</h6>
+                                        <label for="checkboxId" class="font-weight-bold mb-0"><@spring.message 'instruction.active'/>:</label>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
                                         <input class="form-check-input fs-2 border-dark" type="checkbox"
@@ -299,75 +299,75 @@
                                                 </div>
 
 
-                                                <small><@spring.message 'companies.name'/></small>
+                                                <label for="companyNameWork"><@spring.message 'companies.name'/></label>
                                                 <div>
                                                     <#if (item.companyName)?has_content>
-                                                        <input class="form-control" type="text"
+                                                        <input id="companyNameWork" class="form-control" type="text"
                                                                placeholder="${item.companyName}"
                                                                name="workList[${item_index}].companyName"
                                                                value="${item.companyName}">
                                                     <#else >
-                                                        <input class="form-control" type="text"
+                                                        <input id="companyNameWork" class="form-control" type="text"
                                                                placeholder="<@spring.message 'companies.name'/>"
                                                                name="workList[${item_index}].companyName">
                                                     </#if>
 
 
                                                 </div>
-                                                <small><@spring.message 'resume.position'/></small>
+                                                <label for="positionWork"><@spring.message 'resume.position'/></label>
                                                 <div>
                                                     <#if (item.position)?has_content>
-                                                        <input class="form-control" type="text"
+                                                        <input id="positionWork" class="form-control" type="text"
                                                                placeholder="${item.position}"
                                                                name="workList[${item_index}].position"
                                                                value="${item.position}">
                                                     <#else >
-                                                        <input class="form-control" type="text" placeholder="<@spring.message 'resume.position'/>"
+                                                        <input id="positionWork" class="form-control" type="text" placeholder="<@spring.message 'resume.position'/>"
                                                                name="workList[${item_index}].position">
                                                     </#if>
 
 
                                                 </div>
-                                                <small><@spring.message 'resume.responsibilities'/>:</small>
+                                                <label for="responsibilitiesWork"><@spring.message 'resume.responsibilities'/>:</label>
                                                 <div>
                                                     <#if (item.responsibilities)?has_content>
-                                                        <input class="form-control" type="text"
+                                                        <input id="responsibilitiesWork" class="form-control" type="text"
                                                                placeholder="${item.responsibilities}"
                                                                name="workList[${item_index}].responsibilities"
                                                                value="${item.responsibilities}">
                                                     <#else >
-                                                        <input class="form-control" type="text"
+                                                        <input id="responsibilitiesWork" class="form-control" type="text"
                                                                placeholder="<@spring.message 'resume.responsibilities'/>"
                                                                name="workList[${item_index}].responsibilities">
                                                     </#if>
 
 
                                                 </div>
-                                                <small><@spring.message 'resume.start_work'/>: </small>
+                                                <label for="dateStartWork"><@spring.message 'resume.start_work'/>: </label>
                                                 <div>
                                                     <#if (item.dateStart)?has_content>
 
-                                                        <input class="form-control" type="date"
+                                                        <input id="dateStartWork" class="form-control" type="date"
                                                                placeholder="<@spring.message 'resume.start_work'/>"
                                                                name="workList[${item_index}].dateStart"
                                                                value="${item.dateStart}"> <br>
                                                     <#else >
-                                                        <input class="form-control" type="date"
+                                                        <input id="dateStartWork" class="form-control" type="date"
                                                                placeholder="<@spring.message 'resume.start_work'/>"
                                                                name="workList[${item_index}].dateStart">
                                                     </#if>
                                                 </div>
 
-                                                <small><@spring.message 'resume.end_work'/>: </small>
+                                                <label for="dateEndWork"><@spring.message 'resume.end_work'/>: </label>
                                                 <div>
                                                     <#if (item.dateEnd)?has_content>
 
-                                                        <input class="form-control" type="date"
+                                                        <input id="dateEndWork" class="form-control" type="date"
                                                                placeholder="<@spring.message 'resume.end_work'/>"
                                                                name="workList[${item_index}].dateEnd"
                                                                value="${item.dateEnd}"> <br>
                                                     <#else >
-                                                        <input class="form-control" type="date"
+                                                        <input id="dateEndWork" class="form-control" type="date"
                                                                placeholder="<@spring.message 'resume.end_work'/>"
                                                                name="workList[${item_index}].dateEnd">
                                                     </#if>
@@ -396,62 +396,58 @@
                                                href="/resume/edit/delete_education/${item.id}"><@spring.message 'button.delete'/></a>
                                         </div>
 
-                                        <small><@spring.message 'resume.education'/></small>
+                                        <label for="education"><@spring.message 'resume.education'/></label>
                                         <div>
                                             <#if (item.education)?has_content>
-                                                <input class="form-control" type="text"
-                                                       placeholder="${item.education}"
-                                                       name="eduList[${item_index}].education"
-                                                       value="${item.education}">
+                                            <input id="education" class="form-control" type="text"
+                                                   placeholder="${item.education}"
+                                                   name="eduList[${item_index}].education"
+                                                   value="${item.education}">
                                             <#else >
-                                                <input class="form-control" type="text"
-                                                       placeholder="<@spring.message 'resume.education'/>"
-                                                       name="eduList[${item_index}].education">
+                                            <input id="education" class="form-control" type="text"
+                                                   placeholder="<@spring.message 'resume.education'/>"
+                                                   name="eduList[${item_index}].education">
                                             </#if>
                                         </div>
-                                        <small><@spring.message 'resume.place_of_study'/>:</small>
+                                        <label for="schoolName"><@spring.message 'resume.place_of_study'/>:</label>
                                         <div>
 
                                             <#if (item.schoolName)?has_content>
-                                                <input class="form-control" type="text"
-                                                       placeholder="${item.schoolName}"
-                                                       name="eduList[${item_index}].schoolName"
-                                                       value="${item.schoolName}">
-                                            <#else >
-                                                <input class="form-control" type="text"
-                                                       placeholder="<@spring.message 'resume.school'/>"
-                                                       name="eduList[${item_index}].schoolName">
+                                            <input id="schoolName" class="form-control" type="text"
+                                                   placeholder="${item.schoolName}"
+                                                   name="eduList[${item_index}].schoolName"
+                                                   value="${item.schoolName}">
+                                            <#else>
+                                            <input id="schoolName" class="form-control" type="text"
+                                                   placeholder="<@spring.message 'resume.school'/>"
+                                                   name="eduList[${item_index}].schoolName">
                                             </#if>
                                         </div>
-                                        <small><@spring.message 'resume.education_start'/>: </small>
+                                        <label for="startDate"><@spring.message 'resume.education_start'/>: </label>
                                         <div>
                                             <#if (item.startDate)?has_content>
 
-                                                <input class="form-control" type="date"
-                                                       placeholder="<@spring.message 'resume.education_start'/>"
-                                                       name="eduList[${item_index}].startDate"
-                                                       value="${item.startDate}"> <br>
+                                            <input id="startDate" class="form-control" type="date"
+                                                   placeholder="<@spring.message 'resume.education_start'/>"
+                                                   name="eduList[${item_index}].startDate"
+                                                   value="${item.startDate}"> <br>
                                             <#else >
 
-                                                <input class="form-control" type="date"
-                                                       placeholder="<@spring.message 'resume.education_start'/>"
-                                                       name="eduList[${item_index}].startDate">
+                                            <input id="startDate" class="form-control" type="date"
+                                                   placeholder="<@spring.message 'resume.education_start'/>"
+                                                   name="eduList[${item_index}].startDate">
                                             </#if>
                                         </div>
-                                        <small><@spring.message 'resume.education_end'/>: </small>
+                                        <label for="graduationDate"><@spring.message 'resume.education_end'/>: </label>
                                         <#if (item.graduationDate)?has_content>
-
-
-                                            <input class="form-control" type="date"
-                                                   placeholder="<@spring.message 'resume.education_end'/>"
-                                                   name="eduList[${item_index}].graduationDate"
-                                                   value="${item.graduationDate}"> <br>
-                                        <#else >
-
-
-                                            <input class="form-control" type="date"
-                                                   placeholder="<@spring.message 'resume.education_end'/>"
-                                                   name="eduList[${item_index}].graduationDate">
+                                        <input id="graduationDate" class="form-control" type="date"
+                                               placeholder="<@spring.message 'resume.education_end'/>"
+                                               name="eduList[${item_index}].graduationDate"
+                                               value="${item.graduationDate}"> <br>
+                                        <#else>
+                                        <input id="graduationDate" class="form-control" type="date"
+                                               placeholder="<@spring.message 'resume.education_end'/>"
+                                               name="eduList[${item_index}].graduationDate">
                                         </#if>
                                     </div>
                                     <hr>
@@ -485,20 +481,20 @@
                     </#if>
                     <div class="modal-body">
 
-                        <small><@spring.message 'companies.name'/></small>
-                        <input class="form-control" type="text" placeholder="<@spring.message 'companies.name'/>"
+                        <label for="companyNameModal"><@spring.message 'companies.name'/></label>
+                        <input id="companyNameModal" class="form-control" type="text" placeholder="<@spring.message 'companies.name'/>"
                                name="companyName">
-                        <small><@spring.message 'resume.position'/></small>
-                        <input class="form-control" type="text" placeholder="<@spring.message 'resume.position'/>"
+                        <label for="position"><@spring.message 'resume.position'/></label>
+                        <input id="position" class="form-control" type="text" placeholder="<@spring.message 'resume.position'/>"
                                name="position">
-                        <small><@spring.message 'resume.responsibilities'/>:</small>
-                        <input class="form-control" type="text" placeholder="<@spring.message 'resume.responsibilities'/>"
+                        <label for="responsibilities"><@spring.message 'resume.responsibilities'/>:</label>
+                        <input id="responsibilities" class="form-control" type="text" placeholder="<@spring.message 'resume.responsibilities'/>"
                                name="responsibilities">
-                        <small><@spring.message 'resume.start_work'/>: </small>
-                        <input class="form-control" type="date" placeholder="<@spring.message 'resume.start_work'/>"
+                        <label for="dateStart"><@spring.message 'resume.start_work'/>: </label>
+                        <input id="dateStart" class="form-control" type="date" placeholder="<@spring.message 'resume.start_work'/>"
                                name="dateStart">
-                        <small><@spring.message 'resume.end_work'/>: </small>
-                        <input class="form-control" type="date" placeholder="<@spring.message 'resume.end_work'/>"
+                        <label for="dateEnd"><@spring.message 'resume.end_work'/>: </label>
+                        <input id="dateEnd" class="form-control" type="date" placeholder="<@spring.message 'resume.end_work'/>"
                                name="dateEnd">
                         <div id="customErrorMessageDateWork" style="color: red;"></div>
 
@@ -529,23 +525,22 @@
                                value="${(_csrf.token)!'csrf-token'}"/>
                     </#if>
                     <div class="modal-body">
-                        <small><@spring.message 'resume.education'/></small>
-                        <input class="form-control" type="text" placeholder="<@spring.message 'resume.education'/>"
+                        <label for="educationModal"><@spring.message 'resume.education'/></label>
+                        <input id="educationModal" class="form-control" type="text" placeholder="<@spring.message 'resume.education'/>"
                                name="education">
 
-                        <small><@spring.message 'resume.place_of_study'/></small>
-                        <input class="form-control" type="text" placeholder="<@spring.message 'resume.school'/>"
+                        <label for="schoolNameModal"><@spring.message 'resume.place_of_study'/></label>
+                        <input id="schoolNameModal" class="form-control" type="text" placeholder="<@spring.message 'resume.school'/>"
                                name="schoolName">
 
-                        <small><@spring.message 'resume.education_start'/></small>
-
-                        <input class="form-control" type="date" placeholder="<@spring.message 'resume.education_start'/>"
+                        <label for="startDateModal"><@spring.message 'resume.education_start'/></label>
+                        <input id="startDateModal" class="form-control" type="date" placeholder="<@spring.message 'resume.education_start'/>"
                                name="startDate">
-                        <small><@spring.message 'resume.education_end'/>: </small>
 
-
-                        <input class="form-control" type="date" placeholder="<@spring.message 'resume.education_end'/>"
+                        <label for="graduationDateModal"><@spring.message 'resume.education_end'/>: </label>
+                        <input id="graduationDateModal" class="form-control" type="date" placeholder="<@spring.message 'resume.education_end'/>"
                                name="graduationDate">
+
                         <div id="customErrorMessageDate" style="color: red;"></div>
 
                         <div id="dateError" style="display:none;">
