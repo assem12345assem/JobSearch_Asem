@@ -10,8 +10,6 @@ import com.example.jobsearch.entity.Role;
 import com.example.jobsearch.entity.User;
 import com.example.jobsearch.repository.RoleRepository;
 import com.example.jobsearch.repository.UserRepository;
-import com.example.jobsearch.util.Utility;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
@@ -40,7 +37,6 @@ public class UserService {
     private final ApplicantService applicantService;
     private final EmployerService employerService;
     private final RoleRepository roleRepository;
-    private final EmailService emailService;
     private final AuthService authService;
 
     @Transactional
@@ -50,7 +46,7 @@ public class UserService {
             if (userDto.getUserType() != null) {
                 try {
                     User user = userRepository.save(makeUserFromDto(userDto));
-                    if (userDto.getFile() != null) {
+                    if (!userDto.getFile().isEmpty()) {
                         uploadUserPhoto(user.getEmail(), userDto.getFile());
                     }
                     Role role = roleRepository.findByRole("ROLE_" + user.getUserType().toUpperCase());
@@ -62,11 +58,11 @@ public class UserService {
                         employerService.save(user);
                     }
                 } catch (Exception e) {
-                    log.error("Error while registering user: {}", u.get().getEmail());
+                    log.error("Error while registering user: {}", userDto.getEmail());
                 }
             } else {
-                log.info("User tried to register without user type: {}", u.get().getEmail());
-                throw new IllegalArgumentException("Please select a user type to reigser.");
+                log.info("User tried to register without user type: {}", userDto.getEmail());
+                throw new IllegalArgumentException("Please select a user type to register.");
             }
         } else {
             throw new IllegalArgumentException("User already exists");
@@ -131,7 +127,7 @@ public class UserService {
 
     public ResponseEntity<?> getPhoto(String email) {
         User user = getUserByEmail(email);
-        if (!((user.getPhoto() == null) && !user.getPhoto().isEmpty())) {
+        if (user.getPhoto() != null && !user.getPhoto().isEmpty()) {
             String extension = getFileExtension(user.getPhoto());
             if (extension != null && extension.equalsIgnoreCase("png")) {
                 return fileService.getOutputFile(user.getPhoto(), "images", MediaType.IMAGE_PNG);
@@ -161,26 +157,26 @@ public class UserService {
 
     public void editProfile(String email, EditProfileDto editProfileDto) {
         User user = getUserByEmail(email);
-        if (!(editProfileDto.getPhoneNumber().isEmpty() || editProfileDto.getPhoneNumber() == null)) {
+        if (editProfileDto != null && editProfileDto.getPhoneNumber() != null && !editProfileDto.getPhoneNumber().isEmpty()) {
             user.setPhoneNumber(editProfileDto.getPhoneNumber());
         }
 
-        if (!editProfileDto.getUserName().isEmpty() && editProfileDto.getUserName() != null) {
+        if (editProfileDto.getUserName() != null && !editProfileDto.getUserName().isEmpty()) {
             user.setUserName(editProfileDto.getUserName());
         }
 
         userRepository.save(user);
         if (user.getUserType().equalsIgnoreCase("applicant")) {
             Applicant a = applicantService.getApplicantByUserEmail(user.getEmail());
-            if (!editProfileDto.getFirstName().isEmpty() && editProfileDto.getFirstName() != null) {
+            if (editProfileDto.getFirstName() != null && !editProfileDto.getFirstName().isEmpty()) {
                 a.setFirstName(editProfileDto.getFirstName());
             }
 
-            if (!editProfileDto.getLastName().isEmpty() && editProfileDto.getLastName() != null) {
+            if (editProfileDto.getLastName() != null && !editProfileDto.getLastName().isEmpty()) {
                 a.setLastName(editProfileDto.getLastName());
             }
 
-            if (!editProfileDto.getDateOfBirth().isEmpty() && editProfileDto.getDateOfBirth() != null) {
+            if (editProfileDto.getDateOfBirth() != null && !editProfileDto.getDateOfBirth().isEmpty()) {
                 LocalDate dateOfBirth = LocalDate.parse(editProfileDto.getDateOfBirth());
                 a.setDateOfBirth(dateOfBirth);
             }
@@ -188,7 +184,7 @@ public class UserService {
             applicantService.saveApplicant(a);
         } else {
             Employer e = employerService.getEmployerByUserEmail(user.getEmail());
-            if (!editProfileDto.getCompanyName().isEmpty() && editProfileDto.getCompanyName() != null) {
+            if (editProfileDto.getCompanyName() != null && !editProfileDto.getCompanyName().isEmpty()) {
                 e.setCompanyName(editProfileDto.getCompanyName());
             }
             employerService.saveEmployer(e);
@@ -201,8 +197,11 @@ public class UserService {
         userRepository.saveAndFlush(user);
     }
 
-    public UserDto getByResetPasswdToken(String token) {
-        User u = getUserByEmail(token);
+    public UserDto getByResetPasswdToken(String email, String token) {
+        User u = getUserByEmail(email);
+        if (!u.getResetPasswordToken().equalsIgnoreCase(token)) {
+            throw new IllegalArgumentException("Token not found");
+        }
         return makeDtoFromUser(u);
     }
 
@@ -213,12 +212,10 @@ public class UserService {
         userRepository.saveAndFlush(u);
     }
 
-    public void makeResetPasswdLink(HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+    public void makeResetPasswdLink(HttpServletRequest request) {
         String email = request.getParameter("email");
         String token = UUID.randomUUID().toString();
         updateResetPasswordToken(token, email);
-        String resetPasswordLink = Utility.getSiteUrl(request) + "/auth/reset_password?token=" + token;
-        emailService.sendEmail(email, resetPasswordLink);
     }
 
     public String getLanguage(String email) {
@@ -247,4 +244,8 @@ public class UserService {
         }
     }
 
+    public String getToken(String email) {
+        User user = getUserByEmail(email);
+        return user.getResetPasswordToken();
+    }
 }

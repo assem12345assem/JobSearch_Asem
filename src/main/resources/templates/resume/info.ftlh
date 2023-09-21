@@ -25,7 +25,7 @@
                                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXPgCd93aiNba8lHWJYHQ1C1YwBPwcH_NUmw&usqp=CAU" alt="photo">
                                 </#if>                        <div class="mt-3">
                                     <h4><#if (resume.profile.firstName)??>${resume.profile.firstName}</#if>  <#if (resume.profile.lastName)??>${resume.profile.lastName}</#if></h4>
-                                    <p class="text-secondary mb-1">Дата рождения:</p>
+                                    <p class="text-secondary mb-1"><@spring.message 'resume.dob'/>:</p>
                                     <p class="text-muted font-size-sm"><#if (resume.profile.dateOfBirth)??> ${resume.profile.dateOfBirth}</#if></p>
                                     <#if user.email == viewer.email>
                                         <a class="btn btn-success"

@@ -7,9 +7,7 @@
     <#if error??>
         <b class="text-danger text-center">${error}</b>
     </#if>
-    <#if message??>
-        <b class="text-warning text-center">${message}</b>
-    </#if>
+
     <div class="py-5 h-100">
         <div class="row d-flex align-items-center justify-content-center h-100">
             <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
@@ -36,5 +34,11 @@
             </div>
         </div>
     </div>
-
+<div>
+    <#if message??>
+        <h3><@spring.message 'password.reset_link'/></h3>
+        <a class="btn btn-success text-center" href="${message}">
+            <@spring.message 'password.reset'/></a>
+    </#if>
+</div>
 </@main.layout>

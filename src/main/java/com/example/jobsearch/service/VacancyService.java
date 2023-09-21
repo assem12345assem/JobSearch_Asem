@@ -5,11 +5,12 @@ import com.example.jobsearch.dto.*;
 import com.example.jobsearch.entity.Category;
 import com.example.jobsearch.entity.Employer;
 import com.example.jobsearch.entity.Vacancy;
-import com.example.jobsearch.repository.CategoryRepository;
 import com.example.jobsearch.repository.VacancyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,9 @@ public class VacancyService {
     private final EmployerService employerService;
     private final UserService userService;
     private final AuthService authService;
-    private final CategoryRepository categoryRepository;
-private final UtilService utilService;
+    private final CategoryService categoryService;
+    private final UtilService utilService;
+
     private Vacancy getById(Long id) {
         return vacancyRepository.findById(id).orElseThrow(() -> {
             log.warn("Vacancy not found: {}", id);
@@ -66,8 +68,8 @@ private final UtilService utilService;
         UserDto u = authService.getAuthor(auth);
         Employer e = employerService.getEmployerByUserEmail(u.getEmail());
         boolean b = Boolean.FALSE;
-        if(vacancyDto.getIsActive() != null) {
-            b=Boolean.TRUE;
+        if (vacancyDto.getIsActive() != null) {
+            b = Boolean.TRUE;
         }
         vacancyRepository.save(Vacancy.builder()
                 .id(v.getId())
@@ -126,13 +128,12 @@ private final UtilService utilService;
             list.add(SummaryDto.builder()
                     .id(v.getId())
                     .title(v.getVacancyName())
-                            .isActive(Boolean.toString(v.isActive()))
+                    .isActive(Boolean.toString(v.isActive()))
                     .dateTime(v.getDateTime())
                     .build());
         }
         return utilService.toPage(list, PageRequest.of(page, size));
     }
-
 
 
     public List<Vacancy> findAllByEmployer(Authentication auth) {
@@ -171,17 +172,17 @@ private final UtilService utilService;
         if ("default".equalsIgnoreCase(category) && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
             vlist = vacancyRepository.findAll(Sort.by(sortCriteria));
         } else if (!category.equalsIgnoreCase("default") && "default".equalsIgnoreCase(date) && "default".equalsIgnoreCase(application) && "default".equalsIgnoreCase(searchWord)) {
-            vlist = vacancyRepository.findByCategory(categoryRepository.findById(category).get(), Sort.by(sortCriteria));
+            vlist = vacancyRepository.findByCategory(categoryService.getByName(category), Sort.by(sortCriteria));
         } else {
             vlist = vacancyRepository.findByCategoryAndDateAndApplicationAndSearchWord(
-                    "default".equalsIgnoreCase(category) ? null : categoryRepository.findById(category).orElse(null),
+                    "default".equalsIgnoreCase(category) ? null : categoryService.getByName(category),
                     "default".equalsIgnoreCase(date) ? null : LocalDate.parse(date),
                     "default".equalsIgnoreCase(application) ? null : Integer.parseInt(application),
                     "default".equalsIgnoreCase(searchWord) ? null : searchWord,
                     Sort.by(sortCriteria)
             );
         }
-        if(sortCriteria.equalsIgnoreCase("id")) {
+        if (sortCriteria.equalsIgnoreCase("id")) {
             vlist.sort(Comparator.comparing(Vacancy::getDateTime).reversed());
         }
         var v = vlist.stream().map(this::makeDtoFromVacancy).toList();

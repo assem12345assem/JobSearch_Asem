@@ -5,7 +5,6 @@ import com.example.jobsearch.dto.EditProfileDto;
 import com.example.jobsearch.dto.EmployerDto;
 import com.example.jobsearch.dto.UserDto;
 import com.example.jobsearch.service.*;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.UnsupportedEncodingException;
-
 @Controller
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -30,7 +27,6 @@ public class UserMVCController {
     private final ResumeService resumeService;
     private final VacancyService vacancyService;
     private final JobApplicationService jobApplicationService;
-    private final AuthService authService;
     private final UtilService utilService;
 
     @GetMapping("/register")
@@ -143,21 +139,18 @@ public class UserMVCController {
 
     @PostMapping("/forgot_password")
     public String forgotPassword(HttpServletRequest request, Model model) {
-        try {
-            userService.makeResetPasswdLink(request);
-            model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
-        } catch (UsernameNotFoundException | UnsupportedEncodingException e) {
-            model.addAttribute("error", e.getMessage());
-        } catch (MessagingException e) {
-            model.addAttribute("error", "Error while sending email");
-        }
+        userService.makeResetPasswdLink(request);
+        model.addAttribute("message", "http://localhost:8089/auth/reset_password");
+        request.getSession().setAttribute("email", request.getParameter("email"));
         return "auth/forgot_password";
     }
 
-    @GetMapping("reset_password")
-    public String resetPasswordForm(@RequestParam String token, Model model) {
+    @GetMapping("/reset_password")
+    public String resetPasswordForm(@SessionAttribute String email, Model model) {
+
         try {
-            userService.getByResetPasswdToken(token);
+            model.addAttribute("username", email);
+            String token = userService.getToken(email);
             model.addAttribute("token", token);
         } catch (UsernameNotFoundException e) {
             model.addAttribute("error", "Invalid token");
@@ -165,17 +158,23 @@ public class UserMVCController {
         return "auth/reset_password_form";
     }
 
-    @PostMapping("reset_password")
-    public String resetPassword(HttpServletRequest request, Model model) {
+    @PostMapping("/reset_password")
+    public String resetPassword(@SessionAttribute String email, HttpServletRequest request, Model model) {
         String token = request.getParameter("token");
         String password = request.getParameter("password");
         try {
-            var user = userService.getByResetPasswdToken(token);
+            var user = userService.getByResetPasswdToken(email, token);
             userService.updatePassword(user, password);
             model.addAttribute("message", "You have successfully changed your password.");
+
         } catch (UsernameNotFoundException e) {
-            model.addAttribute("message", "Invalid token.");
+            model.addAttribute("error", "Invalid token.");
         }
+        return "redirect:/auth/message";
+    }
+
+    @GetMapping("/message")
+    public String changedPage() {
         return "auth/message";
     }
 
